@@ -9,6 +9,7 @@ import com.java.cuiyikai.network.callables.JsonPostCallable;
 import com.java.cuiyikai.network.callables.PostCallable;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -160,7 +161,7 @@ public class RequestBuilder {
                     URL loginUrl = new URL(BACKEND_ADDRESS + "/api/login/");
                     HttpURLConnection connection = (HttpURLConnection) loginUrl.openConnection();
                     setConnectionHeader(connection, "POST", true);
-                    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8);
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("username", username);
                     jsonObject.put("password", password);
@@ -176,7 +177,6 @@ public class RequestBuilder {
                         JSONObject response = JSON.parseObject(buffer.toString());
                         backendToken = response.get("token").toString();
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(e.getMessage());
@@ -186,7 +186,10 @@ public class RequestBuilder {
         });
     }
 
-    public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) {
+    public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) throws NullPointerException {
+        if(backendToken == null)
+            throw new NullPointerException("No token specified.");
+        arguments.put("token", backendToken);
         JsonPostCallable jsonPostCallable = new JsonPostCallable(url, arguments);
         return executorService.submit(jsonPostCallable);
     }
