@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.network.RequestBuilder;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -28,9 +29,10 @@ public class JsonPostCallable implements Callable<JSONObject> {
         URL loginUrl = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) loginUrl.openConnection();
         RequestBuilder.setConnectionHeader(connection, "POST", true);
-        OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
         System.out.printf("POST json = %s to %s%n", arguments, url);
         writer.write(arguments.toString());
+        writer.flush();
         if(connection.getResponseCode() == 200)
         {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
