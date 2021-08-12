@@ -29,6 +29,8 @@ public class GetCallable implements Callable<JSONObject> {
         System.out.printf("GET : %s%n", url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         RequestBuilder.setConnectionHeader(connection, "GET");
+        System.out.printf("Connection type : %s%n", connection.getRequestMethod());
+        connection.connect();
         if(connection.getResponseCode() == 200)
         {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
@@ -37,6 +39,7 @@ public class GetCallable implements Callable<JSONObject> {
             while((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
+            System.out.printf("Reply with : %s%n", buffer.toString());
             return JSON.parseObject(buffer.toString());
         }
         return null;

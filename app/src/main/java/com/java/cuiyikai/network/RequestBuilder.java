@@ -9,6 +9,7 @@ import com.java.cuiyikai.network.callables.JsonPostCallable;
 import com.java.cuiyikai.network.callables.PostCallable;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -38,19 +39,22 @@ public class RequestBuilder {
     private RequestBuilder() {}
 
     public static void setConnectionHeader(HttpURLConnection connection, String method) throws ProtocolException {
+        System.out.printf("Set connection method : %s%n", method);
         connection.setRequestMethod(method);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(10000);
-        connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Accept-Language", "zh-CN");
-        connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        if(method.equals("POST"))
+        if(method.equals("POST")) {
+            connection.setRequestProperty("Accept", "*/*");
+            connection.setRequestProperty("Accept-Language", "zh-CN");
+            connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
+            connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", POST_CONTENT_TYPE);
+        }
+        connection.setDoInput(true);
     }
 
     public static void setConnectionHeader(HttpURLConnection connection, String method, boolean sendJson) throws ProtocolException {
+        System.out.printf("Set connection method : %s, type : %d%n", method, sendJson);
         connection.setRequestMethod(method);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(10000);
@@ -90,12 +94,13 @@ public class RequestBuilder {
                     URL loginUrl = new URL(BASE_URL + "typeAuth/user/login");
                     HttpURLConnection connection = (HttpURLConnection) loginUrl.openConnection();
                     setConnectionHeader(connection, "POST");
-                    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8);
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
                     Map<String, String> form = new HashMap<>();
                     form.put("password", PASSWORD);
                     form.put("phone", PHONE);
+                    System.out.printf("POST : %s %s%n", loginUrl, buildForm(form));
                     writer.write(buildForm(form));
-
+                    writer.flush();
                     if(connection.getResponseCode() == 200)
                     {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
@@ -105,6 +110,7 @@ public class RequestBuilder {
                             buffer.append(line);
                         }
                         JSONObject response = JSON.parseObject(buffer.toString());
+                        System.out.printf("Reply with : %s%n", response);
                         token = response.get("id").toString();
                     }
 

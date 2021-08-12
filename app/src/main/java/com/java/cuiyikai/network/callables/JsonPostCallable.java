@@ -41,6 +41,7 @@ public class JsonPostCallable implements Callable<JSONObject> {
             while((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
+            System.out.printf("Reply with : %s%n", buffer.toString());
             return JSON.parseObject(buffer.toString());
         }
         return null;
