@@ -14,6 +14,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView rcy1;
+    private Button use_for_test;
     private Button btnForLogIn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,14 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rcy1.setLayoutManager(linearLayoutManager);
         rcy1.setAdapter(new RcyAdapter(MainActivity.this));
+        use_for_test=findViewById(R.id.use_for_test);
+        use_for_test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this, test.class);
+                startActivity(intent);
+            }
+        });
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
