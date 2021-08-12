@@ -166,6 +166,7 @@ public class RequestBuilder {
                     jsonObject.put("username", username);
                     jsonObject.put("password", password);
                     writer.write(jsonObject.toString());
+                    writer.flush();
                     if(connection.getResponseCode() == 200)
                     {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
