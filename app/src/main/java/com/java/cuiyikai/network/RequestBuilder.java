@@ -151,7 +151,7 @@ public class RequestBuilder {
 
     private static String backendToken = null;
 
-    private static final String BACKEND_ADDRESS = "localhost:8080";
+    private static final String BACKEND_ADDRESS = "183.173.145.95:8080";
 
     public static Future<String> getBackendToken(String username, String password) {
         return executorService.submit(() -> {
