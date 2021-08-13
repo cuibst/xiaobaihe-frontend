@@ -13,7 +13,10 @@
         android:theme="@style/Theme.Androidhomework"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".search_activity"
+            android:exported="true"
+            android:name=".search_activity"/>
+        <activity
+            android:name=".EntityActivity"
             android:exported="true" />
         <activity
             android:name=".test"
