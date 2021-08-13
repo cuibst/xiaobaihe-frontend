@@ -159,6 +159,23 @@ public class RequestBuilder {
 
     private static final String BACKEND_ADDRESS = "183.173.145.95:8080";
 
+    public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
+        String id;
+        Future<String> token = getToken();
+        id = token.get();
+        arguments.put("id", id);
+        String builder = BACKEND_ADDRESS +
+                remainUrl +
+                '?' +
+                buildForm(arguments);
+        GetCallable getCallable = new GetCallable(builder, arguments);
+        return executorService.submit(getCallable);
+    }
+
+    public static JSONObject sendBackendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
+        return asyncSendBackendGetRequest(remainUrl, arguments).get();
+    }
+
     public static Future<String> getBackendToken(String username, String password) {
         return executorService.submit(() -> {
             if(backendToken == null) {
