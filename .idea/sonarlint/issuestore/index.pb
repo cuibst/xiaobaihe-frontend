@@ -18,5 +18,3 @@ Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
 v
 Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164

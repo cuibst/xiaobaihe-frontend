@@ -14,12 +14,14 @@
         android:id="@+id/relationName"
         android:ellipsize="none"
         android:singleLine="false"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_gravity="center"/>
     <ImageView
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_weight="1"
-        android:id="@+id/relationPic"/>
+        android:id="@+id/relationPic"
+        android:layout_gravity="center"/>
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -28,5 +30,6 @@
         android:id="@+id/targetName"
         android:ellipsize="none"
         android:singleLine="false"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_gravity="center"/>
 </LinearLayout>

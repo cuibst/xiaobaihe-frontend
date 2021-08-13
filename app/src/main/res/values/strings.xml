@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">android-homework</string>
+    <string name="activity_entity_relation">关系：</string>
+    <string name="activity_entity_property">属性：</string>
 </resources>
