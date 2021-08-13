@@ -17,6 +17,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -54,17 +56,18 @@ public class RequestBuilder {
     }
 
     public static void setConnectionHeader(HttpURLConnection connection, String method, boolean sendJson) throws ProtocolException {
-        System.out.printf("Set connection method : %s, type : %d%n", method, sendJson);
+        System.out.printf("Set connection method : %s, type : %b%n", method, sendJson);
         connection.setRequestMethod(method);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(10000);
-        connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Accept-Language", "zh-CN");
-        connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
-        connection.setDoInput(true);
+        if(method.equals("POST")) {
+            connection.setRequestProperty("Accept", "*/*");
+            connection.setRequestProperty("Accept-Language", "zh-CN");
+            connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", POST_CONTENT_TYPE);
+        }
         connection.setDoOutput(true);
-        if(method.equals("POST"))
-            connection.setRequestProperty("Content-Type", sendJson ? POST_JSON_CONTENT_TYPE : POST_CONTENT_TYPE);
     }
 
     public static String buildForm(Map<String,String> form) {
@@ -113,7 +116,6 @@ public class RequestBuilder {
                         System.out.printf("Reply with : %s%n", response);
                         token = response.get("id").toString();
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(e.getMessage());
@@ -157,6 +159,8 @@ public class RequestBuilder {
 
     private static String backendToken = null;
 
+    private static long expireTime = 0;
+
     private static final String BACKEND_ADDRESS = "183.173.145.95:8080";
 
     public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
@@ -199,6 +203,9 @@ public class RequestBuilder {
                         }
                         JSONObject response = JSON.parseObject(buffer.toString());
                         backendToken = response.get("token").toString();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.add(Calendar.DAY_OF_WEEK, 1);
+                        expireTime = calendar.getTimeInMillis();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -210,8 +217,9 @@ public class RequestBuilder {
     }
 
     public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) throws NullPointerException {
-        if(backendToken == null)
-            throw new NullPointerException("No token specified.");
+        Date date = new Date();
+        if(backendToken == null || date.getTime() > expireTime)
+            throw new NullPointerException("Token expired");
         arguments.put("token", backendToken);
         JsonPostCallable jsonPostCallable = new JsonPostCallable(url, arguments);
         return executorService.submit(jsonPostCallable);
