@@ -8,12 +8,8 @@ c
 3app/src/main/java/com/java/cuiyikai/RcyAdapter.java,0\8\08554a5264722d292d226bc22e178682d1786a4c
 g
 7app/src/main/java/com/java/cuiyikai/Login_Activity.java,9\6\96fbe0e04943167182e82cf3afa29c059091e33c
-o
-?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
 w
 Gapp/src/main/java/com/java/cuiyikai/network/callables/PostCallable.java,b\4\b4c2493714e09b6477b4cf872314e0a5174d9972
-v
-Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6
 {
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
 v

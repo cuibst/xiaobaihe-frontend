@@ -112,9 +112,9 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
      * @return a list of entity with the name given.
      */
     public List<DatabaseEntity> queryEntityByName(String entityName) {
-        String query = String.format("SELECT name, uri, jsonContent FROM %s WHERE name = '%s'", TABLE_NAME, entityName);
+        String query = String.format("SELECT name, uri, jsonContent FROM %s WHERE name = ?", TABLE_NAME);
         ArrayList<DatabaseEntity> results = new ArrayList<>();
-        Cursor cursor = database.rawQuery(query, null);
+        Cursor cursor = database.rawQuery(query, new String[]{entityName});
         while(cursor.moveToNext()) {
             DatabaseEntity databaseEntity = new DatabaseEntity();
             databaseEntity.setName(cursor.getString(0));
