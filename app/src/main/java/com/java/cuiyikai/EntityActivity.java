@@ -16,6 +16,8 @@ import com.java.cuiyikai.entities.RelationEntity;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -355,6 +357,7 @@ public class EntityActivity extends AppCompatActivity {
             System.out.println(entity);
             relationFullList.add(entity);
         }
+        Collections.sort(relationFullList);
         RelationAdapter relationAdapter;
         ListViewForScrollView relationsView = (ListViewForScrollView) findViewById(R.id.relationsView);
         if(relationFullList.size() >= 5) {
@@ -373,6 +376,8 @@ public class EntityActivity extends AppCompatActivity {
         propertyFullList = new ArrayList<>();
         for(JSONObject propertyJson : objectList) {
             PropertyEntity entity = new PropertyEntity();
+            if(propertyJson.getString("object").contains("http"))
+                continue;
             entity.setLabel(propertyJson.getString("predicateLabel"));
             entity.setObject(propertyJson.getString("object"));
             propertyFullList.add(entity);

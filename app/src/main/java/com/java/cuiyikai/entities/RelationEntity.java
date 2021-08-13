@@ -1,6 +1,6 @@
 package com.java.cuiyikai.entities;
 
-public class RelationEntity {
+public class RelationEntity implements Comparable<RelationEntity> {
 
     private String relationName;
 
@@ -37,5 +37,12 @@ public class RelationEntity {
     @Override
     public String toString() {
         return "Name: " + relationName + ", flag: " + subject + ", target:" + targetName;
+    }
+
+    @Override
+    public int compareTo(RelationEntity entity) {
+        if(subject != entity.subject)
+            return subject ? 1 : -1;
+        return 0;
     }
 }
