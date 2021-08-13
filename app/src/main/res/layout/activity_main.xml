@@ -23,14 +23,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:background="#2894FF"
+                android:orientation="horizontal"
                 android:layout_weight="1"
                 android:layout_height="50dp">
-                <EditText
-                    android:layout_margin="5dp"
+                <TextView
+                    android:id="@+id/searchText"
+                    android:layout_margin="3dp"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="42dp"
                     android:background="@drawable/white_radius"
-                    ></EditText>
+                    >
+                </TextView>
             </LinearLayout>
         </LinearLayout>
 
@@ -40,11 +43,6 @@
             android:layout_height="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>
-        <Button
-            android:id="@+id/use_for_test"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-        </Button>
     </LinearLayout>
 
 </ScrollView>
