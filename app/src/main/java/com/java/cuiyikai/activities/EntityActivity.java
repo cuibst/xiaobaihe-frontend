@@ -2,6 +2,7 @@ package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -32,26 +33,28 @@ public class EntityActivity extends AppCompatActivity {
         private boolean extended;
         private final ListViewForScrollView relatedView;
         private final ImageButton relatedButton;
+        private final String subject;
 
         @Override
         public void onClick(View v) {
             if(extended) {
                 relatedButton.setBackgroundResource(R.drawable.pulldown);
                 extended = false;
-                relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, prevList));
+                relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, prevList, subject));
             } else {
                 relatedButton.setBackgroundResource(R.drawable.pullback);
                 extended = true;
-                relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, fullList));
+                relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, fullList, subject));
             }
         }
 
-        public RelationViewOnClickListener(List<RelationEntity> fullList, List<RelationEntity> prevList, boolean extended, ListViewForScrollView relatedView, ImageButton relatedButton) {
+        public RelationViewOnClickListener(List<RelationEntity> fullList, List<RelationEntity> prevList, boolean extended, ListViewForScrollView relatedView, ImageButton relatedButton, final String subject) {
             this.fullList = fullList;
             this.prevList = prevList;
             this.extended = extended;
             this.relatedView = relatedView;
             this.relatedButton = relatedButton;
+            this.subject = subject;
         }
     }
 
@@ -89,8 +92,13 @@ public class EntityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entity);
         ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
         ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
-        String entityName = "李白";
-        String subject = "chinese";
+
+        Intent prevIntent = getIntent();
+
+        Bundle prevBundle = prevIntent.getExtras();
+
+        String entityName = prevBundle.getString("name", "李白");
+        String subject = prevBundle.getString("subject", "chinese");
         JSONObject entityJson;
 
         EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(EntityActivity.this, 1);
@@ -150,12 +158,12 @@ public class EntityActivity extends AppCompatActivity {
         ListViewForScrollView relationsView = (ListViewForScrollView) findViewById(R.id.relationsView);
         if(relationFullList.size() >= 5) {
             relationPrevList = relationFullList.subList(0, 5);
-            relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationPrevList);
+            relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationPrevList, subject);
             relationButton.setBackgroundResource(R.drawable.pulldown);
-            relationButton.setOnClickListener(new RelationViewOnClickListener(relationFullList, relationPrevList, false, relationsView, relationButton));
+            relationButton.setOnClickListener(new RelationViewOnClickListener(relationFullList, relationPrevList, false, relationsView, relationButton, subject));
         } else {
             relationButton.setVisibility(View.GONE);
-            relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationFullList);
+            relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationFullList, subject);
         }
         relationsView.setAdapter(relationAdapter);
 
@@ -183,5 +191,23 @@ public class EntityActivity extends AppCompatActivity {
             propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyFullList);
         }
         propertiesView.setAdapter(propertyAdapter);
+    }
+
+    public class RelationViewItemOnClickListener implements View.OnClickListener {
+        private String name;
+        private String subject;
+
+        public RelationViewItemOnClickListener(String name, String subject) {
+            this.name = name;
+            this.subject = subject;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent f=new Intent(EntityActivity.this,EntityActivity.class);
+            f.putExtra("name",name);
+            f.putExtra("subject",subject);
+            startActivity(f);
+        }
     }
 }

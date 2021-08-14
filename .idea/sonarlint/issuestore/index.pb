@@ -16,8 +16,6 @@ p
 @app/src/main/java/com/java/cuiyikai/entities/PropertyEntity.java,7\f\7f5723bbb8058cbac89f4fcbe30e5c22371141d7
 q
 Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
-q
-Aapp/src/main/java/com/java/cuiyikai/adapters/RelationAdapter.java,f\7\f762971bdcdc186f3a7e9dccc5c7b616e379ae61
 p
 @app/src/main/java/com/java/cuiyikai/entities/RelationEntity.java,1\9\1923b44d9a25ffcc836db52b0005811847c390fd
 <

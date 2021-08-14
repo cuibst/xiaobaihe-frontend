@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_margin="10dp"
-    android:background="@drawable/orange_radius">
+    android:background="@drawable/orange_radius"
+    android:id="@+id/relationItem">
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
