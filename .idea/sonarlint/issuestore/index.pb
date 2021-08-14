@@ -26,5 +26,3 @@ p
 @app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
 v
 Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6
-r
-Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
