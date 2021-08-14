@@ -1,32 +1,25 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.java.cuiyikai.R;
 import com.java.cuiyikai.network.RequestBuilder;
 
-import org.json.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.concurrent.Future;
 
-public class Login_Activity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private Button logInPostBtn;
     private TextView username;
@@ -42,7 +35,7 @@ public class Login_Activity extends AppCompatActivity {
         }
         catch (MalformedURLException e)
         {
-            Toast.makeText(Login_Activity.this,"An error occured when getting url!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"An error occured when getting url!",Toast.LENGTH_SHORT).show();
         }
         finally {
             super.onCreate(savedInstanceState);
@@ -56,7 +49,7 @@ public class Login_Activity extends AppCompatActivity {
             jumpLoginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(Login_Activity.this ,MainActivity.class);
+                    Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
                     startActivity(intent);
                 }
             });
@@ -70,17 +63,19 @@ public class Login_Activity extends AppCompatActivity {
             password = passWord.getText().toString();
 //            new Thread(networkconnection).start();
             try {
-                String info;
-                JSONObject map = new JSONObject();
-                map.put("username", name);
-                map.put("password", password);
-                JSONObject reply=RequestBuilder.sendJsonPostRequest(url.toString(),map);
-                Toast.makeText(Login_Activity.this,reply.toString(), Toast.LENGTH_SHORT).show();
+//                String info;
+//                JSONObject map = new JSONObject();
+//                map.put("username", name);
+//                map.put("password", password);
+//                JSONObject reply=RequestBuilder.sendJsonPostRequest(url.toString(),map);
+                String token = RequestBuilder.getBackendToken(name, password).get();
+                if(token == null)
+                    throw new Exception("Incorrect username or password");
+                Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
             }
-
-
             catch(Exception e)
             {
+                Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }

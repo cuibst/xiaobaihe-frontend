@@ -1,4 +1,4 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.PropertyAdapter;
 import com.java.cuiyikai.adapters.RelationAdapter;
 import com.java.cuiyikai.database.DatabaseEntity;
@@ -19,7 +19,6 @@ import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

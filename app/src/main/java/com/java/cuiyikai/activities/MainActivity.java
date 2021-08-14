@@ -1,27 +1,20 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.java.cuiyikai.R;
+import com.java.cuiyikai.adapters.RcyAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         searchtxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,search_activity.class);
+                Intent intent=new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
             }
         });

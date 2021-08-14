@@ -1,4 +1,4 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.fastjson.JSONArray;
+import com.java.cuiyikai.R;
 
 import java.util.ArrayList;
 import java.util.List;

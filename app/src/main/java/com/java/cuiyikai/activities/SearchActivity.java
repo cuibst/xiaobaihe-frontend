@@ -1,10 +1,12 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.R;
+import com.java.cuiyikai.adapters.SearchAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
 import android.os.Bundle;
 import android.view.View;
@@ -12,12 +14,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class search_activity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
     Spinner spinner;
     RecyclerView search_rcy;
     String chose="chinese";
@@ -34,7 +35,7 @@ public class search_activity extends AppCompatActivity {
         searchtxt=findViewById(R.id.searchText);
 //        txt=findViewById(R.id.showinfo);
         search_rcy=findViewById(R.id.search_rcy);
-        search_rcy.setLayoutManager(new LinearLayoutManager(search_activity.this));
+        search_rcy.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
         btn_for_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +48,7 @@ public class search_activity extends AppCompatActivity {
 //                    msg.put("searchKey",searchtxt.getText().toString());
 //                    System.out.println(msg.getJSONObject("course"));
                     JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                    Search_adapter sadapter=new Search_adapter(search_activity.this);
+                    SearchAdapter sadapter=new SearchAdapter(SearchActivity.this);
                     sadapter.addSubject(msg.getJSONArray("data"));
                     sadapter.addpic(chose);
                     search_rcy.setAdapter(sadapter);

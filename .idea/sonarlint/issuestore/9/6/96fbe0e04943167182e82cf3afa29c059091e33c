@@ -1,22 +1,0 @@
-
-q
-java:S1845#"TRename field "password" to prevent any misunderstanding/clash with field "passWord".(óöò±8»‚ËÌ³/
-C
-java:S1659#"&Declare "password" on a separate line.(óöò±8¼‚ËÌ³/
-}
-java:S1450""[Remove the "jumpLoginBtn" field and declare it as a local variable in the relevant methods.(ãÊÇ•øÿÿÿÿ8½‚ËÌ³/
-x
-java:S1450"[Remove the "logInPostBtn" field and declare it as a local variable in the relevant methods.(¶„´¸8½‚ËÌ³/
->
-java:S1116@"Remove this empty statement.(ôŸìúÿÿÿÿ8Ç‚ËÌ³/
-€
-java:S2142R"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(¼Ôîàùÿÿÿÿ8ì†òÒ³/
-]	java:S125G"<This block of commented-out lines of code should be removed.(€š¨Õıÿÿÿÿ8É‚ËÌ³/
-K
-java:S1481I")Remove this unused "info" local variable.(‘‘”‹üÿÿÿÿ8Ê‚ËÌ³/
-X	java:S125X"<This block of commented-out lines of code should be removed.(ç›ÆÖ8Ñ‚ËÌ³/
-E
-java:S16048"(Make this anonymous inner class a lambda(ˆãÂÇ8Ò‚ËÌ³/
-J
-java:S1604B"(Make this anonymous inner class a lambda(°ˆŸüùÿÿÿÿ8Ó‚ËÌ³/
-i	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(İÇÍš8Ó‚ËÌ³/

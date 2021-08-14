@@ -180,9 +180,17 @@ public class RequestBuilder {
         return asyncSendBackendGetRequest(remainUrl, arguments).get();
     }
 
+    public static boolean checkedLogin() {
+        return backendToken != null;
+    }
+
+    public static void logOut() {
+        backendToken = null;
+    }
+
     public static Future<String> getBackendToken(String username, String password) {
         return executorService.submit(() -> {
-            if(backendToken == null) {
+            if(backendToken == null || new Date().getTime() > expireTime) {
                 try {
                     URL loginUrl = new URL(BACKEND_ADDRESS + "/api/login/");
                     HttpURLConnection connection = (HttpURLConnection) loginUrl.openConnection();
@@ -207,6 +215,8 @@ public class RequestBuilder {
                         calendar.add(Calendar.DAY_OF_WEEK, 1);
                         expireTime = calendar.getTimeInMillis();
                     }
+                    else
+                        return null;
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(e.getMessage());
@@ -216,17 +226,35 @@ public class RequestBuilder {
         });
     }
 
-    public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) throws NullPointerException {
+    public static class BackendTokenExpiredException extends Exception {
+        public BackendTokenExpiredException() {
+            super();
+        }
+
+        public BackendTokenExpiredException(String message) {
+            super(message);
+        }
+
+        public BackendTokenExpiredException(Throwable cause) {
+            super(cause);
+        }
+
+        public BackendTokenExpiredException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) throws BackendTokenExpiredException {
         Date date = new Date();
         if(backendToken == null || date.getTime() > expireTime)
-            throw new NullPointerException("Token expired");
+            throw new BackendTokenExpiredException("Token expired!!");
         arguments.put("token", backendToken);
         JsonPostCallable jsonPostCallable = new JsonPostCallable(url, arguments);
         return executorService.submit(jsonPostCallable);
     }
 
     @Nullable
-    public static JSONObject sendJsonPostRequest(String url, JSONObject arguments) throws InterruptedException, ExecutionException {
+    public static JSONObject sendJsonPostRequest(String url, JSONObject arguments) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
         return asyncSendJsonPostRequest(url, arguments).get();
     }
 }

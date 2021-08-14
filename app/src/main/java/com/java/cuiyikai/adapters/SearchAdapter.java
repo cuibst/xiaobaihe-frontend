@@ -1,23 +1,19 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
+
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.R;
+
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Search_adapter extends RecyclerView.Adapter<Search_adapter.RcyViewHolder> {
-    Search_adapter(Context context)
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.RcyViewHolder> {
+    public SearchAdapter(Context context)
     {
         mContext=context;
     }
@@ -39,9 +35,9 @@ public class Search_adapter extends RecyclerView.Adapter<Search_adapter.RcyViewH
     private Context mContext;
     private String for_pic_chose;
     private ImageView img;
-    public Search_adapter.RcyViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
+    public SearchAdapter.RcyViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
     {
-        return new Search_adapter.RcyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+        return new SearchAdapter.RcyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
     }
     public void addpic(String s)
     {
@@ -56,7 +52,7 @@ public class Search_adapter extends RecyclerView.Adapter<Search_adapter.RcyViewH
 //    }
 
     @Override
-    public void onBindViewHolder(Search_adapter.RcyViewHolder holder, int position)
+    public void onBindViewHolder(SearchAdapter.RcyViewHolder holder, int position)
     {
         holder.labeltxt.setText(subject.getJSONObject(position).get("label").toString());
         switch (for_pic_chose)
