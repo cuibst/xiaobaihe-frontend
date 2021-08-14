@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Try enter entity page...");
                 Intent intent=new Intent(MainActivity.this, EntityActivity.class);
                 startActivity(intent);
             }

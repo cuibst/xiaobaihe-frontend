@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.callables.GetCallable;
 import com.java.cuiyikai.network.callables.JsonPostCallable;
 import com.java.cuiyikai.network.callables.PostCallable;
@@ -224,24 +225,6 @@ public class RequestBuilder {
             }
             return backendToken;
         });
-    }
-
-    public static class BackendTokenExpiredException extends Exception {
-        public BackendTokenExpiredException() {
-            super();
-        }
-
-        public BackendTokenExpiredException(String message) {
-            super(message);
-        }
-
-        public BackendTokenExpiredException(Throwable cause) {
-            super(cause);
-        }
-
-        public BackendTokenExpiredException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
 
     public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) throws BackendTokenExpiredException {

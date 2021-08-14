@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.exceptions.AuthorizeFaliedException;
 import com.java.cuiyikai.network.RequestBuilder;
 
 import com.alibaba.fastjson.JSONObject;
@@ -70,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 //                JSONObject reply=RequestBuilder.sendJsonPostRequest(url.toString(),map);
                 String token = RequestBuilder.getBackendToken(name, password).get();
                 if(token == null)
-                    throw new Exception("Incorrect username or password");
+                    throw new AuthorizeFaliedException("Incorrect username or password");
                 Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
             }
             catch(Exception e)
