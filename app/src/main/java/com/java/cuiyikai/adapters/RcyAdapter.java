@@ -1,4 +1,4 @@
-package com.java.cuiyikai;
+package com.java.cuiyikai.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.java.cuiyikai.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,8 @@ public class RcyAdapter extends RecyclerView.Adapter<RcyAdapter.RcyViewHolder> {
             tview=view.findViewById(R.id.t1);
         }
     }
+
+
     private Context mContext;
     List<String> subject;
     public RcyAdapter(Context context) {
@@ -41,7 +45,6 @@ public class RcyAdapter extends RecyclerView.Adapter<RcyAdapter.RcyViewHolder> {
     @Override
     public  RcyViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
     {
-
         return new RcyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_linear_item,parent,false));
     }
 
