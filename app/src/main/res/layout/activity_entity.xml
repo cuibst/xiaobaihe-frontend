@@ -46,5 +46,20 @@
             android:background="@drawable/white_radius"
             android:id="@+id/propertyButton"
             android:layout_gravity="center"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_entity_relate_problems"
+            android:textSize="20sp"/>
+        <com.java.cuiyikai.widgets.ListViewForScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/problemsView"/>
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_radius"
+            android:id="@+id/problemButton"
+            android:layout_gravity="center"/>
     </LinearLayout>
 </ScrollView>

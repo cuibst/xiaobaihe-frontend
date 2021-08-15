@@ -3,13 +3,16 @@ package com.java.cuiyikai.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.adapters.ProblemAdapter;
 import com.java.cuiyikai.adapters.PropertyAdapter;
 import com.java.cuiyikai.adapters.RelationAdapter;
 import com.java.cuiyikai.database.DatabaseEntity;
@@ -24,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 public class EntityActivity extends AppCompatActivity {
@@ -86,12 +90,41 @@ public class EntityActivity extends AppCompatActivity {
         }
     }
 
+    private class ProblemViewOnClickListener implements View.OnClickListener {
+        private final List<JSONObject> fullList, prevList;
+        private boolean extended;
+        private final ListViewForScrollView problemView;
+        private final ImageButton problemButton;
+
+        @Override
+        public void onClick(View v) {
+            if(extended) {
+                problemButton.setBackgroundResource(R.drawable.pulldown);
+                extended = false;
+                problemView.setAdapter(new ProblemAdapter(EntityActivity.this, R.layout.problem_item, prevList));
+            } else {
+                problemButton.setBackgroundResource(R.drawable.pullback);
+                extended = true;
+                problemView.setAdapter(new ProblemAdapter(EntityActivity.this, R.layout.problem_item, fullList));
+            }
+        }
+
+        public ProblemViewOnClickListener(List<JSONObject> fullList, List<JSONObject> prevList, boolean extended, ListViewForScrollView propertyView, ImageButton propertyButton) {
+            this.fullList = fullList;
+            this.prevList = prevList;
+            this.extended = extended;
+            this.problemView = propertyView;
+            this.problemButton = propertyButton;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entity);
         ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
         ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
+        ImageButton problemButton  = (ImageButton) findViewById(R.id.problemButton);
 
         Intent prevIntent = getIntent();
 
@@ -191,6 +224,32 @@ public class EntityActivity extends AppCompatActivity {
             propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyFullList);
         }
         propertiesView.setAdapter(propertyAdapter);
+
+        Map<String, String> args = new HashMap<>();
+        args.put("uriName", entityName);
+
+        JSONObject problems = new JSONObject();
+        try {
+            problems = RequestBuilder.sendGetRequest("typeOpen/open/questionListByUriName", args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<JSONObject> questionList = problems.getJSONArray("data").toJavaList(JSONObject.class);
+
+        ProblemAdapter problemAdapter;
+        ListViewForScrollView problemsView = (ListViewForScrollView) findViewById(R.id.problemsView);
+        if(questionList.size() >= 5) {
+            List<JSONObject> questionPrevList = questionList.subList(0, 5);
+            problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionPrevList);
+            problemButton.setBackgroundResource(R.drawable.pulldown);
+            problemButton.setOnClickListener(new ProblemViewOnClickListener(questionList, questionPrevList, false, problemsView, problemButton));
+        } else {
+            problemButton.setVisibility(View.GONE);
+            problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionList);
+        }
+        problemsView.setAdapter(problemAdapter);
+
     }
 
     public class RelationViewItemOnClickListener implements View.OnClickListener {
