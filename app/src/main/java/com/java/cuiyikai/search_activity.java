@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,11 +28,14 @@ import java.util.Map;
 
 public class search_activity extends AppCompatActivity {
     Spinner spinner;
-    RecyclerView search_rcy;
+//    RecyclerView search_rcy;
     String chose="chinese";
+    String choose="chinese";
+    private XRecyclerView search_rcy;
     private Button btn_for_search;
     private EditText searchtxt;
     private String name;
+    private Search_adapter sadapter;
     String search_url="typeOpen/open/instanceList";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +46,16 @@ public class search_activity extends AppCompatActivity {
         searchtxt=findViewById(R.id.searchText);
         search_rcy=findViewById(R.id.search_rcy);
         search_rcy.setLayoutManager(new LinearLayoutManager(search_activity.this));
-        btn_for_search.setOnClickListener(new View.OnClickListener() {
+        search_rcy.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
-            public void onClick(View view) {
-                Map<String,String> map =new HashMap<String,String>();
-                map.put("course", chose);
-                name=searchtxt.getText().toString();
-                map.put("searchKey",searchtxt.getText().toString());
+            public void onRefresh() {
+                sadapter.cleararray();
                 try {
+                    Map<String,String> map =new HashMap<String,String>();
+                    map.put("course", chose);
+                    map.put("searchKey",name);
                     JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                    Search_adapter sadapter=new Search_adapter(search_activity.this);
+                    sadapter=new Search_adapter(search_activity.this);
                     sadapter.addSubject(msg.getJSONArray("data"));
                     sadapter.addpic(chose);
                     search_rcy.setAdapter(sadapter);
@@ -60,6 +64,34 @@ public class search_activity extends AppCompatActivity {
                 {
                     System.out.println(e);
                 }
+                search_rcy.refreshComplete();
+            }
+
+            @Override
+            public void onLoadMore() {
+
+            }
+        });
+        btn_for_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                choose=chose;
+                Map<String,String> map =new HashMap<String,String>();
+                map.put("course", choose);
+                name=searchtxt.getText().toString();
+                map.put("searchKey",searchtxt.getText().toString());
+                try {
+                    JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+                    sadapter=new Search_adapter(search_activity.this);
+                    sadapter.addSubject(msg.getJSONArray("data"));
+                    sadapter.addpic(choose);
+                    search_rcy.setAdapter(sadapter);
+                }
+                catch (Exception e)
+                {
+                    System.out.println(e);
+                }
+                search_rcy.refreshComplete();
             }
         });
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
@@ -103,7 +135,6 @@ public class search_activity extends AppCompatActivity {
                 {
                     chose="biology";
                 }
-                System.out.println(chose);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent)
@@ -131,7 +162,7 @@ public class search_activity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent f=new Intent(search_activity.this,EntityActivity.class);
-                        f.putExtra("name",name);
+                        f.putExtra("name",labeltxt.getText());
                         f.putExtra("subject",chose);
                         startActivity(f);
                     }
@@ -141,6 +172,7 @@ public class search_activity extends AppCompatActivity {
         public void addSubject(JSONArray arr) {
             subject=arr;
         }
+
         private JSONArray subject=new JSONArray();
         private Context mContext;
         private LinearLayout searchline;
@@ -153,6 +185,10 @@ public class search_activity extends AppCompatActivity {
         public void addpic(String s)
         {
             for_pic_chose=s;
+        }
+        public void cleararray()
+        {
+            subject.clear();
         }
         //    @Override
 //    public int getItemViewType(int position) {
