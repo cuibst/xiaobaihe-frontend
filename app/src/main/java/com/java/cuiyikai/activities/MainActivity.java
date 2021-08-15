@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.RcyAdapter;
+import com.xuexiang.xui.XUI;
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     AdapterView.OnItemSelectedListener a;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        XUI.init(this.getApplication());
+        XUI.debug(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Drawable searchimg=getResources().getDrawable(R.drawable.search);

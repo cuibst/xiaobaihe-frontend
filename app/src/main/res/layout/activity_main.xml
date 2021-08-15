@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     tools:context=".activities.MainActivity">
     <LinearLayout
@@ -43,6 +44,15 @@
             android:layout_height="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>
+
+        <com.xuexiang.xui.widget.flowlayout.FlowTagLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_margin="10dp"
+            app:ftl_check_mode="multi"
+            app:ftl_entries="@array/subject"
+            app:ftl_selecteds="@array/subject" />
     </LinearLayout>
+
 
 </ScrollView>
