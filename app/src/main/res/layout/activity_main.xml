@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".activities.MainActivity">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        >
         <LinearLayout
+            android:id="@+id/searchline"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="55dp"
             android:orientation="horizontal">
             <Button
                 android:id="@+id/btn_for_login"
@@ -37,22 +38,42 @@
                 </TextView>
             </LinearLayout>
         </LinearLayout>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rcy_1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcy_1"
+<!--        </androidx.recyclerview.widget.RecyclerView>-->
+
+<!--        <ScrollView-->
+<!--            android:id="@+id/scrollline"-->
+<!--            android:layout_below="@id/searchline"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/scrollline1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal">-->
+<!--        </LinearLayout>-->
+<!--        </ScrollView>-->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayout1"
+            android:layout_below="@id/searchline"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            app:tabIndicatorColor="@color/black"
+            android:background="@drawable/orange_radius"
+            app:tabSelectedTextColor="@color/purple_500"
+            android:layout_height="40dp">
+        </com.google.android.material.tabs.TabLayout>
+        <androidx.viewpager.widget.ViewPager
+                android:layout_below="@id/tablayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewpgr1">
+            </androidx.viewpager.widget.ViewPager>
 
-        </androidx.recyclerview.widget.RecyclerView>
 
-        <com.xuexiang.xui.widget.flowlayout.FlowTagLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_margin="10dp"
-            app:ftl_check_mode="multi"
-            app:ftl_entries="@array/subject"
-            app:ftl_selecteds="@array/subject" />
-    </LinearLayout>
+    </RelativeLayout>
 
-
-</ScrollView>
+</LinearLayout>

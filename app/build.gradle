@@ -28,7 +28,8 @@ android {
 }
 
 dependencies {
-
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.jcodecraeer:xrecyclerview:1.5.9'
     implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.78'
     implementation 'com.wkp:ExpandView:1.0.4'
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -38,7 +39,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.github.xuexiangjys:XUI:1.1.8'
-
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 }
