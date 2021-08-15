@@ -32,6 +32,7 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog;
 import android.widget.LinearLayout;
 
 import com.google.android.material.tabs.TabLayout;
+import com.xuexiang.xui.widget.tabbar.EasyIndicator;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -48,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView searchtxt;
     private ViewPager viewpgr;
     private LinearLayout mLinearLayout;
-    private TabLayout tabLayout;
+    private EasyIndicator mEasyIndicator;
+    private AdapterView mAdaptView;
+//    private TabLayout tabLayout;
     String searchcontent;
     AdapterView.OnItemSelectedListener a;
     @Override
@@ -95,11 +98,12 @@ public class MainActivity extends AppCompatActivity {
     public void init(){
 //        mLinearLayout=findViewById(R.id.scrollline1);
         searchtxt=findViewById(R.id.searchText);
-        tabLayout=findViewById(R.id.tablayout1);
+//        tabLayout=findViewById(R.id.easy_indicator);
+        mEasyIndicator = findViewById(R.id.easy_indicator);
         btnForLogIn=findViewById(R.id.btn_for_login);
         viewpgr=findViewById(R.id.viewpgr1);
         initViewPager();
-        tabLayout.setupWithViewPager(viewpgr);
+//        tabLayout.setupWithViewPager(viewpgr);
     }
     private void initViewPager()
     {
@@ -121,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 return item[position];
             }
         });
+        mEasyIndicator.setTabTitles(item);
+        mEasyIndicator.setViewPager(viewpgr, viewpgr.getAdapter());
+
     }
     /*public void updatelist()
     {
