@@ -41,6 +41,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private String[] item={"推荐","语文","数学","英语","物理","化学","生物","历史","地理","政治"};
+//    private String[]
     public List<String> radiolist=new ArrayList<String>();
     private List<Fragment> fragments=new ArrayList<>();
     private List<String> fragmentTitles=new ArrayList<>();
@@ -49,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView searchtxt;
     private ViewPager viewpgr;
     private LinearLayout mLinearLayout;
-    private EasyIndicator mEasyIndicator;
+//    private EasyIndicator mEasyIndicator;
     private AdapterView mAdaptView;
-//    private TabLayout tabLayout;
+    private TabLayout tabLayout;
     String searchcontent;
     AdapterView.OnItemSelectedListener a;
     @Override
@@ -98,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
     public void init(){
 //        mLinearLayout=findViewById(R.id.scrollline1);
         searchtxt=findViewById(R.id.searchText);
-//        tabLayout=findViewById(R.id.easy_indicator);
-        mEasyIndicator = findViewById(R.id.easy_indicator);
+        tabLayout=findViewById(R.id.tablayout1);
+//        mEasyIndicator = findViewById(R.id.easy_indicator);
         btnForLogIn=findViewById(R.id.btn_for_login);
         viewpgr=findViewById(R.id.viewpgr1);
         initViewPager();
-//        tabLayout.setupWithViewPager(viewpgr);
+        tabLayout.setupWithViewPager(viewpgr);
     }
     private void initViewPager()
     {
@@ -125,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 return item[position];
             }
         });
-        mEasyIndicator.setTabTitles(item);
-        mEasyIndicator.setViewPager(viewpgr, viewpgr.getAdapter());
+//        mEasyIndicator.setTabTitles(item);
+//        mEasyIndicator.setViewPager(viewpgr, viewpgr.getAdapter());
 
     }
     /*public void updatelist()
