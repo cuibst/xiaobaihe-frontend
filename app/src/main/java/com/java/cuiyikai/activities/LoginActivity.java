@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         finally {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
-            radioButton = (RadioButton) findViewById(R.id.remember_password);
             logInPostBtn = findViewById(R.id.btn_login);
             jumpLoginBtn = findViewById(R.id.btn_skip);
             username = (EditText) findViewById(R.id.edittext_username);
@@ -57,18 +56,13 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view){
-
-                }
 //                public void toggle() {
 //                    radioButton.setChecked(!radioButton.isChecked());
 //                    if (!radioButton.isChecked()) {
 //                        ((RadioGroup)radioButton.getParent()).clearCheck();
 //                    }
 //                }
-            });
+//            });
         }
     };
 

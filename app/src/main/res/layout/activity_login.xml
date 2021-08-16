@@ -142,16 +142,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <RadioButton
+        <CheckBox
             android:id="@+id/remember_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="记住密码"
-            />
+            android:layout_marginLeft="42dp"
+            android:checked="false" />
+<!--        <RadioButton-->
+<!--            android:id="@+id/remember_password"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="25dp"/>-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="记住密码"-->
+<!--            />-->
 
         <TextView
             android:layout_width="wrap_content"
