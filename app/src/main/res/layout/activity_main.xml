@@ -66,22 +66,42 @@
 <!--            app:tabSelectedTextColor="@color/purple_500"-->
 <!--            android:layout_height="40dp">-->
 <!--        </com.google.android.material.tabs.TabLayout>-->
+        <RelativeLayout
+            android:id="@+id/relate_1"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/searchline">
         <com.xuexiang.xui.widget.tabbar.EasyIndicator
             android:id="@+id/easy_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/searchline"
             app:indicator_line_show="true"
             app:indicator_line_color="#0088FF"
             app:indicator_height="42dp"
-            app:indicator_textSize="14sp"
-            app:indicator_width="0dp" />
+            app:indicator_textSize="13sp"
+            app:indicator_width="0dp"
+            android:layout_toLeftOf="@+id/tab_add"/>
+
+        <ImageView
+            android:id="@+id/tab_add"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/add_channel"
+            />
+        </RelativeLayout>
         <androidx.viewpager.widget.ViewPager
-                android:layout_below="@id/easy_indicator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/viewpgr1">
-            </androidx.viewpager.widget.ViewPager>
+            android:id="@+id/viewpgr1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relate_1"
+            android:layout_marginTop="-2dp">
+
+        </androidx.viewpager.widget.ViewPager>
+
+
 
 
 
