@@ -29,8 +29,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView username;
     private TextView passWord;
     private Button jumpLoginBtn;
-    private RadioButton radioButton;
+//    private RadioButton radioButton;
     private CheckBox checkBox;
+    private TextView registerButton;
     String name, password;
     URL url;
 
@@ -51,7 +52,16 @@ public class LoginActivity extends AppCompatActivity {
             checkBox = findViewById(R.id.remember_password);
             username = (EditText) findViewById(R.id.edittext_username);
             passWord = (EditText) findViewById(R.id.edittext_password);
+            registerButton = findViewById(R.id.tv_register);
+            registerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(intent);
+                }
+            });
             logInPostBtn.setOnClickListener(mPostClickListener);
+
             jumpLoginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -59,13 +69,6 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-//                public void toggle() {
-//                    radioButton.setChecked(!radioButton.isChecked());
-//                    if (!radioButton.isChecked()) {
-//                        ((RadioGroup)radioButton.getParent()).clearCheck();
-//                    }
-//                }
-//            });
         }
     };
 
