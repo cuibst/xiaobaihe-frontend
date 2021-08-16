@@ -20,54 +20,6 @@
             android:layout_marginTop="80dp"
             android:src="@drawable/login" />
     </LinearLayout>
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        >-->
-
-<!--        <TextView-->
-<!--            android:layout_marginTop="6dp"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="40dp"-->
-<!--            android:layout_marginLeft="25dp"-->
-<!--            android:text="用户名"-->
-<!--            android:textSize="20sp" />-->
-
-<!--        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText-->
-<!--            android:id="@+id/edittext_username"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="100dp"-->
-<!--            android:hint="@string/hint_username"-->
-<!--            app:met_baseColor="#787878"-->
-<!--            app:met_clearButton="true"-->
-<!--            app:met_floatingLabelPadding="0dp"-->
-<!--            app:met_underlineColor="#787878" />-->
-<!--    </LinearLayout>-->
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_marginTop="10dp">-->
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="密码"-->
-<!--            android:textSize="20dp"-->
-<!--            android:layout_marginLeft="50dp"-->
-<!--            android:layout_marginRight="35dp"/>-->
-<!--        <com.xuexiang.xui.widget.edittext.PasswordEditText-->
-<!--            android:id="@+id/edittext_password"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="@string/hint_password"-->
-<!--            android:layout_marginRight="100dp"-->
-<!--            />-->
-
-<!--    </LinearLayout>-->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

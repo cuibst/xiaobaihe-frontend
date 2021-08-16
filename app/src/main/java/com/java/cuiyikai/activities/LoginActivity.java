@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView passWord;
     private Button jumpLoginBtn;
     private RadioButton radioButton;
+    private CheckBox checkBox;
     String name, password;
     URL url;
 
@@ -46,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
             setContentView(R.layout.activity_login);
             logInPostBtn = findViewById(R.id.btn_login);
             jumpLoginBtn = findViewById(R.id.btn_skip);
+            checkBox = findViewById(R.id.remember_password);
             username = (EditText) findViewById(R.id.edittext_username);
             passWord = (EditText) findViewById(R.id.edittext_password);
             logInPostBtn.setOnClickListener(mPostClickListener);
