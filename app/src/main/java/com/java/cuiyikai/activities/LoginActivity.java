@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView username;
     private TextView passWord;
     private Button jumpLoginBtn;
+    private RadioButton radioButton;
     String name, password;
     URL url;
 
@@ -41,11 +44,11 @@ public class LoginActivity extends AppCompatActivity {
         finally {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
-
-            logInPostBtn = findViewById(R.id.btn1);
-            jumpLoginBtn = findViewById(R.id.btn2);
-            username = (EditText) findViewById(R.id.username);
-            passWord = (EditText) findViewById(R.id.password);
+            radioButton = (RadioButton) findViewById(R.id.remember_password);
+            logInPostBtn = findViewById(R.id.btn_login);
+            jumpLoginBtn = findViewById(R.id.btn_skip);
+            username = (EditText) findViewById(R.id.edittext_username);
+            passWord = (EditText) findViewById(R.id.edittext_password);
             logInPostBtn.setOnClickListener(mPostClickListener);
             jumpLoginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -53,6 +56,18 @@ public class LoginActivity extends AppCompatActivity {
                     Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
                     startActivity(intent);
                 }
+            });
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view){
+
+                }
+//                public void toggle() {
+//                    radioButton.setChecked(!radioButton.isChecked());
+//                    if (!radioButton.isChecked()) {
+//                        ((RadioGroup)radioButton.getParent()).clearCheck();
+//                    }
+//                }
             });
         }
     };
