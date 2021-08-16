@@ -83,7 +83,8 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 "name VARCHAR NOT NULL," +
                 "uri VARCHAR NOT NULL," +
-                "jsonContent VARCHAR NOT NULL);";
+                "jsonContent VARCHAR NOT NULL," +
+                "problemsJson VARCHAR NOT NULL);";
         db.execSQL(createTable);
     }
 
@@ -102,6 +103,7 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("name", databaseEntity.getName());
         contentValues.put("uri", databaseEntity.getUri());
         contentValues.put("jsonContent", databaseEntity.getJsonContent());
+        contentValues.put("problemsJson", databaseEntity.getProblemsJson());
         return database.insert(TABLE_NAME, null, contentValues);
     }
 
@@ -112,7 +114,7 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
      * @return a list of entity with the name given.
      */
     public List<DatabaseEntity> queryEntityByName(String entityName) {
-        String query = String.format("SELECT name, uri, jsonContent FROM %s WHERE name = ?", TABLE_NAME);
+        String query = String.format("SELECT name, uri, jsonContent, problemsJson FROM %s WHERE name = ?", TABLE_NAME);
         ArrayList<DatabaseEntity> results = new ArrayList<>();
         Cursor cursor = database.rawQuery(query, new String[]{entityName});
         while(cursor.moveToNext()) {
@@ -120,6 +122,7 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
             databaseEntity.setName(cursor.getString(0));
             databaseEntity.setUri(cursor.getString(1));
             databaseEntity.setJsonContent(cursor.getString(2));
+            databaseEntity.setProblemsJson(cursor.getString(3));
             results.add(databaseEntity);
         }
         cursor.close();
