@@ -49,11 +49,18 @@
 <!--        android:layout_height="match_parent"-->
 <!--        android:layout_below="@id/lin1"-->
 <!--        ></TextView>-->
-    <androidx.recyclerview.widget.RecyclerView
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/search_rcy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/lin1">
-    </androidx.recyclerview.widget.RecyclerView>
+        
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/search_rcy"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@id/lin1">-->
+<!--    </androidx.recyclerview.widget.RecyclerView>-->
 
 </RelativeLayout>
