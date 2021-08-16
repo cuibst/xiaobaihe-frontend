@@ -116,9 +116,10 @@
             android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:layout_marginLeft="140dp"
-            android:text="新用户注册" />
+            android:clickable="true"
+            android:text="新用户注册"
+            android:textColor="@drawable/selector_pressed_text" />
     </LinearLayout>
 
 </LinearLayout>
