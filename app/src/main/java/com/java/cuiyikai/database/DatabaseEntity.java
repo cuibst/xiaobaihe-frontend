@@ -4,6 +4,7 @@ public class DatabaseEntity {
     private String name;
     private String uri;
     private String jsonContent;
+    private String problemsJson;
 
     public String getName() {
         return name;
@@ -27,5 +28,13 @@ public class DatabaseEntity {
 
     public void setJsonContent(String jsonContent) {
         this.jsonContent = jsonContent;
+    }
+
+    public String getProblemsJson() {
+        return problemsJson;
+    }
+
+    public void setProblemsJson(String problemsJson) {
+        this.problemsJson = problemsJson;
     }
 }

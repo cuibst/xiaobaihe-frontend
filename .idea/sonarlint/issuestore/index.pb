@@ -13,7 +13,3 @@ q
 Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
 p
 @app/src/main/java/com/java/cuiyikai/entities/RelationEntity.java,1\9\1923b44d9a25ffcc836db52b0005811847c390fd
-p
-@app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
-v
-Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6

@@ -3,13 +3,12 @@ package com.java.cuiyikai.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.ProblemAdapter;
@@ -24,10 +23,10 @@ import com.java.cuiyikai.widgets.ListViewForScrollView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 
 public class EntityActivity extends AppCompatActivity {
@@ -122,6 +121,11 @@ public class EntityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entity);
+
+        Date start = new Date();
+
+        System.out.println("Loading start!!");
+
         ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
         ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
         ImageButton problemButton  = (ImageButton) findViewById(R.id.problemButton);
@@ -138,8 +142,17 @@ public class EntityActivity extends AppCompatActivity {
         helper.openReadLink();
         List<DatabaseEntity> entityList = helper.queryEntityByName(entityName);
         helper.closeLink();
-        if(!entityList.isEmpty())
+
+        Date now = new Date();
+
+        System.out.printf("Database checked: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+        JSONObject problems = new JSONObject();
+
+        if(!entityList.isEmpty()) {
             entityJson = JSONObject.parseObject(entityList.get(0).getJsonContent());
+            problems = JSON.parseObject(entityList.get(0).getProblemsJson());
+        }
         else {
 
             System.out.println("No matches in database!!");
@@ -159,14 +172,26 @@ public class EntityActivity extends AppCompatActivity {
 
             entityJson = reply.getJSONObject("data");
 
+            Map<String, String> args = new HashMap<>();
+            args.put("uriName", entityName);
+
+            try {
+                problems = RequestBuilder.sendGetRequest("typeOpen/open/questionListByUriName", args);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             helper.openWriteLink();
             DatabaseEntity databaseEntity = new DatabaseEntity();
             databaseEntity.setName(entityName);
             databaseEntity.setJsonContent(entityJson.toJSONString());
             databaseEntity.setUri("123");
+            databaseEntity.setProblemsJson(problems == null ? "" : problems.toJSONString());
             helper.insert(databaseEntity, "1=1");
             helper.closeLink();
         }
+
+        System.out.printf("load finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
 
         TextView titleView = (TextView) findViewById(R.id.entityTitle);
         titleView.setText(entityName);
@@ -209,6 +234,7 @@ public class EntityActivity extends AppCompatActivity {
                 continue;
             entity.setLabel(propertyJson.getString("predicateLabel"));
             entity.setObject(propertyJson.getString("object"));
+
             propertyFullList.add(entity);
         }
 
@@ -225,17 +251,11 @@ public class EntityActivity extends AppCompatActivity {
         }
         propertiesView.setAdapter(propertyAdapter);
 
-        Map<String, String> args = new HashMap<>();
-        args.put("uriName", entityName);
-
-        JSONObject problems = new JSONObject();
-        try {
-            problems = RequestBuilder.sendGetRequest("typeOpen/open/questionListByUriName", args);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.printf("Handling problems: %f%n", (new Date().getTime()-start.getTime())/1000.0);
 
         List<JSONObject> questionList = problems.getJSONArray("data").toJavaList(JSONObject.class);
+
+        System.out.printf("request finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
 
         ProblemAdapter problemAdapter;
         ListViewForScrollView problemsView = (ListViewForScrollView) findViewById(R.id.problemsView);
@@ -249,6 +269,8 @@ public class EntityActivity extends AppCompatActivity {
             problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionList);
         }
         problemsView.setAdapter(problemAdapter);
+
+        System.out.printf("Done: %f%n", (new Date().getTime()-start.getTime())/1000.0);
 
     }
 
