@@ -13,3 +13,11 @@ q
 Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
 p
 @app/src/main/java/com/java/cuiyikai/entities/RelationEntity.java,1\9\1923b44d9a25ffcc836db52b0005811847c390fd
+o
+?app/src/main/java/com/java/cuiyikai/adapters/OptionAdapter.java,6\e\6ee12cb93c8b1d7e5236120981704b003583f566
+q
+Aapp/src/main/java/com/java/cuiyikai/adapters/RelationAdapter.java,f\7\f762971bdcdc186f3a7e9dccc5c7b616e379ae61
+p
+@app/src/main/java/com/java/cuiyikai/adapters/ProblemAdapter.java,0\a\0a1e353cb43b49942b46b48d8c20aa75545f0b8c
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
