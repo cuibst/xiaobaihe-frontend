@@ -19,4 +19,30 @@
         android:layout_height="wrap_content"
         android:id="@+id/problem_options"
         android:layout_margin="20dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fill_blank"
+        android:layout_margin="10dp">
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_weight="6"
+            android:id="@+id/answer_input"
+            android:hint="@string/answer_input_hint"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/orange_radius"
+            android:text="@string/submit"
+            android:textSize="15sp"
+            android:id="@+id/submit_ans"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/answer_image"/>
+    </LinearLayout>
 </LinearLayout>
