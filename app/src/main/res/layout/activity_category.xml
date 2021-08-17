@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CategoryActivity"
+    android:orientation="vertical">
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/x"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="我的频道"
+            android:layout_marginLeft="40dp"
+
+            android:textSize="23sp"
+            android:textColor="#000000"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="#CD5C5C"
+            android:text="编辑"
+            android:layout_marginRight="15dp"
+            android:textSize="23dp"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subject_selected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="locale"
+        android:nestedScrollingEnabled="false"
+        tools:ignore="DuplicateIds" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="推荐频道"
+            android:layout_marginLeft="40dp"
+
+            android:textSize="23sp"
+            android:textColor="#000000"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subject_not_selected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="locale"
+        android:nestedScrollingEnabled="false"
+        />
+
+
+</LinearLayout>

@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidhomework"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.RegisterActivity"></activity>
+        <activity android:name=".activities.CategoryActivity"></activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.ProblemActivity"
             android:exported="true" />
