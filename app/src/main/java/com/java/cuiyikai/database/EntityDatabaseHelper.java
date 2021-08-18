@@ -98,7 +98,7 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
      * @param condition database condition arguments.
      * @return the number of entities being updated.
      */
-    public long insert(DatabaseEntity databaseEntity, String condition) {
+    public long insert(DatabaseEntity databaseEntity) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", databaseEntity.getName());
         contentValues.put("uri", databaseEntity.getUri());

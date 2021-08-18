@@ -187,7 +187,7 @@ public class EntityActivity extends AppCompatActivity {
             databaseEntity.setJsonContent(entityJson.toJSONString());
             databaseEntity.setUri("123");
             databaseEntity.setProblemsJson(problems == null ? "" : problems.toJSONString());
-            helper.insert(databaseEntity, "1=1");
+            helper.insert(databaseEntity);
             helper.closeLink();
         }
 
