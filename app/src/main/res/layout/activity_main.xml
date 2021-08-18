@@ -14,7 +14,7 @@
         <LinearLayout
             android:id="@+id/searchline"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="50dp"
             android:orientation="horizontal">
             <Button
                 android:id="@+id/btn_for_login"
@@ -69,9 +69,9 @@
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tablayout1"
                 android:layout_width="match_parent"
-                app:tabIndicatorColor="@color/black"
+                app:tabIndicatorColor="@color/purple_200"
                 android:background="@drawable/orange_radius"
-                app:tabSelectedTextColor="@color/purple_500"
+                app:tabSelectedTextColor="@color/purple_200"
                 android:layout_height="40dp"
                 app:tabMode="scrollable"
                 android:layout_toLeftOf="@+id/tab_add">
@@ -81,11 +81,12 @@
 
             <ImageView
                 android:id="@+id/tab_add"
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/add_channel"
+                android:background="#FFFFFF"
+                android:src="@drawable/tab_extra"
                 />
         </RelativeLayout>
 
@@ -146,6 +147,22 @@
             app:textColorNormal="#515051"
             app:textColorSelected="#D33D3C"
             app:openTouchBg="true"/>
+
+        <com.chaychan.library.BottomBarItem
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:iconHeight="31dp"
+            app:iconNormal="@drawable/knowledge"
+            app:iconSelected="@drawable/knowledge_selected"
+            app:iconWidth="31dp"
+            app:itemText="知识点"
+            app:itemTextSize="8sp"
+            app:openTouchBg="true"
+            app:textColorNormal="#515051"
+            app:textColorSelected="#D33D3C"
+            app:touchDrawable="@drawable/selector_bottom_tab" />
+
         <com.chaychan.library.BottomBarItem
             android:layout_width="0dp"
             android:layout_height="match_parent"

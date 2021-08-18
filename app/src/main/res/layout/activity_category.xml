@@ -30,6 +30,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
         <TextView
+            android:id="@+id/edit_event"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="#CD5C5C"
@@ -38,13 +39,18 @@
             android:textSize="23dp"
             android:layout_gravity="center_horizontal"/>
     </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/subject_selected"
+    <GridView
+        android:id="@+id/user_gv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutDirection="locale"
-        android:nestedScrollingEnabled="false"
-        tools:ignore="DuplicateIds" />
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:gravity="center"
+        android:numColumns="4"
+        android:verticalSpacing="14dp"
+        android:scrollbars="vertical"
+        android:stretchMode="columnWidth"
+        android:horizontalSpacing="14dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,13 +69,18 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
     </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/subject_not_selected"
+    <GridView
+        android:id="@+id/other_gv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutDirection="locale"
-        android:nestedScrollingEnabled="false"
-        />
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:gravity="center"
+        android:numColumns="4"
+        android:scrollbars="vertical"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="14dp"
+        android:horizontalSpacing="14dp"/>
 
 
 </LinearLayout>

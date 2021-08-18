@@ -7,4 +7,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="text_color_normal">#ff454545</color>
+    <color name="text_color_pressed">#ffcc3131</color>
+    <color name="selected_bg">#FFFFFF</color>
+    <color name="selected_stroke">#ffcc3131</color>
+    <color name="disabled_bg">#ffefefef</color>
+    <color name="disabled_stroke">#ffcdcdcd</color>
+    <color name="normal_bg">#fff5f5f5</color>
+    <color name="normal_stroke">#ffcdcdcd</color>
+    <color name="common_bg">#ffd2d2d2</color>
+    <color name="common_stroke">#fff5f5f5</color>
+    <color name="pressed_bg">#ffcdcdcd</color>
+    <color name="pressed_stroke">#ff3e3e3e</color>
 </resources>
