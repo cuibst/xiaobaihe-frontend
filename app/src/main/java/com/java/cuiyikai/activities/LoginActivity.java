@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView username;
     private TextView passWord;
     private Button jumpLoginBtn;
+//    private RadioButton radioButton;
+    private CheckBox checkBox;
+    private TextView registerButton;
     String name, password;
     URL url;
 
@@ -41,12 +47,21 @@ public class LoginActivity extends AppCompatActivity {
         finally {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
-
-            logInPostBtn = findViewById(R.id.btn1);
-            jumpLoginBtn = findViewById(R.id.btn2);
-            username = (EditText) findViewById(R.id.username);
-            passWord = (EditText) findViewById(R.id.password);
+            logInPostBtn = findViewById(R.id.btn_login);
+            jumpLoginBtn = findViewById(R.id.btn_skip);
+            checkBox = findViewById(R.id.remember_password);
+            username = (EditText) findViewById(R.id.edittext_username);
+            passWord = (EditText) findViewById(R.id.edittext_password);
+            registerButton = findViewById(R.id.tv_register);
+            registerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(intent);
+                }
+            });
             logInPostBtn.setOnClickListener(mPostClickListener);
+
             jumpLoginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

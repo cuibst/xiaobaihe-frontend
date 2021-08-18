@@ -2,4 +2,9 @@
     <string name="app_name">android-homework</string>
     <string name="activity_entity_relation">关系：</string>
     <string name="activity_entity_property">属性：</string>
+    <string name="hint_username">请输入用户名</string>
+    <string name="hint_password">请输入密码</string>
+    <string name="activity_entity_relate_problems">相关题目：</string>
+    <string name="submit">提交</string>
+    <string name="answer_input_hint">请输入答案</string>
 </resources>

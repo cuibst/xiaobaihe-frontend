@@ -164,23 +164,6 @@ public class RequestBuilder {
 
     private static final String BACKEND_ADDRESS = "183.173.145.95:8080";
 
-    public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
-        String id;
-        Future<String> token = getToken();
-        id = token.get();
-        arguments.put("id", id);
-        String builder = BACKEND_ADDRESS +
-                remainUrl +
-                '?' +
-                buildForm(arguments);
-        GetCallable getCallable = new GetCallable(builder, arguments);
-        return executorService.submit(getCallable);
-    }
-
-    public static JSONObject sendBackendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
-        return asyncSendBackendGetRequest(remainUrl, arguments).get();
-    }
-
     public static boolean checkedLogin() {
         return backendToken != null;
     }
@@ -227,17 +210,38 @@ public class RequestBuilder {
         });
     }
 
-    public static Future<JSONObject> asyncSendJsonPostRequest(String url, JSONObject arguments) throws BackendTokenExpiredException {
-        Date date = new Date();
-        if(backendToken == null || date.getTime() > expireTime)
-            throw new BackendTokenExpiredException("Token expired!!");
-        arguments.put("token", backendToken);
+    public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments, boolean needToken) throws BackendTokenExpiredException {
+        if(needToken) {
+            Date date = new Date();
+            if(backendToken == null || date.getTime() > expireTime)
+                throw new BackendTokenExpiredException("Token expired!!");
+            arguments.put("token", backendToken);
+        }
+        String builder = BACKEND_ADDRESS +
+                remainUrl +
+                '?' +
+                buildForm(arguments);
+        GetCallable getCallable = new GetCallable(builder, arguments);
+        return executorService.submit(getCallable);
+    }
+
+    public static JSONObject sendBackendGetRequest(String remainUrl, Map<String,String> arguments, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
+        return asyncSendBackendGetRequest(remainUrl, arguments, needToken).get();
+    }
+
+    public static Future<JSONObject> asyncSendBackendPostRequest(String url, JSONObject arguments, boolean needToken) throws BackendTokenExpiredException {
+        if(needToken) {
+            Date date = new Date();
+            if(backendToken == null || date.getTime() > expireTime)
+                throw new BackendTokenExpiredException("Token expired!!");
+            arguments.put("token", backendToken);
+        }
         JsonPostCallable jsonPostCallable = new JsonPostCallable(url, arguments);
         return executorService.submit(jsonPostCallable);
     }
 
     @Nullable
-    public static JSONObject sendJsonPostRequest(String url, JSONObject arguments) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
-        return asyncSendJsonPostRequest(url, arguments).get();
+    public static JSONObject sendBackendPostRequest(String url, JSONObject arguments, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
+        return asyncSendBackendPostRequest(url, arguments, needToken).get();
     }
 }
