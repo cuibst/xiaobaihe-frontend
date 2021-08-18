@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.yalantis.phoenix.PullToRefreshView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,16 +47,18 @@ public class SearchActivity extends AppCompatActivity {
         btn_for_search=findViewById(R.id.searchbutton);
         searchtxt=findViewById(R.id.searchText);
         search_rcy=findViewById(R.id.search_rcy);
+        search_rcy.setArrowImageView(R.drawable.waiting);
         search_rcy.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
         search_rcy.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                sadapter.cleararray();
                 try {
                     Map<String,String> map =new HashMap<String,String>();
                     map.put("course", chose);
                     map.put("searchKey",name);
                     JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+                    sadapter.size=0;
+                    sadapter=null;
                     sadapter=new SearchAdapter(SearchActivity.this);
                     sadapter.addSubject(msg.getJSONArray("data"));
                     sadapter.addpic(chose);
@@ -63,6 +66,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
                 catch (Exception e)
                 {
+                    System.out.println("hello");
                     System.out.println(e);
                 }
                 search_rcy.refreshComplete();
@@ -70,7 +74,15 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onLoadMore() {
-
+                if(sadapter.size+10<sadapter.subject.size())
+                {
+                    sadapter.size+=10;
+                }
+                else if(sadapter.size<= (sadapter.subject.size()))
+                {
+                    sadapter.size= sadapter.subject.size();
+                }
+                search_rcy.loadMoreComplete();
             }
         });
         btn_for_search.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +94,7 @@ public class SearchActivity extends AppCompatActivity {
                 name=searchtxt.getText().toString();
                 map.put("searchKey",searchtxt.getText().toString());
                 try {
+                    sadapter=null;
                     JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
                     sadapter=new SearchAdapter(SearchActivity.this);
                     sadapter.addSubject(msg.getJSONArray("data"));
@@ -149,7 +162,6 @@ public class SearchActivity extends AppCompatActivity {
         {
             mContext=context;
         }
-
         class RcyViewHolder extends RecyclerView.ViewHolder{
             private TextView labeltxt,categorytxt;
             public RcyViewHolder(View view)
@@ -172,8 +184,12 @@ public class SearchActivity extends AppCompatActivity {
         }
         public void addSubject(JSONArray arr) {
             subject=arr;
+            if(subject.size()<=10)
+                size=subject.size();
+            else
+                size=10;
         }
-
+        private int size=0;
         private JSONArray subject=new JSONArray();
         private Context mContext;
         private LinearLayout searchline;
@@ -186,10 +202,6 @@ public class SearchActivity extends AppCompatActivity {
         public void addpic(String s)
         {
             for_pic_chose=s;
-        }
-        public void cleararray()
-        {
-            subject.clear();
         }
         //    @Override
 //    public int getItemViewType(int position) {
@@ -225,7 +237,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         @Override
         public int getItemCount(){
-            return subject.size();
+            return size;
         }
     }
 }

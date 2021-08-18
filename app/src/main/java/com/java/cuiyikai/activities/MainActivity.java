@@ -3,6 +3,7 @@ package com.java.cuiyikai.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,17 +13,22 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.java.cuiyikai.ItemFragment;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.RcyAdapter;
@@ -45,12 +51,11 @@ public class MainActivity extends AppCompatActivity {
     public List<String> radiolist=new ArrayList<String>();
     private List<Fragment> fragments=new ArrayList<>();
     private List<String> fragmentTitles=new ArrayList<>();
-    public String chose;
     private Button btnForLogIn;
     private TextView searchtxt;
     private ViewPager viewpgr;
+    private String chose;
     private LinearLayout mLinearLayout;
-//    private EasyIndicator mEasyIndicator;
     private AdapterView mAdaptView;
     private TabLayout tabLayout;
     String searchcontent;
@@ -108,38 +113,126 @@ public class MainActivity extends AppCompatActivity {
     }
     private void initViewPager()
     {
-        viewpgr.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @NonNull
-            @Override
-            public Fragment getItem(int position) {
-                return ItemFragment.newInstance(item[position]);
-            }
-
-            @Override
-            public int getCount() {
-                return item.length;
-            }
-            public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-                super.destroyItem(container, position, object);
-            }
-            public CharSequence getPageTitle(int position) {
-                return item[position];
-            }
-        });
-//        mEasyIndicator.setTabTitles(item);
-//        mEasyIndicator.setViewPager(viewpgr, viewpgr.getAdapter());
-
+        ItemFragment itemFragment;
+        ViewPagerFragmentAdapter viewPagerFragmentAdapter=new ViewPagerFragmentAdapter(getSupportFragmentManager());
+        ItemAdapter itemAdapter=new ItemAdapter(MainActivity.this);
+        viewPagerFragmentAdapter.setXRecyclerviewAdapter(itemAdapter);
+        viewpgr.setAdapter(viewPagerFragmentAdapter);
     }
-    /*public void updatelist()
+    public class ViewPagerFragmentAdapter extends FragmentPagerAdapter
     {
-        for(int i=0;i<radiolist.size();i++)
-        {
-            RadioButton radiobtn=new RadioButton(this);
-            RadioGroup.LayoutParams layoutParams=new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT,RadioGroup.LayoutParams.WRAP_CONTENT);
-            radiobtn.setLayoutParams(layoutParams);
-            radiobtn.setText(radiolist.get(i));
-            radiobtn.setButtonDrawable(android.R.color.transparent);
+        ViewPagerFragmentAdapter(@NonNull FragmentManager fm) {
+            super(fm);
         }
-    }*/
+        public void setXRecyclerviewAdapter(RecyclerView.Adapter adapter)
+        {
 
+        }
+        @NonNull
+        @Override
+        public Fragment getItem(int position)
+        {
+            return ItemFragment.newInstance(item[position]);
+        }
+
+        @Override
+        public int getCount()
+        {
+            return item.length;
+        }
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object)
+        {
+            super.destroyItem(container, position, object);
+        }
+        public CharSequence getPageTitle(int position)
+        {
+            return item[position];
+        }
+    }
+    public class ItemAdapter extends RecyclerView.Adapter<MainActivity.ItemAdapter.ItemViewHolder>{
+        ItemAdapter(Context context)
+        {
+            mContext=context;
+        }
+        private String name;
+        class ItemViewHolder extends RecyclerView.ViewHolder{
+            private TextView labeltxt,categorytxt;
+            public ItemViewHolder(View view)
+            {
+                super(view);
+                labeltxt=view.findViewById(R.id.label);
+                img=view.findViewById(R.id.img);
+                categorytxt=view.findViewById(R.id.category);
+                searchline=view.findViewById(R.id.search_line);
+                searchline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent f=new Intent(MainActivity.this,EntityActivity.class);
+                        f.putExtra("name",name);
+                        f.putExtra("subject",chose);
+                        startActivity(f);
+                    }
+                });
+            }
+        }
+        public void addSubject(JSONArray arr) {
+            subject=arr;
+            if(subject.size()<=10)
+                size=subject.size();
+            else
+                size=10;
+        }
+        private int size=0;
+        private JSONArray subject=new JSONArray();
+        private Context mContext;
+        private LinearLayout searchline;
+        private String for_pic_chose;
+        private ImageView img;
+        public MainActivity.ItemAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
+        {
+            return new MainActivity.ItemAdapter.ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+        }
+        public void addpic(String s)
+        {
+            for_pic_chose=s;
+        }
+        //    @Override
+//    public int getItemViewType(int position) {
+//        if(position%2==0)
+//            return 0;
+//        else
+//            return 1;
+//    }
+        @Override
+        public void onBindViewHolder(MainActivity.ItemAdapter.ItemViewHolder holder, int position)
+        {
+            holder.labeltxt.setText(subject.getJSONObject(position).get("label").toString());
+            switch (for_pic_chose)
+            {
+                case "physics":
+                    img.setImageResource(R.drawable.phy);
+                    break;
+                case "chemistry":
+                    img.setImageResource(R.drawable.che);
+                    break;
+                case "biology":
+                    img.setImageResource(R.drawable.bio);
+                    break;
+                default:
+                    img.setImageResource(R.drawable.book);
+                    break;
+
+            }
+            if(subject.getJSONObject(position).get("category").toString().length()==0)
+                holder.categorytxt.setText("无");
+            else
+                holder.categorytxt.setText(subject.getJSONObject(position).get("category").toString());
+            name=subject.getJSONObject(position).get("category").toString();
+
+        }
+        @Override
+        public int getItemCount(){
+            return size;
+        }
+    }
 }

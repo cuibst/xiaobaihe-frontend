@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".ItemFragment">
 
-    <TextView
-        android:id="@+id/fi_text"
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/xrecycleview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
+        android:layout_height="wrap_content">
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
 </FrameLayout>
