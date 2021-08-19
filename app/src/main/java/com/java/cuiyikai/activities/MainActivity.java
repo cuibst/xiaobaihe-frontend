@@ -5,15 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -22,32 +17,27 @@ import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.java.cuiyikai.ItemFragment;
+import com.java.cuiyikai.fragments.ItemFragment;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.adapters.RcyAdapter;
 
 import com.java.cuiyikai.adapters.SubjectAdapter;
 import com.xuexiang.xui.XUI;
-import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog;
+
 import android.widget.LinearLayout;
 
 import com.google.android.material.tabs.TabLayout;
-import com.xuexiang.xui.widget.tabbar.EasyIndicator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent=new Intent(MainActivity.this, PointExtractActivity.class);
                 startActivity(intent);
             }
         });

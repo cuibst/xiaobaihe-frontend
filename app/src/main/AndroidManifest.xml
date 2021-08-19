@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.java.cuiyikai">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 拍照 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 读写 -->
+    <uses-permission android:name="android.permission.PERMISSIONS_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidhomework"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.CategoryActivity"></activity>
+        <activity android:name=".activities.CategoryActivity"/>
         <activity
             android:name=".activities.RegisterActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.PointExtractActivity"
             android:exported="true" />
         <activity
             android:name=".activities.ProblemActivity"
@@ -40,6 +46,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.java.cuiyikai.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:ignore="MissingClass">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+
     </application>
 
 </manifest>

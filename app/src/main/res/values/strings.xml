@@ -7,4 +7,10 @@
     <string name="activity_entity_relate_problems">相关题目：</string>
     <string name="submit">提交</string>
     <string name="answer_input_hint">请输入答案</string>
+    <string name="extract_hint">请输入希望提取知识点的内容</string>
+    <string name="upload">上传</string>
+    <string name="extract_result">识别结果如下：</string>
+    <string name="camera">拍照上传</string>
+    <string name="take_photo">拍照</string>
+    <string name="from_album">从相册选择</string>
 </resources>
