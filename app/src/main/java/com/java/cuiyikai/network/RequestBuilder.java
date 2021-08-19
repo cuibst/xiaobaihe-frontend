@@ -64,7 +64,6 @@ public class RequestBuilder {
         if(method.equals("POST")) {
             connection.setRequestProperty("Accept", "*/*");
             connection.setRequestProperty("Accept-Language", "zh-CN");
-            connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", POST_CONTENT_TYPE);
         }

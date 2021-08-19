@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.zip.GZIPInputStream;
 
 public class PostCallable implements Callable<JSONObject> {
 
@@ -36,14 +37,26 @@ public class PostCallable implements Callable<JSONObject> {
         writer.flush();
         if(connection.getResponseCode() == 200)
         {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-            String line;
-            StringBuilder buffer = new StringBuilder();
-            while((line = reader.readLine()) != null) {
-                buffer.append(line);
+            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) {
+                GZIPInputStream gzipInputStream = new GZIPInputStream(connection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream));
+                String line;
+                StringBuilder buffer = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                System.out.printf("Reply with : %s%n", buffer.toString());
+                return JSON.parseObject(buffer.toString());
+            } else {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                String line;
+                StringBuilder buffer = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                System.out.printf("Reply with : %s%n", buffer.toString());
+                return JSON.parseObject(buffer.toString());
             }
-            System.out.printf("Reply with : %s%n", buffer.toString());
-            return JSON.parseObject(buffer.toString());
         }
         return null;
     }
