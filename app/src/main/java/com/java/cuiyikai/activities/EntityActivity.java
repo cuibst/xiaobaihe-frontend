@@ -117,6 +117,8 @@ public class EntityActivity extends AppCompatActivity {
         }
     }
 
+    private static final String[] SUBJECTS = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +166,16 @@ public class EntityActivity extends AppCompatActivity {
             JSONObject reply;
 
             try {
-                reply = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
+                if(subject.equals("")) {
+                    reply = new JSONObject();
+                    for (String sub : SUBJECTS) {
+                        arguments.put("course", sub);
+                        JSONObject tmp = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
+                        if(tmp != null && tmp.toString().length() > reply.toString().length())
+                            reply = tmp;
+                    }
+                } else
+                    reply = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
