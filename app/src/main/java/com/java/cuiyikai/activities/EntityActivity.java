@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import com.java.cuiyikai.entities.PropertyEntity;
 import com.java.cuiyikai.entities.RelationEntity;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
+import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +31,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class EntityActivity extends AppCompatActivity {
@@ -119,170 +126,236 @@ public class EntityActivity extends AppCompatActivity {
 
     private static final String[] SUBJECTS = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
 
+    private RelationAdapter relationAdapter;
+    private List<RelationEntity> relationFullList, relationPrevList;
+
+    private PropertyAdapter propertyAdapter;
+    private List<PropertyEntity> propertyFullList, propertyPrevList;
+
+    private ProblemAdapter problemAdapter;
+    private List<JSONObject> questionFullList, questionPrevList;
+
+    private class EntityActivityLoadCallable implements Callable<String> {
+
+        private final Handler handler;
+
+        public EntityActivityLoadCallable(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public String call() {
+            Date start = new Date();
+
+            System.out.println("Loading start!!");
+
+            Intent prevIntent = getIntent();
+
+            Bundle prevBundle = prevIntent.getExtras();
+
+            String entityName = prevBundle.getString("name", "李白");
+            String subject = prevBundle.getString("subject", "chinese");
+            JSONObject entityJson;
+
+            EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(EntityActivity.this, 1);
+            helper.openReadLink();
+            List<DatabaseEntity> entityList = helper.queryEntityByName(entityName);
+            helper.closeLink();
+
+            System.out.printf("Database checked: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            JSONObject problems = new JSONObject();
+
+            if(!entityList.isEmpty()) {
+                entityJson = JSONObject.parseObject(entityList.get(0).getJsonContent());
+                problems = JSON.parseObject(entityList.get(0).getProblemsJson());
+            }
+            else {
+
+                System.out.println("No matches in database!!");
+
+                Map<String, String> arguments = new HashMap<>();
+                arguments.put("name", entityName);
+                arguments.put("course", subject);
+
+                JSONObject reply;
+
+                try {
+                    if(subject.equals("")) {
+                        reply = new JSONObject();
+                        for (String sub : SUBJECTS) {
+                            arguments.put("course", sub);
+                            JSONObject tmp = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
+                            if(tmp != null && tmp.toString().length() > reply.toString().length())
+                                reply = tmp;
+                        }
+                    } else
+                        reply = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Message message = handler.obtainMessage();
+                    message.what = 2;
+                    handler.sendMessage(message);
+                    return "fail";
+                }
+
+                entityJson = reply.getJSONObject("data");
+
+                Map<String, String> args = new HashMap<>();
+                args.put("uriName", entityName);
+
+                try {
+                    problems = RequestBuilder.sendGetRequest("typeOpen/open/questionListByUriName", args);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                helper.openWriteLink();
+                DatabaseEntity databaseEntity = new DatabaseEntity();
+                databaseEntity.setName(entityName);
+                databaseEntity.setJsonContent(entityJson.toJSONString());
+                databaseEntity.setUri("123");
+                databaseEntity.setProblemsJson(problems == null ? "" : problems.toJSONString());
+                helper.insert(databaseEntity);
+                helper.closeLink();
+            }
+
+            System.out.printf("load finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            TextView titleView = (TextView) findViewById(R.id.entityTitle);
+            titleView.setText(entityName);
+
+            System.out.printf("Handling relations: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            List<JSONObject> objectList = entityJson.getJSONArray("content").toJavaList(JSONObject.class);
+
+            relationFullList = new ArrayList<>();
+            for (JSONObject relationJson : objectList) {
+                RelationEntity entity = new RelationEntity();
+                entity.setRelationName(relationJson.getString("predicate_label"));
+                if(relationJson.getString("object") != null) {
+                    entity.setSubject(false);
+                    entity.setTargetName(relationJson.getString("object_label"));
+                } else {
+                    entity.setSubject(true);
+                    entity.setTargetName(relationJson.getString("subject_label"));
+                }
+                relationFullList.add(entity);
+            }
+            System.out.printf("Sorting relations: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            Collections.sort(relationFullList);
+
+            Message message = handler.obtainMessage();
+            message.what = 3;
+            handler.sendMessage(message);
+
+            System.out.printf("Handling properties: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            objectList = entityJson.getJSONArray("property").toJavaList(JSONObject.class);
+
+            propertyFullList = new ArrayList<>();
+            for(JSONObject propertyJson : objectList) {
+                PropertyEntity entity = new PropertyEntity();
+                if(propertyJson.getString("object").contains("http"))
+                    continue;
+                entity.setLabel(propertyJson.getString("predicateLabel"));
+                entity.setObject(propertyJson.getString("object"));
+
+                propertyFullList.add(entity);
+            }
+
+            System.out.printf("Adapting properties: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            message = handler.obtainMessage();
+            message.what = 4;
+            handler.sendMessage(message);
+
+            System.out.printf("Handling problems: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            questionFullList = problems.getJSONArray("data").toJavaList(JSONObject.class);
+
+            System.out.printf("request finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            message = handler.obtainMessage();
+            message.what = 5;
+            handler.sendMessage(message);
+
+            System.out.printf("Done: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+
+            message = handler.obtainMessage();
+            message.what = 1;
+            handler.sendMessage(message);
+
+            return "done!";
+        }
+    }
+
+    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entity);
 
-        Date start = new Date();
-
-        System.out.println("Loading start!!");
-
-        ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
-        ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
-        ImageButton problemButton  = (ImageButton) findViewById(R.id.problemButton);
-
-        Intent prevIntent = getIntent();
-
-        Bundle prevBundle = prevIntent.getExtras();
-
-        String entityName = prevBundle.getString("name", "李白");
-        String subject = prevBundle.getString("subject", "chinese");
-        JSONObject entityJson;
-
-        EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(EntityActivity.this, 1);
-        helper.openReadLink();
-        List<DatabaseEntity> entityList = helper.queryEntityByName(entityName);
-        helper.closeLink();
-
-        Date now = new Date();
-
-        System.out.printf("Database checked: %f%n", (new Date().getTime()-start.getTime())/1000.0);
-
-        JSONObject problems = new JSONObject();
-
-        if(!entityList.isEmpty()) {
-            entityJson = JSONObject.parseObject(entityList.get(0).getJsonContent());
-            problems = JSON.parseObject(entityList.get(0).getProblemsJson());
-        }
-        else {
-
-            System.out.println("No matches in database!!");
-
-            Map<String, String> arguments = new HashMap<>();
-            arguments.put("name", entityName);
-            arguments.put("course", subject);
-
-            JSONObject reply;
-
-            try {
-                if(subject.equals("")) {
-                    reply = new JSONObject();
-                    for (String sub : SUBJECTS) {
-                        arguments.put("course", sub);
-                        JSONObject tmp = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
-                        if(tmp != null && tmp.toString().length() > reply.toString().length())
-                            reply = tmp;
+        LoadingDialog loadingDialog = new LoadingDialog(EntityActivity.this);
+        loadingDialog.setLoadingText("加载中")
+                .setSuccessText("加载成功")
+                .setFailedText("加载失败")
+                .show();
+        long start = System.currentTimeMillis();
+        Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                if(message.what == 1) {
+                    if(System.currentTimeMillis() - start < 500)
+                        loadingDialog.close();
+                    else
+                        loadingDialog.loadSuccess();
+                } else if(message.what == 2) {
+                    loadingDialog.loadFailed();
+                } else if(message.what == 3) {
+                    ListViewForScrollView relationsView = (ListViewForScrollView) findViewById(R.id.relationsView);
+                    ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
+                    if(relationFullList.size() >= 5) {
+                        relationPrevList = relationFullList.subList(0, 5);
+                        relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationPrevList, "");
+                        relationButton.setBackgroundResource(R.drawable.pulldown);
+                        relationButton.setOnClickListener(new RelationViewOnClickListener(relationFullList, relationPrevList, false, relationsView, relationButton, ""));
+                    } else {
+                        relationButton.setVisibility(View.GONE);
+                        relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationFullList, "");
                     }
-                } else
-                    reply = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
+                    relationsView.setAdapter(relationAdapter);
+                } else if(message.what == 4) {
+                    ListViewForScrollView propertiesView = (ListViewForScrollView) findViewById(R.id.propertiesView);
+                    ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
+                    if(propertyFullList.size() >= 5) {
+                        propertyPrevList = propertyFullList.subList(0,5);
+                        propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyPrevList);
+                        propertyButton.setBackgroundResource(R.drawable.pulldown);
+                        propertyButton.setOnClickListener(new PropertyViewOnClickListener(propertyFullList, propertyPrevList, false, propertiesView, propertyButton));
+                    } else {
+                        propertyButton.setVisibility(View.GONE);
+                        propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyFullList);
+                    }
+                    propertiesView.setAdapter(propertyAdapter);
+                } else if(message.what == 5) {
+                    ListViewForScrollView problemsView = (ListViewForScrollView) findViewById(R.id.problemsView);
+                    ImageButton problemButton  = (ImageButton) findViewById(R.id.problemButton);
+                    if(questionFullList.size() >= 5) {
+                        questionPrevList = questionFullList.subList(0, 5);
+                        problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionPrevList);
+                        problemButton.setBackgroundResource(R.drawable.pulldown);
+                        problemButton.setOnClickListener(new ProblemViewOnClickListener(questionFullList, questionPrevList, false, problemsView, problemButton));
+                    } else {
+                        problemButton.setVisibility(View.GONE);
+                        problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionFullList);
+                    }
+                    problemsView.setAdapter(problemAdapter);
+                }
             }
-
-            entityJson = reply.getJSONObject("data");
-
-            Map<String, String> args = new HashMap<>();
-            args.put("uriName", entityName);
-
-            try {
-                problems = RequestBuilder.sendGetRequest("typeOpen/open/questionListByUriName", args);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            helper.openWriteLink();
-            DatabaseEntity databaseEntity = new DatabaseEntity();
-            databaseEntity.setName(entityName);
-            databaseEntity.setJsonContent(entityJson.toJSONString());
-            databaseEntity.setUri("123");
-            databaseEntity.setProblemsJson(problems == null ? "" : problems.toJSONString());
-            helper.insert(databaseEntity);
-            helper.closeLink();
-        }
-
-        System.out.printf("load finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
-
-        TextView titleView = (TextView) findViewById(R.id.entityTitle);
-        titleView.setText(entityName);
-
-        List<JSONObject> objectList = entityJson.getJSONArray("content").toJavaList(JSONObject.class);
-        List<RelationEntity> relationFullList, relationPrevList;
-        relationFullList = new ArrayList<>();
-        for (JSONObject relationJson : objectList) {
-            RelationEntity entity = new RelationEntity();
-            entity.setRelationName(relationJson.getString("predicate_label"));
-            if(relationJson.getString("object") != null) {
-                entity.setSubject(false);
-                entity.setTargetName(relationJson.getString("object_label"));
-            } else {
-                entity.setSubject(true);
-                entity.setTargetName(relationJson.getString("subject_label"));
-            }
-            relationFullList.add(entity);
-        }
-        Collections.sort(relationFullList);
-        RelationAdapter relationAdapter;
-        ListViewForScrollView relationsView = (ListViewForScrollView) findViewById(R.id.relationsView);
-        if(relationFullList.size() >= 5) {
-            relationPrevList = relationFullList.subList(0, 5);
-            relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationPrevList, subject);
-            relationButton.setBackgroundResource(R.drawable.pulldown);
-            relationButton.setOnClickListener(new RelationViewOnClickListener(relationFullList, relationPrevList, false, relationsView, relationButton, subject));
-        } else {
-            relationButton.setVisibility(View.GONE);
-            relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationFullList, subject);
-        }
-        relationsView.setAdapter(relationAdapter);
-
-        objectList = entityJson.getJSONArray("property").toJavaList(JSONObject.class);
-        List<PropertyEntity> propertyFullList, propertyPrevList;
-        propertyFullList = new ArrayList<>();
-        for(JSONObject propertyJson : objectList) {
-            PropertyEntity entity = new PropertyEntity();
-            if(propertyJson.getString("object").contains("http"))
-                continue;
-            entity.setLabel(propertyJson.getString("predicateLabel"));
-            entity.setObject(propertyJson.getString("object"));
-
-            propertyFullList.add(entity);
-        }
-
-        PropertyAdapter propertyAdapter;
-        ListViewForScrollView propertiesView = (ListViewForScrollView) findViewById(R.id.propertiesView);
-        if(propertyFullList.size() >= 5) {
-            propertyPrevList = propertyFullList.subList(0,5);
-            propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyPrevList);
-            propertyButton.setBackgroundResource(R.drawable.pulldown);
-            propertyButton.setOnClickListener(new PropertyViewOnClickListener(propertyFullList, propertyPrevList, false, propertiesView, propertyButton));
-        } else {
-            propertyButton.setVisibility(View.GONE);
-            propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyFullList);
-        }
-        propertiesView.setAdapter(propertyAdapter);
-
-        System.out.printf("Handling problems: %f%n", (new Date().getTime()-start.getTime())/1000.0);
-
-        List<JSONObject> questionList = problems.getJSONArray("data").toJavaList(JSONObject.class);
-
-        System.out.printf("request finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
-
-        ProblemAdapter problemAdapter;
-        ListViewForScrollView problemsView = (ListViewForScrollView) findViewById(R.id.problemsView);
-        if(questionList.size() >= 5) {
-            List<JSONObject> questionPrevList = questionList.subList(0, 5);
-            problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionPrevList);
-            problemButton.setBackgroundResource(R.drawable.pulldown);
-            problemButton.setOnClickListener(new ProblemViewOnClickListener(questionList, questionPrevList, false, problemsView, problemButton));
-        } else {
-            problemButton.setVisibility(View.GONE);
-            problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionList);
-        }
-        problemsView.setAdapter(problemAdapter);
-
-        System.out.printf("Done: %f%n", (new Date().getTime()-start.getTime())/1000.0);
-
+        };
+        executorService.submit(new EntityActivityLoadCallable(handler));
     }
 
     public class RelationViewItemOnClickListener implements View.OnClickListener {

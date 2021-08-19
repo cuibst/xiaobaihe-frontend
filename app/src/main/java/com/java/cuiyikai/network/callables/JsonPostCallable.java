@@ -1,5 +1,8 @@
 package com.java.cuiyikai.network.callables;
 
+import android.os.Handler;
+import android.os.Message;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.network.RequestBuilder;
@@ -15,6 +18,12 @@ import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
 public class JsonPostCallable implements Callable<JSONObject> {
+
+    Handler handler = null;
+
+    public void attachHandler(Handler handler) {
+        this.handler = handler;
+    }
 
     String url;
 
@@ -45,6 +54,11 @@ public class JsonPostCallable implements Callable<JSONObject> {
                     buffer.append(line);
                 }
                 System.out.printf("Reply with : %s%n", buffer.toString());
+                if(handler != null) {
+                    Message message = handler.obtainMessage();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }
                 return JSON.parseObject(buffer.toString());
             } else {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
@@ -54,8 +68,18 @@ public class JsonPostCallable implements Callable<JSONObject> {
                     buffer.append(line);
                 }
                 System.out.printf("Reply with : %s%n", buffer.toString());
+                if(handler != null) {
+                    Message message = handler.obtainMessage();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }
                 return JSON.parseObject(buffer.toString());
             }
+        }
+        if(handler != null) {
+            Message message = handler.obtainMessage();
+            message.what = 2;
+            handler.sendMessage(message);
         }
         return null;
     }
