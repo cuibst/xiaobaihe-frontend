@@ -206,21 +206,15 @@ public class PointExtractActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(PointExtractActivity.this, PERMISSIONS, 3);
                     return;
                 }
-                File outputImage = new File(getExternalCacheDir(), System.currentTimeMillis() + ".jpg");
+                File outputImage = new File(getFilesDir(), System.currentTimeMillis() + ".jpg");
                 if(outputImage.exists())
                     outputImage.delete();
-                else {
-                    try {
-                        outputImage.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    outputImage.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                if(Build.VERSION.SDK_INT >= 24) {
-                    imageUri = FileProvider.getUriForFile(PointExtractActivity.this, "com.mooc.uploadfile4.fileprovider", outputImage);
-                } else {
-                    imageUri = Uri.fromFile(outputImage);
-                }
+                imageUri = FileProvider.getUriForFile(PointExtractActivity.this, "com.java.cuiyikai.fileprovider", outputImage);
                 Intent photoIntent = new Intent("android.media.action.IMAGE_CAPTURE");
                 photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(photoIntent, TAKE_PHOTO);

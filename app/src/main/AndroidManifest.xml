@@ -46,7 +46,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.mooc.uploadfile4.fileprovider"
+            android:authorities="com.java.cuiyikai.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true"
             tools:ignore="MissingClass">
