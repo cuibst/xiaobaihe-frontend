@@ -130,6 +130,7 @@ public class PointExtractActivity extends AppCompatActivity {
             res = RequestBuilder.sendPostRequest("typeOpen/open/linkInstance", args);
         } catch (Exception e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
             return;
         }
         System.out.println("requesting!!");
@@ -174,12 +175,9 @@ public class PointExtractActivity extends AppCompatActivity {
         setContentView(R.layout.activity_point_extract);
         Button uploadButton = (Button) findViewById(R.id.btn_upload);
         photoView = (ImageView) findViewById(R.id.submit_photo);
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText editText = (EditText) findViewById(R.id.extract_text_input);
-                PointExtractActivity.this.onTextReceived(editText.getText().toString());
-            }
+        uploadButton.setOnClickListener((View view) -> {
+            EditText editText = (EditText) findViewById(R.id.extract_text_input);
+            PointExtractActivity.this.onTextReceived(editText.getText().toString());
         });
         Dialog bottomDialog = new Dialog(PointExtractActivity.this, R.style.BottomDialog);
         View contentView = LayoutInflater.from(this).inflate(R.layout.layout_camera, null);
@@ -193,42 +191,31 @@ public class PointExtractActivity extends AppCompatActivity {
         Button takePhoto = (Button) contentView.findViewById(R.id.take_photo);
         Button fromAlbum = (Button) contentView.findViewById(R.id.from_album);
         Button camera = (Button) findViewById(R.id.camera);
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomDialog.show();
+        camera.setOnClickListener((View view) -> bottomDialog.show());
+        takePhoto.setOnClickListener((View view) -> {
+            if(PermissionUtilities.verifyPermissions(PointExtractActivity.this, Manifest.permission.CAMERA) == 0) {
+                ActivityCompat.requestPermissions(PointExtractActivity.this, PERMISSIONS, 3);
+                return;
             }
+            File outputImage = new File(getFilesDir(), System.currentTimeMillis() + ".jpg");
+            if(outputImage.exists())
+                outputImage.delete();
+            try {
+                outputImage.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            imageUri = FileProvider.getUriForFile(PointExtractActivity.this, "com.java.cuiyikai.fileprovider", outputImage);
+            Intent photoIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+            photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startActivityForResult(photoIntent, TAKE_PHOTO);
+            bottomDialog.dismiss();
         });
-        takePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(PermissionUtilities.verifyPermissions(PointExtractActivity.this, Manifest.permission.CAMERA) == 0) {
-                    ActivityCompat.requestPermissions(PointExtractActivity.this, PERMISSIONS, 3);
-                    return;
-                }
-                File outputImage = new File(getFilesDir(), System.currentTimeMillis() + ".jpg");
-                if(outputImage.exists())
-                    outputImage.delete();
-                try {
-                    outputImage.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                imageUri = FileProvider.getUriForFile(PointExtractActivity.this, "com.java.cuiyikai.fileprovider", outputImage);
-                Intent photoIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-                photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(photoIntent, TAKE_PHOTO);
-                bottomDialog.dismiss();
-            }
-        });
-        fromAlbum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, TAKE_CAMERA);
-                bottomDialog.dismiss();
-            }
+        fromAlbum.setOnClickListener((View view) -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, TAKE_CAMERA);
+            bottomDialog.dismiss();
         });
     }
 }

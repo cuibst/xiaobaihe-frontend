@@ -1,5 +1,7 @@
 package com.java.cuiyikai.entities;
 
+import org.jetbrains.annotations.NotNull;
+
 public class RelationEntity implements Comparable<RelationEntity> {
 
     private String relationName;
@@ -33,6 +35,7 @@ public class RelationEntity implements Comparable<RelationEntity> {
     }
 
     @Override
+    @NotNull
     public String toString() {
         return "Name: " + relationName + ", flag: " + subject + ", target:" + targetName;
     }
@@ -45,7 +48,14 @@ public class RelationEntity implements Comparable<RelationEntity> {
     }
 
     @Override
-    public boolean equals(RelationEntity entity) {
-        return subject == entity.subject && relationName.equals(entity.relationName) && targetName.equals(entity.targetName);
+    public boolean equals(Object entity) {
+        if(!(entity instanceof RelationEntity))
+            return false;
+        return subject == ((RelationEntity) entity).isSubject() && relationName.equals(((RelationEntity) entity).getRelationName()) && targetName.equals(((RelationEntity) entity).getTargetName());
+    }
+
+    @Override
+    public int hashCode() {
+        return (subject ? 1 : 2) * relationName.hashCode() * targetName.hashCode();
     }
 }

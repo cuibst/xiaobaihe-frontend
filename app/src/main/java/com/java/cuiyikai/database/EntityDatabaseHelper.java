@@ -95,7 +95,6 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
      * Insert the given entity to the database. <br>
      * Remember to <strong>open the write link</strong> before the operation.
      * @param databaseEntity the Entity you want to add.
-     * @param condition database condition arguments.
      * @return the number of entities being updated.
      */
     public long insert(DatabaseEntity databaseEntity) {

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,8 +40,8 @@ import java.util.concurrent.Executors;
 public class EntityActivity extends AppCompatActivity {
 
     public class RelationViewItemOnClickListener implements View.OnClickListener {
-        private String name;
-        private String subject;
+        private final String name;
+        private final String subject;
 
         public RelationViewItemOnClickListener(String name, String subject) {
             this.name = name;
@@ -57,7 +58,8 @@ public class EntityActivity extends AppCompatActivity {
     }
 
     private class RelationViewOnClickListener implements View.OnClickListener {
-        private final List<RelationEntity> fullList, prevList;
+        private final List<RelationEntity> fullList;
+        private final List<RelationEntity> prevList;
         private boolean extended;
         private final ListViewForScrollView relatedView;
         private final ImageButton relatedButton;
@@ -87,7 +89,8 @@ public class EntityActivity extends AppCompatActivity {
     }
 
     private class PropertyViewOnClickListener implements View.OnClickListener {
-        private final List<PropertyEntity> fullList, prevList;
+        private final List<PropertyEntity> fullList;
+        private final List<PropertyEntity> prevList;
         private boolean extended;
         private final ListViewForScrollView propertyView;
         private final ImageButton propertyButton;
@@ -115,7 +118,8 @@ public class EntityActivity extends AppCompatActivity {
     }
 
     private class ProblemViewOnClickListener implements View.OnClickListener {
-        private final List<JSONObject> fullList, prevList;
+        private final List<JSONObject> fullList;
+        private final List<JSONObject> prevList;
         private boolean extended;
         private final ListViewForScrollView problemView;
         private final ImageButton problemButton;
@@ -145,13 +149,16 @@ public class EntityActivity extends AppCompatActivity {
     private static final String[] SUBJECTS = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
 
     private RelationAdapter relationAdapter;
-    private List<RelationEntity> relationFullList, relationPrevList;
+    private List<RelationEntity> relationFullList;
+    private List<RelationEntity> relationPrevList;
 
     private PropertyAdapter propertyAdapter;
-    private List<PropertyEntity> propertyFullList, propertyPrevList;
+    private List<PropertyEntity> propertyFullList;
+    private List<PropertyEntity> propertyPrevList;
 
     private ProblemAdapter problemAdapter;
-    private List<JSONObject> questionFullList, questionPrevList;
+    private List<JSONObject> questionFullList;
+    private List<JSONObject> questionPrevList;
 
     private class EntityActivityLoadCallable implements Callable<String> {
 
@@ -161,28 +168,15 @@ public class EntityActivity extends AppCompatActivity {
             this.handler = handler;
         }
 
-        @Override
-        public String call() {
-            Date start = new Date();
+        private JSONObject entityJson;
+        private JSONObject problems;
 
-            System.out.println("Loading start!!");
-
-            Intent prevIntent = getIntent();
-
-            Bundle prevBundle = prevIntent.getExtras();
-
-            String entityName = prevBundle.getString("name", "李白");
-            String subject = prevBundle.getString("subject", "chinese");
-            JSONObject entityJson;
+        private void initJsonObjects(String entityName, String subject) throws InterruptedException, ExecutionException{
 
             EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(EntityActivity.this, 1);
             helper.openReadLink();
             List<DatabaseEntity> entityList = helper.queryEntityByName(entityName);
             helper.closeLink();
-
-            System.out.printf("Database checked: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
-
-            JSONObject problems = new JSONObject();
 
             if (!entityList.isEmpty()) {
                 entityJson = JSON.parseObject(entityList.get(0).getJsonContent());
@@ -208,12 +202,12 @@ public class EntityActivity extends AppCompatActivity {
                         }
                     } else
                         reply = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
-                } catch (Exception e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                     Message message = handler.obtainMessage();
                     message.what = 2;
                     handler.sendMessage(message);
-                    return "fail";
+                    throw e;
                 }
 
                 entityJson = reply.getJSONObject("data");
@@ -225,6 +219,7 @@ public class EntityActivity extends AppCompatActivity {
                     problems = RequestBuilder.sendGetRequest("typeOpen/open/questionListByUriName", args);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
 
                 helper.openWriteLink();
@@ -236,6 +231,28 @@ public class EntityActivity extends AppCompatActivity {
                 helper.insert(databaseEntity);
                 helper.closeLink();
             }
+        }
+
+        @Override
+        public String call() {
+            Date start = new Date();
+
+            System.out.println("Loading start!!");
+
+            Intent prevIntent = getIntent();
+
+            Bundle prevBundle = prevIntent.getExtras();
+
+            String entityName = prevBundle.getString("name", "李白");
+            String subject = prevBundle.getString("subject", "chinese");
+            try {
+                initJsonObjects(entityName, subject);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                return "fail";
+            }
+
 
             System.out.printf("load finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
@@ -307,7 +324,7 @@ public class EntityActivity extends AppCompatActivity {
         }
     }
 
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -32,14 +32,11 @@ public class ProblemAdapter extends ArrayAdapter<JSONObject> {
         JSONObject problemObject = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         View problemItem = view.findViewById(R.id.problem_item);
-        problemItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent f=new Intent(entityActivity,ProblemActivity.class);
-                f.putExtra("body", problemObject.getString("qBody"));
-                f.putExtra("answer", problemObject.getString("qAnswer"));
-                entityActivity.startActivity(f);
-            }
+        problemItem.setOnClickListener((View v) -> {
+            Intent f=new Intent(entityActivity,ProblemActivity.class);
+            f.putExtra("body", problemObject.getString("qBody"));
+            f.putExtra("answer", problemObject.getString("qAnswer"));
+            entityActivity.startActivity(f);
         });
         TextView problemDescription = (TextView) view.findViewById(R.id.problem_description_in_entity);
         problemDescription.setText(problemObject.getString("qBody"));

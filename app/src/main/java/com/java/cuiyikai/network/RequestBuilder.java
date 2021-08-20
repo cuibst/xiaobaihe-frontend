@@ -203,7 +203,7 @@ public class RequestBuilder {
     private static final String BACKEND_ADDRESS = "http://183.173.146.13:8080";
 
     public static boolean checkedLogin() {
-        return backendToken != null;
+        return backendToken != null && expireTime > System.currentTimeMillis();
     }
 
     public static void logOut() {
