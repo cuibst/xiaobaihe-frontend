@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -15,6 +14,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,9 +22,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.java.cuiyikai.ItemFragment;
+import com.java.cuiyikai.fragments.ItemFragment;
 import com.java.cuiyikai.R;
 
 import com.java.cuiyikai.network.RequestBuilder;
@@ -33,6 +34,9 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +46,16 @@ public class MainActivity extends AppCompatActivity {
 
     private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     public  List<String> radiolist=new ArrayList<String>();
+    private List<String> item;
     private List<Fragment> fragments=new ArrayList<>();
     private List<String> fragmentTitles=new ArrayList<>();
     private Button btnForLogIn;
     private TextView searchtxt;
     private ViewPager viewpgr;
+    private String chose;
+    private LinearLayout mLinearLayout;
+    private ImageView tabAdd;
+    private AdapterView mAdaptView;
     private TabLayout tabLayout;
     private String main_activity_url="/api/uri/getname";
     private ItemFragment itemFragment[];
@@ -59,12 +68,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Drawable searchimg=getResources().getDrawable(R.drawable.search);
+        tabAdd = findViewById(R.id.tab_add);
         searchimg.setBounds(10,0,110,100);
         init();
         searchtxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+        tabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this, CategoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -77,13 +94,14 @@ public class MainActivity extends AppCompatActivity {
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent=new Intent(MainActivity.this, PointExtractActivity.class);
                 startActivity(intent);
             }
         });
     }
 
     public void init(){
+        item = new ArrayList<String>();
         searchtxt=findViewById(R.id.searchText);
         tabLayout=findViewById(R.id.tablayout1);
         btnForLogIn=findViewById(R.id.btn_for_login);
@@ -92,41 +110,42 @@ public class MainActivity extends AppCompatActivity {
         initViewPager();
         tabLayout.setupWithViewPager(viewpgr);
     }
-    private void initViewPager()
-    {
+    private void initViewPager() {
         ItemFragment itemFragment;
-        ViewPagerFragmentAdapter viewPagerFragmentAdapter=new ViewPagerFragmentAdapter(getSupportFragmentManager());
-
-        viewpgr.setAdapter(viewPagerFragmentAdapter);
+        ViewPagerFragmentAdapter viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager());
+        try {
+            InputStream is = getAssets().open(CategoryActivity.getSubjectData());
+            int length = is.available();
+            byte[] buffer = new byte[length];
+            is.read(buffer);
+            String result = new String(buffer, "utf-8");
+            JSONObject jsonObject = JSON.parseObject(result);
+            viewpgr.setAdapter(viewPagerFragmentAdapter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    public class ViewPagerFragmentAdapter extends FragmentPagerAdapter
-    {
+    public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
         ViewPagerFragmentAdapter(@NonNull FragmentManager fm) {
             super(fm);
         }
-        public void setXRecyclerviewAdapter(RecyclerView.Adapter adapter)
-        {
-
-        }
         @NonNull
         @Override
-        public Fragment getItem(int position)
-        {
+        public Fragment getItem(int position) {
             initfragment(position);
             return itemFragment[position];
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return all_subject_item.length;
         }
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object)
-        {
+
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             super.destroyItem(container, position, object);
         }
-        public CharSequence getPageTitle(int position)
-        {
+
+        public CharSequence getPageTitle(int position) {
             return all_subject_item[position];
         }
     }
@@ -223,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
                 itemAdapter.addpic(chooseSubject);
                 itemAdapter.addsubjectname(chooseSubject);
                 itemAdapter.addSubject(msg.getJSONArray("data"));
-                RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
                 ItemFragment fragment = new ItemFragment(chooseSubject,itemAdapter,MainActivity.this);
                 itemFragment[position]=fragment;
             }

@@ -8,66 +8,48 @@
     <LinearLayout
         android:id="@+id/lin1"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="57dp"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="match_parent"
             android:background="#2894FF"
             android:orientation="horizontal"
             android:layout_weight="1"
-            android:layout_height="50dp">
-<!--            <FrameLayout-->
-<!--                android:id="@+id/toolbar_container"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
-
-<!--                <androidx.appcompat.widget.Toolbar-->
-<!--                    android:id="@+id/toolbar"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="?attr/actionBarSize" />-->
-
-<!--                <com.miguelcatalan.materialsearchview.MaterialSearchView-->
-<!--                    android:id="@+id/search_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content" />-->
-<!--            </FrameLayout>-->
-            <Spinner
-                android:id="@+id/spinner_1"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:entries="@array/subject"
-                android:spinnerMode="dropdown"></Spinner>
-<!--            <com.quinny898.library.persistentsearch.SearchBox-->
+            android:layout_height="match_parent">
+<!--<<<<<<< HEAD-->
+<!--            android:layout_height="50dp">-->
+<!--            <Spinner-->
+<!--                android:id="@+id/spinner_1"-->
 <!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:id="@+id/searchbox"-->
-<!--                />-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:entries="@array/subject"-->
+<!--                android:spinnerMode="dropdown"></Spinner>-->
+<!--=======-->
+
+
+            <ImageView
+                android:id="@+id/searchbutton"
+                android:layout_margin="3dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:src="@drawable/back"
+                android:background="#2894FF"
+                android:gravity="right"></ImageView>
+
+<!--&gt;>>>>>> category-->
             <EditText
                 android:id="@+id/searchText"
-                android:layout_margin="3dp"
+                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
                 android:background="@drawable/white_radius"
                 android:layout_weight="1"
                 >
             </EditText>
-            <Button
-                android:id="@+id/searchbutton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/radius"
-                android:layout_gravity="right"
-                android:gravity="right"
-                ></Button>
         </LinearLayout>
     </LinearLayout>
-<!--    <TextView-->
-<!--        android:id="@+id/showinfo"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@id/lin1"-->
-<!--        ></TextView>-->
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/search_rcy"
         android:layout_width="match_parent"
@@ -75,11 +57,5 @@
         android:layout_below="@id/lin1">
 
     </com.jcodecraeer.xrecyclerview.XRecyclerView>
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/search_rcy"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@id/lin1">-->
-<!--    </androidx.recyclerview.widget.RecyclerView>-->
 
 </RelativeLayout>

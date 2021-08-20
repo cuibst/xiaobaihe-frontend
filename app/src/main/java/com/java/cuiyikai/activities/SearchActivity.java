@@ -13,6 +13,7 @@ import com.yalantis.phoenix.PullToRefreshView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,7 @@ public class SearchActivity extends AppCompatActivity {
     String chose="chinese";
     String choose="chinese";
     private XRecyclerView search_rcy;
-    private Button btn_for_search;
+    private ImageView btn_for_search;
     private EditText searchtxt;
     private String name;
     private SearchAdapter sadapter;
@@ -43,7 +44,8 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        spinner=findViewById(R.id.spinner_1);
+        setContentView(R.layout.activity_search);
+//        spinner=findViewById(R.id.spinner_1);
         btn_for_search=findViewById(R.id.searchbutton);
         searchtxt=findViewById(R.id.searchText);
         search_rcy=findViewById(R.id.search_rcy);
@@ -108,54 +110,54 @@ public class SearchActivity extends AppCompatActivity {
                 search_rcy.refreshComplete();
             }
         });
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view , int position , long id)
-            {
-                String content =parent.getItemAtPosition(position).toString();
-                if(content.equals("语文"))
-                {
-                    chose="chinese";
-                }
-                else if(content.equals("数学"))
-                {
-                    chose="math";
-                }
-                else if(content.equals("英语"))
-                {
-                    chose="english";
-                }
-                else if(content.equals("物理"))
-                {
-                    chose="physics";
-                }
-                else if(content.equals("化学"))
-                {
-                    chose="chemistry";
-                }
-                else if(content.equals("历史"))
-                {
-                    chose="history";
-                }
-                else if(content.equals("地理"))
-                {
-                    chose="geo";
-                }
-                else if(content.equals("政治"))
-                {
-                    chose="politics";
-                }
-                else if(content.equals("生物"))
-                {
-                    chose="biology";
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-                chose="chinese";
-            }
-        });
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view , int position , long id)
+//            {
+//                String content =parent.getItemAtPosition(position).toString();
+//                if(content.equals("语文"))
+//                {
+//                    chose="chinese";
+//                }
+//                else if(content.equals("数学"))
+//                {
+//                    chose="math";
+//                }
+//                else if(content.equals("英语"))
+//                {
+//                    chose="english";
+//                }
+//                else if(content.equals("物理"))
+//                {
+//                    chose="physics";
+//                }
+//                else if(content.equals("化学"))
+//                {
+//                    chose="chemistry";
+//                }
+//                else if(content.equals("历史"))
+//                {
+//                    chose="history";
+//                }
+//                else if(content.equals("地理"))
+//                {
+//                    chose="geo";
+//                }
+//                else if(content.equals("政治"))
+//                {
+//                    chose="politics";
+//                }
+//                else if(content.equals("生物"))
+//                {
+//                    chose="biology";
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent)
+//            {
+//                chose="chinese";
+//            }
+//        });
     }
     public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.RcyViewHolder>{
         SearchAdapter(Context context)
