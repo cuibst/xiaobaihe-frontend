@@ -7,13 +7,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -21,43 +17,39 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.ItemFragment;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.adapters.RcyAdapter;
 
+import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
-import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog;
 import android.widget.LinearLayout;
 
 import com.google.android.material.tabs.TabLayout;
-import com.xuexiang.xui.widget.tabbar.EasyIndicator;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] item={"推荐","语文","数学","英语","物理","化学","生物","历史","地理","政治"};
-//    private String[]
-    public List<String> radiolist=new ArrayList<String>();
+    private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
+    public  List<String> radiolist=new ArrayList<String>();
     private List<Fragment> fragments=new ArrayList<>();
     private List<String> fragmentTitles=new ArrayList<>();
     private Button btnForLogIn;
     private TextView searchtxt;
     private ViewPager viewpgr;
-    private String chose;
-    private LinearLayout mLinearLayout;
-    private AdapterView mAdaptView;
     private TabLayout tabLayout;
+    private String main_activity_url="/api/uri/getname";
+    private ItemFragment itemFragment[];
     String searchcontent;
     AdapterView.OnItemSelectedListener a;
     @Override
@@ -81,17 +73,7 @@ public class MainActivity extends AppCompatActivity {
         searchtxt.setCompoundDrawables(searchimg,null,null,null);
         searchcontent=searchtxt.getText().toString();
 
-        /*
-    *recyclerview 实现菜单栏，现已被弃用
- */
-        //        rcy1=findViewById(R.id.rcy_1);
-//        rcy1.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-//        LinearLayoutManager linearLayoutManager =new LinearLayoutManager(MainActivity.this);
-//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-//        rcy1.setLayoutManager(linearLayoutManager);
-//        rcy1.setAdapter(new RcyAdapter(MainActivity.this));
 
-//        updatelist();
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,12 +84,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init(){
-//        mLinearLayout=findViewById(R.id.scrollline1);
         searchtxt=findViewById(R.id.searchText);
         tabLayout=findViewById(R.id.tablayout1);
-//        mEasyIndicator = findViewById(R.id.easy_indicator);
         btnForLogIn=findViewById(R.id.btn_for_login);
         viewpgr=findViewById(R.id.viewpgr1);
+        itemFragment=new ItemFragment[all_subject_item.length];
         initViewPager();
         tabLayout.setupWithViewPager(viewpgr);
     }
@@ -115,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
     {
         ItemFragment itemFragment;
         ViewPagerFragmentAdapter viewPagerFragmentAdapter=new ViewPagerFragmentAdapter(getSupportFragmentManager());
-        ItemAdapter itemAdapter=new ItemAdapter(MainActivity.this);
-        viewPagerFragmentAdapter.setXRecyclerviewAdapter(itemAdapter);
+
         viewpgr.setAdapter(viewPagerFragmentAdapter);
     }
     public class ViewPagerFragmentAdapter extends FragmentPagerAdapter
@@ -132,13 +112,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position)
         {
-            return ItemFragment.newInstance(item[position]);
+            initfragment(position);
+            return itemFragment[position];
         }
 
         @Override
         public int getCount()
         {
-            return item.length;
+            return all_subject_item.length;
         }
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object)
         {
@@ -146,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         }
         public CharSequence getPageTitle(int position)
         {
-            return item[position];
+            return all_subject_item[position];
         }
     }
     public class ItemAdapter extends RecyclerView.Adapter<MainActivity.ItemAdapter.ItemViewHolder>{
@@ -155,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
             mContext=context;
         }
         private String name;
+        private String chooseSubject;
         class ItemViewHolder extends RecyclerView.ViewHolder{
             private TextView labeltxt,categorytxt;
             public ItemViewHolder(View view)
@@ -169,11 +151,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         Intent f=new Intent(MainActivity.this,EntityActivity.class);
                         f.putExtra("name",name);
-                        f.putExtra("subject",chose);
+                        f.putExtra("subject",chooseSubject);
                         startActivity(f);
                     }
                 });
             }
+        }
+        public void addsubjectname(String s)
+        {
+            chooseSubject=s;
         }
         public void addSubject(JSONArray arr) {
             subject=arr;
@@ -196,17 +182,12 @@ public class MainActivity extends AppCompatActivity {
         {
             for_pic_chose=s;
         }
-        //    @Override
-//    public int getItemViewType(int position) {
-//        if(position%2==0)
-//            return 0;
-//        else
-//            return 1;
-//    }
         @Override
         public void onBindViewHolder(MainActivity.ItemAdapter.ItemViewHolder holder, int position)
         {
-            holder.labeltxt.setText(subject.getJSONObject(position).get("label").toString());
+            name=subject.getJSONObject(position).get("name").toString();
+            System.out.println(name);
+            holder.labeltxt.setText(subject.getJSONObject(position).get("name").toString());
             switch (for_pic_chose)
             {
                 case "physics":
@@ -223,16 +204,73 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
             }
-            if(subject.getJSONObject(position).get("category").toString().length()==0)
-                holder.categorytxt.setText("无");
-            else
-                holder.categorytxt.setText(subject.getJSONObject(position).get("category").toString());
-            name=subject.getJSONObject(position).get("category").toString();
-
+            holder.categorytxt.setText("");
         }
         @Override
         public int getItemCount(){
             return size;
         }
+    }
+    public void initfragment(int position)
+    {
+            String TITLE=all_subject_item[position];
+            String chooseSubject=CheckSubject(TITLE);
+            Map<String,String> map=new HashMap();
+            map.put("subject",chooseSubject);
+            try {
+                ItemAdapter itemAdapter=new ItemAdapter(MainActivity.this);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_url, map,false);
+                itemAdapter.addpic(chooseSubject);
+                itemAdapter.addsubjectname(chooseSubject);
+                itemAdapter.addSubject(msg.getJSONArray("data"));
+                RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
+                ItemFragment fragment = new ItemFragment(chooseSubject,itemAdapter,MainActivity.this);
+                itemFragment[position]=fragment;
+            }
+            catch (Exception e)
+            {
+                System.out.println(e);
+            }
+    }
+    public String CheckSubject(String TITLE)
+    {
+        String chooseSubject="";
+        if(TITLE.equals("语文"))
+        {
+            chooseSubject="chinese";
+        }
+        else if(TITLE.equals("数学"))
+        {
+            chooseSubject="math";
+        }
+        else if(TITLE.equals("英语"))
+        {
+            chooseSubject="english";
+        }
+        else if(TITLE.equals("物理"))
+        {
+            chooseSubject="physics";
+        }
+        else if(TITLE.equals("化学"))
+        {
+            chooseSubject="chemistry";
+        }
+        else if(TITLE.equals("历史"))
+        {
+            chooseSubject="history";
+        }
+        else if(TITLE.equals("地理"))
+        {
+            chooseSubject="geo";
+        }
+        else if(TITLE.equals("政治"))
+        {
+            chooseSubject="politics";
+        }
+        else if(TITLE.equals("生物"))
+        {
+            chooseSubject="biology";
+        }
+        return chooseSubject;
     }
 }

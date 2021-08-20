@@ -3,11 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ItemFragment">
 
     <com.jcodecraeer.xrecyclerview.XRecyclerView
-        android:id="@+id/xrecycleview"
+        android:id="@+id/fragment_xrecycleview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_height="match_parent">
     </com.jcodecraeer.xrecyclerview.XRecyclerView>
 </FrameLayout>
