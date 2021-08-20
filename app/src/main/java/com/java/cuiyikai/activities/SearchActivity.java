@@ -171,15 +171,6 @@ public class SearchActivity extends AppCompatActivity {
                 img=view.findViewById(R.id.img);
                 categorytxt=view.findViewById(R.id.category);
                 searchline=view.findViewById(R.id.search_line);
-                searchline.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent f=new Intent(SearchActivity.this,EntityActivity.class);
-                        f.putExtra("name",name);
-                        f.putExtra("subject",chose);
-                        startActivity(f);
-                    }
-                });
             }
         }
         public void addSubject(JSONArray arr) {
@@ -213,6 +204,20 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(SearchAdapter.RcyViewHolder holder, int position)
         {
+
+            name=subject.getJSONObject(position).get("label").toString();
+
+            searchline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent f=new Intent(SearchActivity.this,EntityActivity.class);
+                    f.putExtra("name",name);
+                    f.putExtra("subject",chose);
+                    startActivity(f);
+                }
+            });
+
+
             holder.labeltxt.setText(subject.getJSONObject(position).get("label").toString());
             switch (for_pic_chose)
             {
