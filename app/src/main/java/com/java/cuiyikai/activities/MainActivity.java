@@ -113,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         ItemFragment itemFragment;
         ViewPagerFragmentAdapter viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager());
-        try {
-            InputStream is = getAssets().open(CategoryActivity.getSubjectData());
+        try(InputStream is = getAssets().open(CategoryActivity.getSubjectData())) {
             int length = is.available();
             byte[] buffer = new byte[length];
             is.read(buffer);
@@ -141,10 +140,7 @@ public class MainActivity extends AppCompatActivity {
             return all_subject_item.length;
         }
 
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-            super.destroyItem(container, position, object);
-        }
-
+        @Override
         public CharSequence getPageTitle(int position) {
             return all_subject_item[position];
         }
@@ -234,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
     {
             String TITLE=all_subject_item[position];
             String chooseSubject=CheckSubject(TITLE);
-            Map<String,String> map=new HashMap();
+            Map<String,String> map=new HashMap<>();
             map.put("subject",chooseSubject);
             try {
                 ItemAdapter itemAdapter=new ItemAdapter(MainActivity.this);

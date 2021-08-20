@@ -8,8 +8,6 @@ public class RelationEntity implements Comparable<RelationEntity> {
 
     private String targetName;
 
-    public RelationEntity() {}
-
     public String getRelationName() {
         return relationName;
     }
@@ -44,5 +42,10 @@ public class RelationEntity implements Comparable<RelationEntity> {
         if(subject != entity.subject)
             return subject ? 1 : -1;
         return 0;
+    }
+
+    @Override
+    public boolean equals(RelationEntity entity) {
+        return subject == entity.subject && relationName.equals(entity.relationName) && targetName.equals(entity.targetName);
     }
 }

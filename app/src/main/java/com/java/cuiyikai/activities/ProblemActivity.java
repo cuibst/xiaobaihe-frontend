@@ -84,7 +84,7 @@ public class ProblemActivity extends AppCompatActivity {
             submitAnswer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(answerInput.getText().equals(questionAnswer)) {
+                    if(answerInput.getText().toString().equals(questionAnswer)) {
                         answerImage.setImageResource(R.drawable.correct);
                     }
                     else

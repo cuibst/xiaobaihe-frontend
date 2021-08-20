@@ -67,7 +67,10 @@ public class RequestBuilder {
             connection.setRequestProperty("Accept", "*/*");
             connection.setRequestProperty("Accept-Language", "zh-CN");
             connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type", POST_CONTENT_TYPE);
+            if(sendJson)
+                connection.setRequestProperty("Content-Type", POST_JSON_CONTENT_TYPE);
+            else
+                connection.setRequestProperty("Content-Type", POST_CONTENT_TYPE);
         }
         connection.setDoOutput(true);
     }

@@ -38,6 +38,24 @@ import java.util.concurrent.Executors;
 
 public class EntityActivity extends AppCompatActivity {
 
+    public class RelationViewItemOnClickListener implements View.OnClickListener {
+        private String name;
+        private String subject;
+
+        public RelationViewItemOnClickListener(String name, String subject) {
+            this.name = name;
+            this.subject = subject;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent f=new Intent(EntityActivity.this,EntityActivity.class);
+            f.putExtra("name",name);
+            f.putExtra("subject",subject);
+            startActivity(f);
+        }
+    }
+
     private class RelationViewOnClickListener implements View.OnClickListener {
         private final List<RelationEntity> fullList, prevList;
         private boolean extended;
@@ -47,7 +65,7 @@ public class EntityActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(extended) {
+            if (extended) {
                 relatedButton.setBackgroundResource(R.drawable.pulldown);
                 extended = false;
                 relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, prevList, subject));
@@ -76,7 +94,7 @@ public class EntityActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(extended) {
+            if (extended) {
                 propertyButton.setBackgroundResource(R.drawable.pulldown);
                 extended = false;
                 propertyView.setAdapter(new PropertyAdapter(EntityActivity.this, R.layout.property_item, prevList));
@@ -104,7 +122,7 @@ public class EntityActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(extended) {
+            if (extended) {
                 problemButton.setBackgroundResource(R.drawable.pulldown);
                 extended = false;
                 problemView.setAdapter(new ProblemAdapter(EntityActivity.this, R.layout.problem_item, prevList));
@@ -162,15 +180,14 @@ public class EntityActivity extends AppCompatActivity {
             List<DatabaseEntity> entityList = helper.queryEntityByName(entityName);
             helper.closeLink();
 
-            System.out.printf("Database checked: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Database checked: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             JSONObject problems = new JSONObject();
 
-            if(!entityList.isEmpty()) {
-                entityJson = JSONObject.parseObject(entityList.get(0).getJsonContent());
+            if (!entityList.isEmpty()) {
+                entityJson = JSON.parseObject(entityList.get(0).getJsonContent());
                 problems = JSON.parseObject(entityList.get(0).getProblemsJson());
-            }
-            else {
+            } else {
 
                 System.out.println("No matches in database!!");
 
@@ -181,12 +198,12 @@ public class EntityActivity extends AppCompatActivity {
                 JSONObject reply;
 
                 try {
-                    if(subject.equals("")) {
+                    if (subject.equals("")) {
                         reply = new JSONObject();
                         for (String sub : SUBJECTS) {
                             arguments.put("course", sub);
                             JSONObject tmp = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
-                            if(tmp != null && tmp.toString().length() > reply.toString().length())
+                            if (tmp != null && tmp.toString().length() > reply.toString().length())
                                 reply = tmp;
                         }
                     } else
@@ -220,12 +237,12 @@ public class EntityActivity extends AppCompatActivity {
                 helper.closeLink();
             }
 
-            System.out.printf("load finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("load finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             TextView titleView = (TextView) findViewById(R.id.entityTitle);
             titleView.setText(entityName);
 
-            System.out.printf("Handling relations: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Handling relations: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             List<JSONObject> objectList = entityJson.getJSONArray("content").toJavaList(JSONObject.class);
 
@@ -233,7 +250,7 @@ public class EntityActivity extends AppCompatActivity {
             for (JSONObject relationJson : objectList) {
                 RelationEntity entity = new RelationEntity();
                 entity.setRelationName(relationJson.getString("predicate_label"));
-                if(relationJson.getString("object") != null) {
+                if (relationJson.getString("object") != null) {
                     entity.setSubject(false);
                     entity.setTargetName(relationJson.getString("object_label"));
                 } else {
@@ -242,21 +259,21 @@ public class EntityActivity extends AppCompatActivity {
                 }
                 relationFullList.add(entity);
             }
-            System.out.printf("Sorting relations: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Sorting relations: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
             Collections.sort(relationFullList);
 
             Message message = handler.obtainMessage();
             message.what = 3;
             handler.sendMessage(message);
 
-            System.out.printf("Handling properties: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Handling properties: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             objectList = entityJson.getJSONArray("property").toJavaList(JSONObject.class);
 
             propertyFullList = new ArrayList<>();
-            for(JSONObject propertyJson : objectList) {
+            for (JSONObject propertyJson : objectList) {
                 PropertyEntity entity = new PropertyEntity();
-                if(propertyJson.getString("object").contains("http"))
+                if (propertyJson.getString("object").contains("http"))
                     continue;
                 entity.setLabel(propertyJson.getString("predicateLabel"));
                 entity.setObject(propertyJson.getString("object"));
@@ -264,23 +281,23 @@ public class EntityActivity extends AppCompatActivity {
                 propertyFullList.add(entity);
             }
 
-            System.out.printf("Adapting properties: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Adapting properties: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             message = handler.obtainMessage();
             message.what = 4;
             handler.sendMessage(message);
 
-            System.out.printf("Handling problems: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Handling problems: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             questionFullList = problems.getJSONArray("data").toJavaList(JSONObject.class);
 
-            System.out.printf("request finished: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("request finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             message = handler.obtainMessage();
             message.what = 5;
             handler.sendMessage(message);
 
-            System.out.printf("Done: %f%n", (new Date().getTime()-start.getTime())/1000.0);
+            System.out.printf("Done: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
             message = handler.obtainMessage();
             message.what = 1;
@@ -306,17 +323,17 @@ public class EntityActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-                if(message.what == 1) {
-                    if(System.currentTimeMillis() - start < 500)
+                if (message.what == 1) {
+                    if (System.currentTimeMillis() - start < 500)
                         loadingDialog.close();
                     else
                         loadingDialog.loadSuccess();
-                } else if(message.what == 2) {
+                } else if (message.what == 2) {
                     loadingDialog.loadFailed();
-                } else if(message.what == 3) {
+                } else if (message.what == 3) {
                     ListViewForScrollView relationsView = (ListViewForScrollView) findViewById(R.id.relationsView);
                     ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
-                    if(relationFullList.size() >= 5) {
+                    if (relationFullList.size() > 5) {
                         relationPrevList = relationFullList.subList(0, 5);
                         relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationPrevList, "");
                         relationButton.setBackgroundResource(R.drawable.pulldown);
@@ -326,11 +343,11 @@ public class EntityActivity extends AppCompatActivity {
                         relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationFullList, "");
                     }
                     relationsView.setAdapter(relationAdapter);
-                } else if(message.what == 4) {
+                } else if (message.what == 4) {
                     ListViewForScrollView propertiesView = (ListViewForScrollView) findViewById(R.id.propertiesView);
                     ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
-                    if(propertyFullList.size() >= 5) {
-                        propertyPrevList = propertyFullList.subList(0,5);
+                    if (propertyFullList.size() > 5) {
+                        propertyPrevList = propertyFullList.subList(0, 5);
                         propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyPrevList);
                         propertyButton.setBackgroundResource(R.drawable.pulldown);
                         propertyButton.setOnClickListener(new PropertyViewOnClickListener(propertyFullList, propertyPrevList, false, propertiesView, propertyButton));
@@ -339,10 +356,10 @@ public class EntityActivity extends AppCompatActivity {
                         propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyFullList);
                     }
                     propertiesView.setAdapter(propertyAdapter);
-                } else if(message.what == 5) {
+                } else if (message.what == 5) {
                     ListViewForScrollView problemsView = (ListViewForScrollView) findViewById(R.id.problemsView);
-                    ImageButton problemButton  = (ImageButton) findViewById(R.id.problemButton);
-                    if(questionFullList.size() >= 5) {
+                    ImageButton problemButton = (ImageButton) findViewById(R.id.problemButton);
+                    if (questionFullList.size() > 5) {
                         questionPrevList = questionFullList.subList(0, 5);
                         problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionPrevList);
                         problemButton.setBackgroundResource(R.drawable.pulldown);
@@ -356,23 +373,5 @@ public class EntityActivity extends AppCompatActivity {
             }
         };
         executorService.submit(new EntityActivityLoadCallable(handler));
-    }
-
-    public class RelationViewItemOnClickListener implements View.OnClickListener {
-        private String name;
-        private String subject;
-
-        public RelationViewItemOnClickListener(String name, String subject) {
-            this.name = name;
-            this.subject = subject;
-        }
-
-        @Override
-        public void onClick(View view) {
-            Intent f=new Intent(EntityActivity.this,EntityActivity.class);
-            f.putExtra("name",name);
-            f.putExtra("subject",subject);
-            startActivity(f);
-        }
     }
 }
