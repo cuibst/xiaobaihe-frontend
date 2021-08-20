@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.exceptions.AuthorizeFaliedException;
 import com.java.cuiyikai.network.RequestBuilder;
@@ -41,6 +42,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        MainApplication mainApplication = (MainApplication) getApplication();
+        usernameTextView.setText(mainApplication.getSaveUsername());
+        passwordTextView.setText(mainApplication.getSavePassword());
+
         logInPostBtn.setOnClickListener((View view) -> {
             username = usernameTextView.getText().toString();
             password = passwordTextView.getText().toString();
@@ -49,6 +54,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (token == null)
                     throw new AuthorizeFaliedException("Incorrect username or password");
                 Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
+                if(checkBox.isChecked()) {
+                    mainApplication.setSaveUsername(username);
+                    mainApplication.setSavePassword(password);
+                } else {
+                    mainApplication.setSavePassword("");
+                    mainApplication.setSaveUsername(username);
+                }
                 this.finish();
             } catch (Exception e) {
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
