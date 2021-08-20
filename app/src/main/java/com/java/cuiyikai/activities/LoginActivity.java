@@ -49,8 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (token == null)
                     throw new AuthorizeFaliedException("Incorrect username or password");
                 Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                this.finish();
             } catch (Exception e) {
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
