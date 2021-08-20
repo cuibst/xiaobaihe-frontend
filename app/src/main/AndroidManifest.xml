@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidhomework"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:name=".MainApplication">
         <activity android:name=".activities.CategoryActivity"/>
         <activity
             android:name=".activities.RegisterActivity"

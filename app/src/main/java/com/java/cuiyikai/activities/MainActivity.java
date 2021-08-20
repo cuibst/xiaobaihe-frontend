@@ -13,6 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.View;
@@ -25,12 +28,14 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.fragments.ItemFragment;
 import com.java.cuiyikai.R;
 
 import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -63,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
     AdapterView.OnItemSelectedListener a;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        exitHandler = new Handler(getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                super.handleMessage(message);
+                exitFlag = false;
+            }
+        };
+
         XUI.init(this.getApplication());
         XUI.debug(true);
         super.onCreate(savedInstanceState);
@@ -94,8 +108,11 @@ public class MainActivity extends AppCompatActivity {
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(RequestBuilder.checkedLogin())
+                if(RequestBuilder.checkedLogin()) {
+                    RequestBuilder.logOut();
+                    Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_SHORT).show();
                     return;
+                }
                 Intent intent=new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
@@ -288,5 +305,30 @@ public class MainActivity extends AppCompatActivity {
             chooseSubject="biology";
         }
         return chooseSubject;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            exits();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean exitFlag = false;
+
+    private Handler exitHandler;
+
+    public void exits() {
+        if(!exitFlag) {
+            exitFlag = true;
+            Toast.makeText(MainActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+            exitHandler.sendEmptyMessageDelayed(0, 3000);
+        } else {
+            this.finish();
+            ((MainApplication)getApplication()).dumpCacheData();
+            System.exit(0);
+        }
     }
 }
