@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(RequestBuilder.checkedLogin())
+                    return;
                 Intent intent=new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }

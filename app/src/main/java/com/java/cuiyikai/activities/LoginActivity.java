@@ -52,47 +52,32 @@ public class LoginActivity extends AppCompatActivity {
             username = (EditText) findViewById(R.id.edittext_username);
             passWord = (EditText) findViewById(R.id.edittext_password);
             registerButton = findViewById(R.id.tv_register);
-            registerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+
+            registerButton.setOnClickListener((View view) -> {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            });
+
+            logInPostBtn.setOnClickListener((View view) -> {
+                name = username.getText().toString();
+                password = passWord.getText().toString();
+                try {
+                    String token = RequestBuilder.getBackendToken(name, password).get();
+                    if (token == null)
+                        throw new AuthorizeFaliedException("Incorrect username or password");
+                    Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             });
-            logInPostBtn.setOnClickListener(mPostClickListener);
 
-            jumpLoginBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
-                    startActivity(intent);
-                }
+            jumpLoginBtn.setOnClickListener((View view) -> {
+                Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
+                startActivity(intent);
             });
         }
     }
-
-    private View.OnClickListener mPostClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            name = username.getText().toString();
-            password = passWord.getText().toString();
-//            new Thread(networkconnection).start();
-            try {
-//                String info;
-//                JSONObject map = new JSONObject();
-//                map.put("username", name);
-//                map.put("password", password);
-//                JSONObject reply=RequestBuilder.sendJsonPostRequest(url.toString(),map);
-                String token = RequestBuilder.getBackendToken(name, password).get();
-                if(token == null)
-                    throw new AuthorizeFaliedException("Incorrect username or password");
-                Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
-            }
-            catch(Exception e)
-            {
-                Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-        }
-    };
 }
