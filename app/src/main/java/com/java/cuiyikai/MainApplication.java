@@ -1,8 +1,8 @@
 package com.java.cuiyikai;
 
 import android.app.Application;
-import android.view.KeyEvent;
-
+import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
 
 import java.io.File;
@@ -10,13 +10,39 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.Writer;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class MainApplication extends Application {
 
     private String saveUsername = "";
     private String savePassword = "";
+
+    private JSONObject favourite = null;
+
+    public JSONObject getFavourite() {
+        if(!RequestBuilder.checkedLogin()) {
+            favourite = null;
+            return null;
+        } else {
+            if(favourite == null)
+                updateFavourite();
+            return favourite;
+        }
+    }
+
+    public void updateFavourite() {
+        if(RequestBuilder.checkedLogin())
+            try {
+                favourite = RequestBuilder.sendBackendGetRequest("/api/favourite/getFavourite", new HashMap<>(), true).getJSONObject("data");
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            } catch (BackendTokenExpiredException | NullPointerException e) {
+                e.printStackTrace();
+            }
+    }
 
     @Override
     public void onCreate() {
@@ -48,10 +74,6 @@ public class MainApplication extends Application {
             printStream.println(RequestBuilder.getBackendToken());
             printStream.println(saveUsername);
             printStream.println(savePassword);
-            System.out.println(loadFile.getAbsolutePath());
-            System.out.println(RequestBuilder.getBackendToken());
-            System.out.println(saveUsername);
-            System.out.println(savePassword);
         } catch (IOException e) {
             e.printStackTrace();
         }

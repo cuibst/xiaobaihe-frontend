@@ -307,34 +307,34 @@ public class RequestBuilder {
         return asyncSendBackendGetRequest(remainUrl, arguments, handler, needToken).get();
     }
 
-    public static Future<JSONObject> asyncSendBackendPostRequest(String url, JSONObject arguments, boolean needToken) throws BackendTokenExpiredException {
+    public static Future<JSONObject> asyncSendBackendPostRequest(String remainUrl, JSONObject arguments, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
                 throw new BackendTokenExpiredException("Token expired!!");
             arguments.put("token", backendToken);
         }
-        JsonPostCallable jsonPostCallable = new JsonPostCallable(url, arguments);
+        JsonPostCallable jsonPostCallable = new JsonPostCallable(BACKEND_ADDRESS + remainUrl, arguments);
         return executorService.submit(jsonPostCallable);
     }
 
     @Nullable
-    public static JSONObject sendBackendPostRequest(String url, JSONObject arguments, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
-        return asyncSendBackendPostRequest(url, arguments, needToken).get();
+    public static JSONObject sendBackendPostRequest(String remainUrl, JSONObject arguments, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
+        return asyncSendBackendPostRequest(remainUrl, arguments, needToken).get();
     }
 
-    public static Future<JSONObject> asyncSendBackendPostRequest(String url, JSONObject arguments, Handler handler, boolean needToken) throws BackendTokenExpiredException {
+    public static Future<JSONObject> asyncSendBackendPostRequest(String remainUrl, JSONObject arguments, Handler handler, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
                 throw new BackendTokenExpiredException("Token expired!!");
             arguments.put("token", backendToken);
         }
-        JsonPostCallable jsonPostCallable = new JsonPostCallable(url, arguments);
+        JsonPostCallable jsonPostCallable = new JsonPostCallable(BACKEND_ADDRESS + remainUrl, arguments);
         jsonPostCallable.attachHandler(handler);
         return executorService.submit(jsonPostCallable);
     }
 
     @Nullable
-    public static JSONObject sendBackendPostRequest(String url, JSONObject arguments, Handler handler, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
-        return asyncSendBackendPostRequest(url, arguments, handler, needToken).get();
+    public static JSONObject sendBackendPostRequest(String remainUrl, JSONObject arguments, Handler handler, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
+        return asyncSendBackendPostRequest(remainUrl, arguments, handler, needToken).get();
     }
 }
