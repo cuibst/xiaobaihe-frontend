@@ -81,15 +81,12 @@ public class ProblemActivity extends AppCompatActivity {
             EditText answerInput = (EditText) findViewById(R.id.answer_input);
             Button submitAnswer = (Button) findViewById(R.id.submit_ans);
             ImageView answerImage = (ImageView) findViewById(R.id.answer_image);
-            submitAnswer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(answerInput.getText().equals(questionAnswer)) {
-                        answerImage.setImageResource(R.drawable.correct);
-                    }
-                    else
-                        answerImage.setImageResource(R.drawable.wrong);
+            submitAnswer.setOnClickListener((View view) -> {
+                if(answerInput.getText().toString().equals(questionAnswer)) {
+                    answerImage.setImageResource(R.drawable.correct);
                 }
+                else
+                    answerImage.setImageResource(R.drawable.wrong);
             });
         }
     }

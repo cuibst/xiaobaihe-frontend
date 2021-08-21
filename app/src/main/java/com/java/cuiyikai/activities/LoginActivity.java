@@ -8,165 +8,69 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.exceptions.AuthorizeFaliedException;
 import com.java.cuiyikai.network.RequestBuilder;
 
-import com.alibaba.fastjson.JSONObject;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.Future;
-
 public class LoginActivity extends AppCompatActivity {
 
     private Button logInPostBtn;
-    private TextView username;
-    private TextView passWord;
+    private TextView usernameTextView;
+    private TextView passwordTextView;
     private Button jumpLoginBtn;
-//    private RadioButton radioButton;
     private CheckBox checkBox;
     private TextView registerButton;
-    String name, password;
-    URL url;
+    String username, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try {
-            url=new URL("http://183.172.176.163g:8080/api/login/");
-        }
-        catch (MalformedURLException e)
-        {
-            Toast.makeText(LoginActivity.this,"An error occured when getting url!",Toast.LENGTH_SHORT).show();
-        }
-        finally {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_login);
-            logInPostBtn = findViewById(R.id.btn_login);
-            jumpLoginBtn = findViewById(R.id.btn_skip);
-            checkBox = findViewById(R.id.remember_password);
-            username = (EditText) findViewById(R.id.edittext_username);
-            passWord = (EditText) findViewById(R.id.edittext_password);
-            registerButton = findViewById(R.id.tv_register);
-            registerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                    startActivity(intent);
-                }
-            });
-            logInPostBtn.setOnClickListener(mPostClickListener);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        logInPostBtn = findViewById(R.id.btn_login);
+        jumpLoginBtn = findViewById(R.id.btn_skip);
+        checkBox = findViewById(R.id.remember_password);
+        usernameTextView = (EditText) findViewById(R.id.edittext_username);
+        passwordTextView = (EditText) findViewById(R.id.edittext_password);
+        registerButton = findViewById(R.id.tv_register);
 
-            jumpLoginBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
-    };
+        registerButton.setOnClickListener((View view) -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
 
-    private View.OnClickListener mPostClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            name = username.getText().toString();
-            password = passWord.getText().toString();
-//            new Thread(networkconnection).start();
+        MainApplication mainApplication = (MainApplication) getApplication();
+        usernameTextView.setText(mainApplication.getSaveUsername());
+        passwordTextView.setText(mainApplication.getSavePassword());
+
+        logInPostBtn.setOnClickListener((View view) -> {
+            username = usernameTextView.getText().toString();
+            password = passwordTextView.getText().toString();
             try {
-//                String info;
-//                JSONObject map = new JSONObject();
-//                map.put("username", name);
-//                map.put("password", password);
-//                JSONObject reply=RequestBuilder.sendJsonPostRequest(url.toString(),map);
-                String token = RequestBuilder.getBackendToken(name, password).get();
-                if(token == null)
+                String token = RequestBuilder.getBackendToken(username, password).get();
+                if (token == null)
                     throw new AuthorizeFaliedException("Incorrect username or password");
                 Toast.makeText(LoginActivity.this, "successfully login", Toast.LENGTH_SHORT).show();
-            }
-            catch(Exception e)
-            {
+                if(checkBox.isChecked()) {
+                    mainApplication.setSaveUsername(username);
+                    mainApplication.setSavePassword(password);
+                } else {
+                    mainApplication.setSavePassword("");
+                    mainApplication.setSaveUsername(username);
+                }
+                this.finish();
+            } catch (Exception e) {
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-        }
-    };
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case 0:
-//                    Toast.makeText(Login_Activity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
-//                    break;
-//                case 1:
-//                    Toast.makeText(Login_Activity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    };
-//    Runnable networkconnection = new Runnable() {
-//        @Override
-//        public void run() {
-//            try {
-//                URLConnection connection = url.openConnection();
-//                HttpURLConnection httpurlconnection = (HttpURLConnection) connection;
-//                httpurlconnection.setDoOutput(true);
-//                httpurlconnection.setDoInput(true);
-//                httpurlconnection.setRequestMethod("POST");
-//                httpurlconnection.setRequestProperty("Accept-Charset", "utf-8");
-//                httpurlconnection.setRequestProperty("Connection", "Keep-Alive");
-//                httpurlconnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-//
-//                httpurlconnection.setConnectTimeout(5 * 1000);// 设置连接超时时间为5秒
-//                httpurlconnection.setReadTimeout(20 * 1000);// 设置读取超时时间为20秒
-////               g
-//                httpurlconnection.connect();
-//
-//                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(httpurlconnection.getOutputStream(), "UTF-8"));
-//                String info;
-//                JSONObject map = new JSONObject();
-//                map.put("username", name);
-//                map.put("password", password);
-//                info = map.toString();
-////                handler.sendEmptyMessage(1);
-////                usermsg.obj=info;
-////                handler.sendMessage(usermsg);
-////                Toast.makeText(Login_Activity.this,info,Toast.LENGTH_SHORT).show();
-//                writer.write(info);
-//                writer.flush();
-//                writer.close();
-//                String result;
-//                String chk = "\0";
-//                int responseCode = httpurlconnection.getResponseCode();
-//                if (responseCode == HttpURLConnection.HTTP_OK) {
-//                    BufferedReader responseReader = new BufferedReader(new InputStreamReader(httpurlconnection.getInputStream(), "UTF-8"));
-//                    while ((result = responseReader.readLine()) != null) {
-//                        chk += result;
-//                    }
-//                    chk += "yes";
-//                } else {
-//                    result = "connection failed";
-//                    chk += result;
-//                    chk += "no";
-//                }
-//                handler.sendEmptyMessage(0);
-//                Message msg = new Message();
-//                msg.obj = chk;
-//                handler.sendMessage(msg);
-//            } catch (Exception e) {
-//                Message usermsg = new Message();
-//                usermsg.obj=e.toString();
-//                handler.sendMessage(usermsg);
-////                Toast.makeText(Login_Activity.this,e.toString(),Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    };
+        });
+
+        jumpLoginBtn.setOnClickListener((View view) -> {
+            Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
+            startActivity(intent);
+        });
+    }
 }
