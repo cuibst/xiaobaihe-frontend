@@ -152,7 +152,6 @@ public class EntityActivity extends AppCompatActivity {
             Intent prevIntent = getIntent();
 
             Bundle prevBundle = prevIntent.getExtras();
-
             String entityName = prevBundle.getString("name", "李白");
             String subject = prevBundle.getString("subject", "chinese");
             JSONObject entityJson;

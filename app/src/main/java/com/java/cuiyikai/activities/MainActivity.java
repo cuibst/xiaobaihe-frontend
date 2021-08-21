@@ -9,17 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -29,18 +31,20 @@ import com.java.cuiyikai.fragments.ItemFragment;
 import com.java.cuiyikai.R;
 
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.DensityUtilities;
 import com.xuexiang.xui.XUI;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
-import org.json.JSONException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,16 +54,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> fragments=new ArrayList<>();
     private List<String> fragmentTitles=new ArrayList<>();
     private Button btnForLogIn;
-    private TextView searchtxt;
     private ViewPager viewpgr;
-    private String chose;
-    private LinearLayout mLinearLayout;
+    public String choose="";
+    public JSONObject receivedMessage=new JSONObject();
     private ImageView tabAdd;
-    private AdapterView mAdaptView;
+    String search_url="typeOpen/open/instanceList";
     private TabLayout tabLayout;
     private String main_activity_url="/api/uri/getname";
+    private SearchView searchView;
     private ItemFragment itemFragment[];
-    String searchcontent;
     AdapterView.OnItemSelectedListener a;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +70,17 @@ public class MainActivity extends AppCompatActivity {
         XUI.debug(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Drawable searchimg=getResources().getDrawable(R.drawable.search);
+//        Drawable searchimg=getResources().getDrawable(R.drawable.search);
         tabAdd = findViewById(R.id.tab_add);
-        searchimg.setBounds(10,0,110,100);
+//        searchimg.setBounds(10,0,110,100);
         init();
-        searchtxt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-            }
-        });
+//        searchtxt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent=new Intent(MainActivity.this, SearchActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         tabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        searchtxt.setCompoundDrawables(searchimg,null,null,null);
-        searchcontent=searchtxt.getText().toString();
+//        searchtxt.setCompoundDrawables(searchimg,null,null,null);
+//        searchcontent=searchtxt.getText().toString();
 
 
         btnForLogIn.setOnClickListener(new View.OnClickListener() {
@@ -102,13 +105,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void init(){
         item = new ArrayList<String>();
-        searchtxt=findViewById(R.id.searchText);
+        searchView=findViewById(R.id.searchViewInMain);
         tabLayout=findViewById(R.id.tablayout1);
         btnForLogIn=findViewById(R.id.btn_for_login);
         viewpgr=findViewById(R.id.viewpgr1);
         itemFragment=new ItemFragment[all_subject_item.length];
         initViewPager();
         tabLayout.setupWithViewPager(viewpgr);
+        initSearchView(searchView,MainActivity.this);
     }
     private void initViewPager() {
         ItemFragment itemFragment;
@@ -150,36 +154,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public class ItemAdapter extends RecyclerView.Adapter<MainActivity.ItemAdapter.ItemViewHolder>{
-        ItemAdapter(Context context)
+        ItemAdapter(Context context,String s)
         {
             mContext=context;
+            chooseSubject=s;
         }
         private String name;
         private String chooseSubject;
-        class ItemViewHolder extends RecyclerView.ViewHolder{
-            private TextView labeltxt,categorytxt;
-            public ItemViewHolder(View view)
-            {
-                super(view);
-                labeltxt=view.findViewById(R.id.label);
-                img=view.findViewById(R.id.img);
-                categorytxt=view.findViewById(R.id.category);
-                searchline=view.findViewById(R.id.search_line);
-                searchline.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent f=new Intent(MainActivity.this,EntityActivity.class);
-                        f.putExtra("name",name);
-                        f.putExtra("subject",chooseSubject);
-                        startActivity(f);
-                    }
-                });
-            }
-        }
-        public void addsubjectname(String s)
-        {
-            chooseSubject=s;
-        }
+        private int size=0;
+        private JSONArray subject=new JSONArray();
+        private Context mContext;
+        private LinearLayout searchline;
+        private String for_pic_chose;
+        private ImageView img;
         public void addSubject(JSONArray arr) {
             subject=arr;
             if(subject.size()<=10)
@@ -187,12 +174,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 size=10;
         }
-        private int size=0;
-        private JSONArray subject=new JSONArray();
-        private Context mContext;
-        private LinearLayout searchline;
-        private String for_pic_chose;
-        private ImageView img;
         public MainActivity.ItemAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
         {
             return new MainActivity.ItemAdapter.ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
@@ -205,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(MainActivity.ItemAdapter.ItemViewHolder holder, int position)
         {
             name=subject.getJSONObject(position).get("name").toString();
-            System.out.println(name);
             holder.labeltxt.setText(subject.getJSONObject(position).get("name").toString());
             switch (for_pic_chose)
             {
@@ -229,6 +209,26 @@ public class MainActivity extends AppCompatActivity {
         public int getItemCount(){
             return size;
         }
+        class ItemViewHolder extends RecyclerView.ViewHolder{
+            private TextView labeltxt,categorytxt;
+            public ItemViewHolder(View view)
+            {
+                super(view);
+                labeltxt=view.findViewById(R.id.label);
+                img=view.findViewById(R.id.img);
+                categorytxt=view.findViewById(R.id.category);
+                searchline=view.findViewById(R.id.search_line);
+                searchline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                            Intent f = new Intent(MainActivity.this, EntityActivity.class);
+                            f.putExtra("name", labeltxt.getText());
+                            f.putExtra("subject", chooseSubject);
+                            startActivity(f);
+                }
+                });
+            }
+        }
     }
     public void initfragment(int position)
     {
@@ -237,10 +237,9 @@ public class MainActivity extends AppCompatActivity {
             Map<String,String> map=new HashMap();
             map.put("subject",chooseSubject);
             try {
-                ItemAdapter itemAdapter=new ItemAdapter(MainActivity.this);
+                ItemAdapter itemAdapter=new ItemAdapter(MainActivity.this,chooseSubject);
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_url, map,false);
                 itemAdapter.addpic(chooseSubject);
-                itemAdapter.addsubjectname(chooseSubject);
                 itemAdapter.addSubject(msg.getJSONArray("data"));
                 ItemFragment fragment = new ItemFragment(chooseSubject,itemAdapter,MainActivity.this);
                 itemFragment[position]=fragment;
@@ -249,6 +248,48 @@ public class MainActivity extends AppCompatActivity {
             {
                 System.out.println(e);
             }
+    }
+    public void initSearchView(SearchView searchView,Context mcontext)
+    {
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setIconifiedByDefault(true);
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                try {
+                    receivedMessage.clear();
+                    for(int i=0;i<all_subject_item.length;i++)
+                    {
+                        Map<String,String> map =new HashMap<String,String>();
+                        map.put("course",  CheckSubject(all_subject_item[i]));
+                        map.put("searchKey",s);
+                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+                        if(msg.getJSONArray("data").size()!=0) {
+                            receivedMessage.put(CheckSubject(all_subject_item[i]),msg);
+                        }
+                    }
+                    Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                    intent.putExtra("msg",receivedMessage.toString());
+                    intent.putExtra("name",s);
+                    startActivity(intent);
+                }
+                catch (Exception e)
+                {
+                    System.out.println(e);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
     public String CheckSubject(String TITLE)
     {
