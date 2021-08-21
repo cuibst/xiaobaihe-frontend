@@ -11,8 +11,6 @@ o
 ?app/src/main/java/com/java/cuiyikai/adapters/OptionAdapter.java,6\e\6ee12cb93c8b1d7e5236120981704b003583f566
 p
 @app/src/main/java/com/java/cuiyikai/adapters/SubjectAdapter.java,d\4\d459ee71e63013a7890c82167fc2f996fa687fa2
-o
-?app/src/main/java/com/java/cuiyikai/fragments/ItemFragment.java,8\8\88b543b8f8a404dc9f5e7be08cda17f8534f7300
 ]
 -app/src/main/java/com/java/cuiyikai/test.java,e\9\e914535b590b46a4e2edb822f4e0d724876ef66d
 s
