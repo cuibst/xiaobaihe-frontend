@@ -13,4 +13,13 @@
     <string name="camera">拍照上传</string>
     <string name="take_photo">拍照</string>
     <string name="from_album">从相册选择</string>
+    <string name="chinese">语文</string>
+    <string name="math">数学</string>
+    <string name="english">英语</string>
+    <string name="physics">物理</string>
+    <string name="chemistry">化学</string>
+    <string name="biology">生物</string>
+    <string name="geo">地理</string>
+    <string name="history">历史</string>
+    <string name="politcs">政治</string>
 </resources>

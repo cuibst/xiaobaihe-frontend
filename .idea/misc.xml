@@ -29,6 +29,7 @@
         <entry key="..\:/androidhomework/app/src/main/res/layout/fragment_item_recommend.xml" value="0.146875" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/info_not_found_view.xml" value="0.13854166666666667" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_bio.xml" value="0.16354166666666667" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/layout_camera.xml" value="0.15" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_chem.xml" value="0.16354166666666667" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_chinese.xml" value="0.176" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_english.xml" value="0.176" />
@@ -36,13 +37,17 @@
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_math.xml" value="0.176" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_pol.xml" value="0.1431159420289855" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_rem.xml" value="0.1431159420289855" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/option_item.xml" value="0.2269021739130435" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/problem_item.xml" value="0.25364583333333335" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/property_item.xml" value="0.25364583333333335" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/relation_item.xml" value="0.25364583333333335" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/search_content.xml" value="0.176" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/search_dialog.xml" value="0.15" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/search_fragment.xml" value="0.2390625" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/searchview.xml" value="0.14322916666666666" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/test.xml" value="0.2" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/test1.xml" value="0.2164855072463768" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/test_layout.xml" value="0.2269021739130435" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/green_radius.xml" value="0.2947916666666667" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/orange_radius.xml" value="0.44947916666666665" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/red_radius.xml" value="0.2947916666666667" />

@@ -16,16 +16,6 @@
             android:orientation="horizontal"
             android:layout_weight="1"
             android:layout_height="match_parent">
-<!--<<<<<<< HEAD-->
-<!--            android:layout_height="50dp">-->
-<!--            <Spinner-->
-<!--                android:id="@+id/spinner_1"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:layout_margin="5dp"-->
-<!--                android:entries="@array/subject"-->
-<!--                android:spinnerMode="dropdown"></Spinner>-->
-<!--=======-->
 
 
             <ImageView
@@ -36,20 +26,24 @@
                 android:layout_gravity="center"
                 android:src="@drawable/back"
                 android:background="#2894FF"
-                android:gravity="right"></ImageView>
-
-<!--&gt;>>>>>> category-->
-            <EditText
-                android:id="@+id/searchText"
-                android:layout_marginTop="8dp"
+                ></ImageView>
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:background="@drawable/white_radius"
+                android:layout_height="match_parent">
+            <SearchView
+                android:id="@+id/searchViewInSearch"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_gravity="right"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 >
-            </EditText>
+            </SearchView>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/search_rcy"
         android:layout_width="match_parent"
