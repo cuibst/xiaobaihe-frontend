@@ -25,11 +25,11 @@ public class ItemFragment extends Fragment {
     public Context context;
     public  static String TITLE = "tile";
     public RecyclerView.LayoutManager layoutManager;
-    public MainActivity.ItemAdapter itemAdapter;
+    public MainFragment.ItemAdapter itemAdapter;
     public  static String main_activity_url="http://183.172.183.37:8080/api/uri/getname";
     public ItemFragment() {
     }
-    public ItemFragment(String s, MainActivity.ItemAdapter a, Context c)
+    public ItemFragment(String s, MainFragment.ItemAdapter a, Context c)
     {
         super();
         TITLE=s;

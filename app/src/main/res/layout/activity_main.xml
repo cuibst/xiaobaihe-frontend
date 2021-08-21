@@ -21,101 +21,27 @@
                 android:layout_width="match_parent"
                 android:background="#2894FF"
                 android:layout_weight="10"
-                android:layout_height="50dp"
-                ></Button>
+                android:layout_height="50dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:background="#2894FF"
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:layout_height="50dp">
-            <SearchView
-                android:layout_gravity="right"
-                android:id="@+id/searchViewInMain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </SearchView>
-                <!--                <TextView-->
-<!--                    android:id="@+id/searchText"-->
-<!--                    android:layout_margin="3dp"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="42dp"-->
-<!--                    android:background="@drawable/white_radius">-->
-
-<!--                </TextView>-->
+                <SearchView
+                    android:layout_gravity="right"
+                    android:id="@+id/searchViewInMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </SearchView>
             </LinearLayout>
         </LinearLayout>
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/rcy_1"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent">-->
-
-<!--        </androidx.recyclerview.widget.RecyclerView>-->
-
-<!--        <ScrollView-->
-<!--            android:id="@+id/scrollline"-->
-<!--            android:layout_below="@id/searchline"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
-<!--        <LinearLayout-->
-<!--            android:id="@+id/scrollline1"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal">-->
-<!--        </LinearLayout>-->
-<!--        </ScrollView>-->
-
-
-        <RelativeLayout
-            android:id="@+id/relate_1"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:orientation="vertical"
-            android:layout_below="@+id/searchline">
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tablayout1"
-                android:layout_width="match_parent"
-                app:tabIndicatorColor="@color/purple_200"
-                android:background="@drawable/orange_radius"
-                app:tabSelectedTextColor="@color/purple_200"
-                android:layout_height="40dp"
-                app:tabMode="scrollable"
-                android:layout_toLeftOf="@+id/tab_add">
-            </com.google.android.material.tabs.TabLayout>
-
-
-
-            <ImageView
-                android:id="@+id/tab_add"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:background="#FFFFFF"
-                android:src="@drawable/tab_extra"
-                />
-        </RelativeLayout>
 
         <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpgr1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/relate_1">
-
-        </androidx.viewpager.widget.ViewPager>
-        <!--        <com.xuexiang.xui.widget.tabbar.EasyIndicator-->
-<!--            android:id="@+id/easy_indicator"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-
-<!--            app:indicator_line_show="true"-->
-<!--            app:indicator_line_color="#0088FF"-->
-<!--            app:indicator_height="42dp"-->
-<!--            app:indicator_textSize="13sp"-->
-<!--            app:indicator_width="0dp"-->
-<!--            android:gravity="center|bottom"/>-->
-
-
+            android:layout_height="match_parent"
+            android:layout_below="@id/searchline"
+            android:id="@+id/mainPager"/>
 
     </RelativeLayout>
     <com.chaychan.library.BottomBarLayout
