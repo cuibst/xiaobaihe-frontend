@@ -340,6 +340,8 @@ public class EntityActivity extends AppCompatActivity {
 
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    private boolean loadingFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -356,7 +358,12 @@ public class EntityActivity extends AppCompatActivity {
         titleView.setText(entityName);
 
         LoadingDialog loadingDialog = new LoadingDialog(EntityActivity.this);
+        loadingDialog.setDimissListener(() -> {
+            if(!loadingFlag)
+                EntityActivity.this.finish();
+        });
         loadingDialog.setLoadingText("加载中")
+                .setInterceptBack(false)
                 .setSuccessText("加载成功")
                 .setFailedText("加载失败")
                 .show();
@@ -371,6 +378,7 @@ public class EntityActivity extends AppCompatActivity {
                         loadingDialog.close();
                     else
                         loadingDialog.loadSuccess();
+                    loadingFlag = true;
                 } else if (message.what == 2) {
                     loadingDialog.loadFailed();
                 } else if (message.what == 3) {
