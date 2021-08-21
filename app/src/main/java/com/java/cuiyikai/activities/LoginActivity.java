@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                     mainApplication.setSavePassword("");
                     mainApplication.setSaveUsername(username);
                 }
+                mainApplication.dumpCacheData();
                 this.finish();
             } catch (Exception e) {
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
