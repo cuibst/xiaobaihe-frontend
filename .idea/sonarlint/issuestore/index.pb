@@ -19,8 +19,6 @@ s
 Capp/src/main/java/com/java/cuiyikai/utilities/DensityUtilities.java,3\e\3eb83ebe4348a7c3d0fe26d80b57647e54ed91d9
 v
 Fapp/src/main/java/com/java/cuiyikai/utilities/PermissionUtilities.java,b\4\b4c2eab2c2b46d58ba669857e693cda430c22104
-r
-Bapp/src/main/java/com/java/cuiyikai/activities/SearchActivity.java,6\a\6a45b42281b379b3f125ce227e00b2fd7af60b18
 t
 Dapp/src/main/java/com/java/cuiyikai/activities/CategoryActivity.java,c\5\c576897c5745de9bcd25eec05a6549c2a509ca5c
 t
@@ -60,8 +58,6 @@ p
 @app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-p
-@app/src/main/java/com/java/cuiyikai/activities/MainActivity.java,e\d\ed6a39c1d1f855e13a1155ad9ab61ea26ce0c66e
 v
 Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
 v
