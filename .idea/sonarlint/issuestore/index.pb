@@ -7,18 +7,10 @@ s
 Capp/src/main/java/com/java/cuiyikai/widgets/ColorTrackTextView.java,e\2\e276707e785c266fb9af25f9454df216d289a1c8
 v
 Fapp/src/main/java/com/java/cuiyikai/widgets/ListViewForScrollView.java,2\3\23421b4819dc389306582ddb25142dc8ec0f5591
-l
-<app/src/main/java/com/java/cuiyikai/adapters/RcyAdapter.java,1\0\10e874c40c4ef130755b5d5758e6753c1195a0bc
 o
 ?app/src/main/java/com/java/cuiyikai/adapters/OptionAdapter.java,6\e\6ee12cb93c8b1d7e5236120981704b003583f566
 p
 @app/src/main/java/com/java/cuiyikai/adapters/SubjectAdapter.java,d\4\d459ee71e63013a7890c82167fc2f996fa687fa2
-q
-Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
-q
-Aapp/src/main/java/com/java/cuiyikai/adapters/RelationAdapter.java,f\7\f762971bdcdc186f3a7e9dccc5c7b616e379ae61
-p
-@app/src/main/java/com/java/cuiyikai/entities/PropertyEntity.java,7\f\7f5723bbb8058cbac89f4fcbe30e5c22371141d7
 o
 ?app/src/main/java/com/java/cuiyikai/fragments/ItemFragment.java,8\8\88b543b8f8a404dc9f5e7be08cda17f8534f7300
 ]
@@ -43,8 +35,6 @@ w
 Gapp/src/androidTest/java/com/java/cuiyikai/ExampleInstrumentedTest.java,e\4\e46e66911447fe0f3f0b943894b48ad02fa1c68d
 >
 app/.gitignore,5\1\51e1c5d383dfaa35e0e7e5873a0a99355a86880f
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 F
 app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 X
@@ -56,8 +46,6 @@ X
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
 ;
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 A
@@ -68,3 +56,13 @@ p
 @app/src/main/java/com/java/cuiyikai/entities/RelationEntity.java,1\9\1923b44d9a25ffcc836db52b0005811847c390fd
 s
 Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
+p
+@app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+p
+@app/src/main/java/com/java/cuiyikai/activities/MainActivity.java,e\d\ed6a39c1d1f855e13a1155ad9ab61ea26ce0c66e
+v
+Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
+v
+Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6

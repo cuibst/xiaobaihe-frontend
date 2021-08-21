@@ -2,26 +2,40 @@ package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.telecom.Call;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.adapters.BottomFavouriteAdapter;
 import com.java.cuiyikai.adapters.ProblemAdapter;
 import com.java.cuiyikai.adapters.PropertyAdapter;
 import com.java.cuiyikai.adapters.RelationAdapter;
 import com.java.cuiyikai.database.DatabaseEntity;
 import com.java.cuiyikai.database.EntityDatabaseHelper;
+import com.java.cuiyikai.entities.BottomFavouriteEntity;
 import com.java.cuiyikai.entities.PropertyEntity;
 import com.java.cuiyikai.entities.RelationEntity;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
@@ -31,6 +45,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -160,6 +175,8 @@ public class EntityActivity extends AppCompatActivity {
     private List<JSONObject> questionFullList;
     private List<JSONObject> questionPrevList;
 
+    private String entityName;
+
     private class EntityActivityLoadCallable implements Callable<String> {
 
         private final Handler handler;
@@ -243,8 +260,8 @@ public class EntityActivity extends AppCompatActivity {
 
             Bundle prevBundle = prevIntent.getExtras();
 
-            String entityName = prevBundle.getString("name", "李白");
             String subject = prevBundle.getString("subject", "chinese");
+
             try {
                 initJsonObjects(entityName, subject);
             } catch (InterruptedException | ExecutionException e) {
@@ -255,9 +272,6 @@ public class EntityActivity extends AppCompatActivity {
 
 
             System.out.printf("load finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
-
-            TextView titleView = (TextView) findViewById(R.id.entityTitle);
-            titleView.setText(entityName);
 
             System.out.printf("Handling relations: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
@@ -331,12 +345,24 @@ public class EntityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entity);
 
+        Intent prevIntent = getIntent();
+
+        Bundle prevBundle = prevIntent.getExtras();
+
+        entityName = prevBundle.getString("name", "李白");
+        String subject = prevBundle.getString("subject", "chinese");
+
+        TextView titleView = (TextView) findViewById(R.id.entityTitle);
+        titleView.setText(entityName);
+
         LoadingDialog loadingDialog = new LoadingDialog(EntityActivity.this);
         loadingDialog.setLoadingText("加载中")
                 .setSuccessText("加载成功")
                 .setFailedText("加载失败")
                 .show();
+
         long start = System.currentTimeMillis();
+
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
@@ -390,5 +416,130 @@ public class EntityActivity extends AppCompatActivity {
             }
         };
         executorService.submit(new EntityActivityLoadCallable(handler));
+
+        System.out.println("Finish submitting!!");
+
+        if(((MainApplication)getApplication()).getFavourite() != null) {
+            System.out.println("Into favourite!!");
+
+            Dialog bottomDialog = new Dialog(EntityActivity.this, R.style.BottomDialog);
+            View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_favourite, null);
+            bottomDialog.setContentView(contentView);
+            bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+            bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+            params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(this, 16f);
+            params.bottomMargin = DensityUtilities.dp2px(this, 8f);
+            contentView.setLayoutParams(params);
+
+            bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
+
+            updateFavourite(((MainApplication)getApplication()).getFavourite());
+            ImageButton button = (ImageButton) findViewById(R.id.favouriteButton);
+
+            bottomFavouriteView.setAdapter(bottomFavouriteAdapter); // TODO: finish the adapter
+            System.out.println("Dialog finish initialization!!");
+
+            button.setOnClickListener((View view) -> bottomDialog.show());
+
+            Button finishButton = (Button) contentView.findViewById(R.id.buttonBottomFinish);
+            finishButton.setOnClickListener((View view) -> {
+                Set<String> checked = bottomFavouriteAdapter.getCheckedSet();
+                JSONObject args = new JSONObject();
+                args.put("name", entityName);
+                args.put("subject", subject);
+                args.put("checked", JSON.toJSONString(checked));
+                try {
+                    RequestBuilder.sendBackendPostRequest("/api/favourite/updateFavourite", args, true);
+                    ((MainApplication) getApplication()).updateFavourite();
+                    updateFavourite(((MainApplication) getApplication()).getFavourite());
+                } catch (BackendTokenExpiredException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException | ExecutionException e) {
+                    Thread.currentThread().interrupt();
+                    e.printStackTrace();
+                }
+                bottomDialog.dismiss();
+            });
+
+            Dialog addNewDirectoryDialog = new Dialog(EntityActivity.this, R.style.BottomDialog);
+            View directoryContentView = LayoutInflater.from(this).inflate(R.layout.layout_add_new_directory, null);
+            addNewDirectoryDialog.setContentView(directoryContentView);
+            addNewDirectoryDialog.getWindow().setGravity(Gravity.CENTER);
+            addNewDirectoryDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+            params = (ViewGroup.MarginLayoutParams) directoryContentView.getLayoutParams();
+            params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(this, 16f);
+            params.bottomMargin = DensityUtilities.dp2px(this, 8f);
+            directoryContentView.setLayoutParams(params);
+
+            Button confirm = (Button) directoryContentView.findViewById(R.id.addDirectoryConfirm);
+            Button cancel = (Button) directoryContentView.findViewById(R.id.addDirectoryCancel);
+
+            cancel.setOnClickListener((View view) -> addNewDirectoryDialog.dismiss());
+
+            confirm.setOnClickListener((View view) -> {
+                EditText editText = directoryContentView.findViewById(R.id.newDirectoryName);
+                if(editText.getText().equals(""))
+                    return;
+                JSONObject args = new JSONObject();
+                args.put("directory", editText.getText().toString());
+                try {
+                    RequestBuilder.sendBackendPostRequest("/api/favourite/addDirectory", args, true);
+                } catch (BackendTokenExpiredException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException | ExecutionException e) {
+                    Thread.currentThread().interrupt();
+                    e.printStackTrace();
+                }
+                updateFavourite(((MainApplication) getApplication()).getFavourite());
+                addNewDirectoryDialog.dismiss();
+            });
+
+            Button addNewDirectoryButton = (Button) contentView.findViewById(R.id.bottomAddNewFavourite);
+            addNewDirectoryButton.setOnClickListener((View view) -> addNewDirectoryDialog.show());
+            System.out.println("Done!!");
+        }
+    }
+
+    private ListViewForScrollView bottomFavouriteView;
+    private BottomFavouriteAdapter bottomFavouriteAdapter;
+
+    public void updateFavourite(JSONObject favourite) {
+
+        ((MainApplication) getApplication()).updateFavourite();
+
+        JSONObject favouriteJson = ((MainApplication)getApplication()).getFavourite();
+        List<BottomFavouriteEntity> favouriteEntities = new ArrayList<>();
+
+        for (Map.Entry<String, Object> entry : favouriteJson.entrySet()) {
+            JSONArray array = JSON.parseArray(entry.getValue().toString());
+            boolean flag = false;
+            for(Object val : array) {
+                JSONObject object = JSON.parseObject(val.toString());
+                if(object.getString("name").equals(entityName)) {
+                    flag = true;
+                    break;
+                }
+            }
+            favouriteEntities.add(new BottomFavouriteEntity(flag, entry.getKey()));
+        }
+
+        bottomFavouriteAdapter = new BottomFavouriteAdapter(EntityActivity.this, R.layout.bottom_dialog_favourite_item, favouriteEntities);
+        bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
+
+        ImageButton button = (ImageButton) findViewById(R.id.favouriteButton);
+        button.setVisibility(View.VISIBLE);
+        for(Map.Entry<String, Object> entry : favourite.entrySet()) {
+            JSONArray array = JSON.parseArray(entry.getValue().toString());
+            for(Object obj : array) {
+                JSONObject object = JSON.parseObject(obj.toString());
+                System.out.printf("Receive object in favourite %s%n", object.getString("name"));
+                if(object.getString("name").equals(entityName)) {
+                    button.setBackgroundResource(R.drawable.star_yellow_16);
+                    return;
+                }
+            }
+        }
+        button.setBackgroundResource(R.drawable.star_gray_16);
     }
 }

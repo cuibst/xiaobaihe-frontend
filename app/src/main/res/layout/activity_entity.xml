@@ -11,11 +11,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp">
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/entityTitle"
-            android:textSize="50sp"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/entityTitle"
+                android:textSize="40sp"
+                android:singleLine="false"
+                android:maxWidth="300dp"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:id="@+id/favouriteButton"
+                android:background="@drawable/star_yellow_16"
+                android:maxWidth="@dimen/size_16sp"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

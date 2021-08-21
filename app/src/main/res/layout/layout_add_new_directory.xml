@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_radius">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addNewDirectory"
+        android:textSize="17sp"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/newDirectoryHint"
+        android:id="@+id/newDirectoryName"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?buttonBarButtonStyle"
+            android:text="@string/confirm"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="20dp"
+            android:id="@+id/addDirectoryConfirm"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?buttonBarButtonStyle"
+            android:text="@string/cancel"
+            android:layout_toStartOf="@id/addDirectoryConfirm"
+            android:id="@+id/addDirectoryCancel"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
