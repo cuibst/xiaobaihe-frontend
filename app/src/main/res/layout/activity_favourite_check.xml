@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.FavouriteCheckActivity"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/directoryTabLayout"
+            android:layout_width="match_parent"
+            app:tabIndicatorColor="@color/purple_200"
+            android:background="@drawable/orange_radius"
+            app:tabSelectedTextColor="@color/purple_200"
+            android:layout_height="40dp"
+            app:tabMode="scrollable"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btnAddNewDirectory"/>
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="+"
+            android:id="@+id/btnAddNewDirectory"
+            android:background="@drawable/orange_radius"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/directoryPager"/>
+
+</LinearLayout>

@@ -24,7 +24,7 @@ public class BottomFavouriteAdapter extends ArrayAdapter<BottomFavouriteEntity> 
 
     private final int resourceId;
 
-    private final EntityActivity entityActivity;
+    private final Context entityActivity;
 
     private final Set<String> checkedSet = new HashSet<>();
 
@@ -35,7 +35,7 @@ public class BottomFavouriteAdapter extends ArrayAdapter<BottomFavouriteEntity> 
     public BottomFavouriteAdapter(Context context, int textViewResourceId, List<BottomFavouriteEntity> favouriteEntities) {
         super(context, textViewResourceId, favouriteEntities);
         resourceId = textViewResourceId;
-        this.entityActivity = (EntityActivity) context;
+        this.entityActivity = context;
     }
 
     @Override

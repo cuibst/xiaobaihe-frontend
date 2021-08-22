@@ -21,11 +21,19 @@
     <string name="biology">生物</string>
     <string name="geo">地理</string>
     <string name="history">历史</string>
-    <string name="politcs">政治</string>
+    <string name="politics">政治</string>
     <string name="finish">完成</string>
     <string name="editFavourite">收藏至：</string>
     <string name="addNewDirectory">添加新收藏夹</string>
     <string name="newDirectoryHint">请输入新收藏夹名称</string>
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
+    <string name="generateProblems">生成试题</string>
+    <string name="generateMap">生成复习提纲</string>
+    <string name="deleteDirectory">删除文件夹</string>
+    <string name="pleaseLogin">请先登录！</string>
+    <string name="checkFavourite">收藏管理</string>
+    <string name="moveFavourite">移动</string>
+    <string name="selectAll">全选</string>
+    <string name="deleteItems">删除</string>
 </resources>
