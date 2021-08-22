@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
@@ -36,7 +38,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
     private DirectoryFragment[] directoryFragments;
     private String[] directoryNames;
 
-    private FragmentPagerAdapter adapter;
+    private FragmentStatePagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +48,24 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         directoryPager = findViewById(R.id.directoryPager);
         directoryNameTab = findViewById(R.id.directoryTabLayout);
         directoryNameTab.setupWithViewPager(directoryPager);
-        updateDirectories(true);
 
-        adapter = new FragmentPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
+        directoryFragments = new DirectoryFragment[favourite.size()];
+        directoryNames = new String[favourite.size()];
+        directoryNames = favourite.keySet().toArray(directoryNames);
+
+        adapter = new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
             public Fragment getItem(int position) {
                 if(directoryFragments[position] == null)
                     directoryFragments[position] = DirectoryFragment.newInstance(directoryNames[position]);
                 return directoryFragments[position];
+            }
+
+            @Override
+            public int getItemPosition(Object object) {
+                return PagerAdapter.POSITION_NONE;
             }
 
             @Override
@@ -95,6 +106,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
                 args.put("directory", editText.getText().toString());
                 try {
                     RequestBuilder.sendBackendPostRequest("/api/favourite/addDirectory", args, true);
+                    ((MainApplication) getApplication()).updateFavourite();
                 } catch (BackendTokenExpiredException e) {
                     e.printStackTrace();
                 } catch (InterruptedException | ExecutionException e) {
@@ -114,11 +126,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
     }
 
     public void updateDirectories(boolean initialize) {
-        JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
-        directoryFragments = new DirectoryFragment[favourite.size()];
-        directoryNames = new String[favourite.size()];
-        directoryNames = favourite.keySet().toArray(directoryNames);
-        if(!initialize)
-            adapter.notifyDataSetChanged();
+        directoryPager.setCurrentItem(0);
+        recreate();
     }
 }

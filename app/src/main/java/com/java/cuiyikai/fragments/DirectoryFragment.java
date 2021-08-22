@@ -243,6 +243,7 @@ public class DirectoryFragment extends Fragment {
             args.put("directory", directoryName);
             try {
                 RequestBuilder.asyncSendBackendPostRequest("/api/favourite/removeDirectory", args, true);
+                ((MainApplication) getActivity().getApplication()).updateFavourite();
             } catch (Exception e) {
                 e.printStackTrace();
             }
