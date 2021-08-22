@@ -34,8 +34,8 @@ import java.util.concurrent.Future;
  * This is an utility class.
  */
 public class RequestBuilder {
-    private static final String PHONE = "15910826331";
-    private static final String PASSWORD = "cbst20001117";
+    private static final String PHONE = "16688092093";
+    private static final String PASSWORD = "0730llhh";
     private static String token = null;
     public static final String BASE_URL = "http://open.edukg.cn/opedukg/api/";
     private static final String POST_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8";
@@ -219,6 +219,9 @@ public class RequestBuilder {
             try {
                 JSONObject reply = sendBackendGetRequest("/api/login/exchangeToken", args, false);
                 backendToken = reply.getString("token");
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_WEEK, 1);
+                expireTime = calendar.getTimeInMillis();
             } catch (BackendTokenExpiredException | InterruptedException | ExecutionException  | NullPointerException e) {
                 e.printStackTrace();
                 return false;
