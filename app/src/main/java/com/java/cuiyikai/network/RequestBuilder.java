@@ -221,6 +221,9 @@ public class RequestBuilder {
             try {
                 JSONObject reply = sendBackendGetRequest("/api/login/exchangeToken", args, false);
                 backendToken = reply.getString("token");
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_WEEK, 1);
+                expireTime = calendar.getTimeInMillis();
             } catch (BackendTokenExpiredException | InterruptedException | ExecutionException  | NullPointerException e) {
                 e.printStackTrace();
                 return false;

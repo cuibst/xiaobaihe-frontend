@@ -18,10 +18,12 @@ import android.widget.Button;
 import android.widget.SearchView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chaychan.library.BottomBarItem;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
 import com.java.cuiyikai.fragments.MainFragment;
+import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
 import android.widget.Toast;
@@ -70,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //FIXME: add all four fragments, current 2 of 4.
         fragmentList.add(new MainFragment());
+        fragmentList.add(new UserPageEntryFragment());
 
         ViewPager mainPager = findViewById(R.id.mainPager);
         mainPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -84,6 +88,16 @@ public class MainActivity extends AppCompatActivity {
             public int getCount() {
                 return fragmentList.size();
             }
+        });
+
+        BottomBarItem btnHome = (BottomBarItem) findViewById(R.id.btnBottomBarHome);
+        btnHome.setOnClickListener((View view) -> {
+            mainPager.setCurrentItem(0);
+        });
+
+        BottomBarItem btnUser = (BottomBarItem) findViewById(R.id.btnBottomBarUser);
+        btnUser.setOnClickListener((View view) -> {
+            mainPager.setCurrentItem(1); //FIXME: this should be 3!!
         });
     }
 
