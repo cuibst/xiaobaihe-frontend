@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson.JSONArray;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
-import com.java.cuiyikai.fragments.MainFragment;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder>{
     public ItemAdapter(Context context, String s)

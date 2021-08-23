@@ -3,21 +3,17 @@ package com.java.cuiyikai.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.alibaba.fastjson.JSONArray;
 import com.java.cuiyikai.adapters.ItemAdapter;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -97,6 +93,8 @@ public class ItemFragment extends Fragment {
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    xRecyclerView.refreshComplete();
+                    Toast.makeText(context,"更新失败，请重试",Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -108,17 +106,13 @@ public class ItemFragment extends Fragment {
                     System.out.println(itemAdapter.chooseSubject);
                     JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
                     itemAdapter.addMoreSubject(msg.getJSONArray("data"));
-//                    JSONArray oldSubject=itemAdapter.subject;
-//                    String rememberedSubject=itemAdapter.chooseSubject;
-//                    itemAdapter=null;
-//                    itemAdapter=new ItemAdapter(getActivity(),rememberedSubject);
-//                    itemAdapter.addSubject(oldSubject);
-//                    xRecyclerView.setAdapter(itemAdapter);
                     xRecyclerView.loadMoreComplete();
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    xRecyclerView.loadMoreComplete();
+                    Toast.makeText(context,"加载失败，请重试",Toast.LENGTH_LONG).show();
                 }
             }
         });

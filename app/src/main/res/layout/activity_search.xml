@@ -43,12 +43,31 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
+    <LinearLayout
+        android:id="@+id/lin2"
+        android:layout_below="@id/lin1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/selectButton"
+            android:text="筛选"
+            android:textSize="16sp"
+            android:background="#FFFFFF"
+            android:layout_gravity="right"
+            android:layout_width="50dp"
+            android:layout_height="40dp"/>
+    </LinearLayout>
+        <androidx.fragment.app.FragmentTabHost
+            android:layout_below="@id/lin2"
+            android:id="@+id/selectFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/search_rcy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/lin1">
+        android:layout_below="@id/selectFragment">
 
     </com.jcodecraeer.xrecyclerview.XRecyclerView>
 

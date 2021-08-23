@@ -110,7 +110,11 @@ public class MainActivity extends AppCompatActivity {
                         map.put("course",  checkSubject(all_subject_item[i]));
                         map.put("searchKey",s);
                         JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                        if(!msg.getJSONArray("data").isEmpty()) {
+                        if((String)msg.get("code")=="-1")
+                        {
+                            Toast.makeText(MainActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
                             receivedMessage.put(checkSubject(all_subject_item[i]),msg);
                         }
                     }

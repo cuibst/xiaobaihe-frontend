@@ -1,14 +1,11 @@
 package com.java.cuiyikai.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.java.cuiyikai.adapters.ItemAdapter;
 import androidx.annotation.NonNull;
@@ -16,19 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.tabs.TabLayout;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.CategoryActivity;
-import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.network.RequestBuilder;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,89 +93,6 @@ public class MainFragment extends Fragment {
             return all_subject_item[position];
         }
     }
-
-//    public class ItemAdapter extends RecyclerView.Adapter<MainFragment.ItemAdapter.ItemViewHolder>{
-//        ItemAdapter(Context context, String s)
-//        {
-//            mContext=context;
-//            chooseSubject=s;
-//        }
-//        public  String chooseSubject;
-//        private int size=0;
-//        private JSONArray subject=new JSONArray();
-//        private Context mContext;
-//        private LinearLayout searchline;
-//        private String for_pic_chose;
-//        private ImageView img;
-//        public void addSubject(JSONArray arr) {
-//            subject=arr;
-//            size = Math.min(subject.size(), 10);
-//        }
-//        public void addMoreSubject(JSONArray arr)
-//        {
-//            subject.addAll(arr);
-//            System.out.println(subject.toString());
-//            size = Math.min(subject.size(), 10);
-//        }
-//        public void clearSubject()
-//        {
-//            subject.clear();
-//        }
-//        public MainFragment.ItemAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
-//        {
-//            return new MainFragment.ItemAdapter.ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
-//        }
-//        public void addpic(String s)
-//        {
-//            for_pic_chose=s;
-//        }
-//        @Override
-//        public void onBindViewHolder(MainFragment.ItemAdapter.ItemViewHolder holder, int position)
-//        {
-//            holder.labeltxt.setText(subject.getJSONObject(position).get("name").toString());
-//            switch (for_pic_chose)
-//            {
-//                case "physics":
-//                    img.setImageResource(R.drawable.phy);
-//                    break;
-//                case "chemistry":
-//                    img.setImageResource(R.drawable.che);
-//                    break;
-//                case "biology":
-//                    img.setImageResource(R.drawable.bio);
-//                    break;
-//                default:
-//                    img.setImageResource(R.drawable.book);
-//                    break;
-//
-//            }
-//            holder.categorytxt.setText("");
-//        }
-//        @Override
-//        public int getItemCount(){
-//            return size;
-//        }
-//        class ItemViewHolder extends RecyclerView.ViewHolder{
-//            private TextView labeltxt,categorytxt;
-//            public ItemViewHolder(View view)
-//            {
-//                super(view);
-//                labeltxt=view.findViewById(R.id.label);
-//                img=view.findViewById(R.id.img);
-//                categorytxt=view.findViewById(R.id.category);
-//                searchline=view.findViewById(R.id.search_line);
-//                searchline.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent f = new Intent(getActivity(), EntityActivity.class);
-//                        f.putExtra("name", labeltxt.getText());
-//                        f.putExtra("subject", chooseSubject);
-//                        startActivity(f);
-//                    }
-//                });
-//            }
-//        }
-//    }
 
     private String main_activity_url="/api/uri/getname";
 
