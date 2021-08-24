@@ -3,6 +3,8 @@ package com.java.cuiyikai.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.alibaba.fastjson.JSONArray;
+import com.java.cuiyikai.adapters.ItemAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,11 +15,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.activities.MainActivity;
+import com.java.cuiyikai.network.RequestBuilder;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 
 import com.java.cuiyikai.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ItemFragment extends Fragment {
@@ -25,11 +33,12 @@ public class ItemFragment extends Fragment {
     public Context context;
     public  static String TITLE = "tile";
     public RecyclerView.LayoutManager layoutManager;
-    public MainFragment.ItemAdapter itemAdapter;
+    public ItemAdapter itemAdapter;
+    private String main_activity_backend_url="/api/uri/getname";
     public  static String main_activity_url="http://183.172.183.37:8080/api/uri/getname";
     public ItemFragment() {
     }
-    public ItemFragment(String s, MainFragment.ItemAdapter a, Context c)
+    public ItemFragment(String s, ItemAdapter a, Context c)
     {
         super();
         TITLE=s;
@@ -70,6 +79,49 @@ public class ItemFragment extends Fragment {
             view =inflater.inflate(R.layout.fragment_item_recommend, container, false);
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
         xRecyclerView.setAdapter(itemAdapter);
+        xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    Map<String,String> map=new HashMap<>();
+                    map.put("subject",itemAdapter.chooseSubject);
+                    System.out.println(itemAdapter.chooseSubject);
+                    JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                    String rememberedSubject=itemAdapter.chooseSubject;
+                    itemAdapter=null;
+                    itemAdapter=new ItemAdapter(getActivity(),rememberedSubject);
+                    itemAdapter.addSubject(msg.getJSONArray("data"));
+                    xRecyclerView.setAdapter(itemAdapter);
+                    xRecyclerView.refreshComplete();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onLoadMore() {
+                try {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("subject", itemAdapter.chooseSubject);
+                    System.out.println(itemAdapter.chooseSubject);
+                    JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                    itemAdapter.addMoreSubject(msg.getJSONArray("data"));
+//                    JSONArray oldSubject=itemAdapter.subject;
+//                    String rememberedSubject=itemAdapter.chooseSubject;
+//                    itemAdapter=null;
+//                    itemAdapter=new ItemAdapter(getActivity(),rememberedSubject);
+//                    itemAdapter.addSubject(oldSubject);
+//                    xRecyclerView.setAdapter(itemAdapter);
+                    xRecyclerView.loadMoreComplete();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
         return view;
     }
 }
