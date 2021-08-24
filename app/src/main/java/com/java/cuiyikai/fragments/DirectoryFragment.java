@@ -157,8 +157,16 @@ public class DirectoryFragment extends Fragment {
 
         favouriteItemList.setOnItemLongClickListener((View v, int adapterPosition) -> {
             favouriteAdapter.setEditable(true);
+            favouriteAdapter.getSelected()[adapterPosition] = true;
             favouriteAdapter.notifyDataSetChanged();
             view.findViewById(R.id.bottomBar).setVisibility(View.VISIBLE);
+        });
+
+        favouriteItemList.setOnItemClickListener((View v, int adapterPosition) -> {
+            if(favouriteAdapter.isEditable()) {
+                favouriteAdapter.getSelected()[adapterPosition] = !favouriteAdapter.getSelected()[adapterPosition];
+                favouriteAdapter.notifyDataSetChanged();
+            }
         });
 
         view.findViewById(R.id.btnSelectAll).setOnClickListener((View v) -> {
@@ -166,30 +174,31 @@ public class DirectoryFragment extends Fragment {
             favouriteAdapter.notifyDataSetChanged();
         });
 
+        Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_bottom_favourite, null);
+        contentView.findViewById(R.id.bottomAddNewFavourite).setVisibility(View.GONE);
+        bottomDialog.setContentView(contentView);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+        params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
+        params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
+        contentView.setLayoutParams(params);
+
+        ListViewForScrollView bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
+        JSONObject favouriteJson = ((MainApplication)getActivity().getApplication()).getFavourite();
+        List<BottomFavouriteEntity> entityList = new ArrayList<>();
+        for(String key : favouriteJson.keySet()) {
+            if(!key.equals(directoryName))
+                entityList.add(new BottomFavouriteEntity(false, key));
+        }
+
+        BottomFavouriteAdapter adapter = new BottomFavouriteAdapter(getActivity(), R.layout.bottom_dialog_favourite_item, entityList);
+
+        bottomFavouriteView.setAdapter(adapter);
+
         view.findViewById(R.id.btnMoveFavourite).setOnClickListener((View v) -> {
             //TODO: the logic for move!
-            Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
-            View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_bottom_favourite, null);
-            contentView.findViewById(R.id.bottomAddNewFavourite).setVisibility(View.GONE);
-            bottomDialog.setContentView(contentView);
-            bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
-            bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
-            params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
-            params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
-            contentView.setLayoutParams(params);
-
-            ListViewForScrollView bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
-            JSONObject favouriteJson = ((MainApplication)getActivity().getApplication()).getFavourite();
-            List<BottomFavouriteEntity> entityList = new ArrayList<>();
-            for(String key : favouriteJson.keySet()) {
-                if(!key.equals(directoryName))
-                    entityList.add(new BottomFavouriteEntity(false, key));
-            }
-
-            BottomFavouriteAdapter adapter = new BottomFavouriteAdapter(getActivity(), R.layout.bottom_dialog_favourite_item, entityList);
-
-            bottomFavouriteView.setAdapter(adapter);
 
             JSONArray newArray = new JSONArray();
             JSONArray moveArray = new JSONArray();
@@ -220,6 +229,33 @@ public class DirectoryFragment extends Fragment {
 
             bottomDialog.show();
         });
+
+        view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
+            //TODO: the logic for move!
+
+            JSONArray moveArray = new JSONArray();
+            for(int i=0;i<favouriteAdapter.getSelected().length;i++)
+                moveArray.add(favouriteAdapter.getFavouriteArray().get(i));
+
+            Button btnBottomFinish = contentView.findViewById(R.id.buttonBottomFinish);
+            btnBottomFinish.setOnClickListener((View vi) -> {
+                Set<String> checkedSet = adapter.getCheckedSet();
+                for(String targetName : checkedSet) {
+                    JSONObject args = new JSONObject();
+                    args.put("directory", targetName);
+                    args.put("json", moveArray);
+                    try {
+                        RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                bottomDialog.dismiss();
+            });
+
+            bottomDialog.show();
+        });
+
 
         view.findViewById(R.id.btnDeleteItems).setOnClickListener((View v) -> {
             //TODO: the logic for delete!

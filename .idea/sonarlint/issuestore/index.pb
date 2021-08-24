@@ -13,8 +13,6 @@ p
 -app/src/main/java/com/java/cuiyikai/test.java,e\9\e914535b590b46a4e2edb822f4e0d724876ef66d
 s
 Capp/src/main/java/com/java/cuiyikai/utilities/DensityUtilities.java,3\e\3eb83ebe4348a7c3d0fe26d80b57647e54ed91d9
-v
-Fapp/src/main/java/com/java/cuiyikai/utilities/PermissionUtilities.java,b\4\b4c2eab2c2b46d58ba669857e693cda430c22104
 t
 Dapp/src/main/java/com/java/cuiyikai/activities/CategoryActivity.java,c\5\c576897c5745de9bcd25eec05a6549c2a509ca5c
 t
@@ -66,8 +64,6 @@ o
 ?app/src/main/java/com/java/cuiyikai/fragments/ItemFragment.java,8\8\88b543b8f8a404dc9f5e7be08cda17f8534f7300
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
-h
-8app/src/main/java/com/java/cuiyikai/MainApplication.java,6\8\6842d713d7ae3d55ef273f2d94956292a15508a3
 p
 @app/src/main/java/com/java/cuiyikai/activities/MainActivity.java,e\d\ed6a39c1d1f855e13a1155ad9ab61ea26ce0c66e
 v

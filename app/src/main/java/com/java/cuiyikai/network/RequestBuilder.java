@@ -210,6 +210,12 @@ public class RequestBuilder {
 
     private static final String BACKEND_ADDRESS = "http://183.172.183.37:8080";
 
+    public interface OnTokenChangedListener {
+        public void onTokenChanged();
+    }
+
+    public static OnTokenChangedListener onTokenChangedListener = null;
+
     public static boolean checkedLogin() {
         if(backendToken == null)
             return false;
@@ -222,6 +228,8 @@ public class RequestBuilder {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DAY_OF_WEEK, 1);
                 expireTime = calendar.getTimeInMillis();
+                if(onTokenChangedListener != null)
+                    onTokenChangedListener.onTokenChanged();
             } catch (BackendTokenExpiredException | InterruptedException | ExecutionException  | NullPointerException e) {
                 e.printStackTrace();
                 return false;
@@ -233,6 +241,7 @@ public class RequestBuilder {
 
     public static void logOut() {
         backendToken = null;
+        onTokenChangedListener.onTokenChanged();
     }
 
     public static Future<String> getBackendToken(String username, String password) {
