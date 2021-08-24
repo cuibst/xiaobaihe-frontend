@@ -91,8 +91,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public void setFavouriteArray(JSONArray favouriteArray) {
         this.favouriteArray = favouriteArray;
-        selected = new boolean[favouriteArray.size()];
-        Arrays.fill(selected, false);
+        if(favouriteArray == null)
+            selected = null;
+        else {
+            selected = new boolean[favouriteArray.size()];
+            Arrays.fill(selected, false);
+        }
     }
 
     public FavouriteAdapter(DirectoryFragment directoryFragment, JSONArray favouriteArray) {
@@ -148,6 +152,6 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        return favouriteArray.size();
+        return favouriteArray == null ? 0 : favouriteArray.size();
     }
 }
