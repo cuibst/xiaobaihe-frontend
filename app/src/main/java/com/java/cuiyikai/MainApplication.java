@@ -59,6 +59,7 @@ public class MainApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        RequestBuilder.onTokenChangedListener = this::dumpCacheData;
     }
 
     public void dumpCacheData() {
