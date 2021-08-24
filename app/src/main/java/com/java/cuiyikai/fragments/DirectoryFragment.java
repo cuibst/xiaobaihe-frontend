@@ -248,6 +248,7 @@ public class DirectoryFragment extends Fragment {
                 e.printStackTrace();
             }
             ((FavouriteCheckActivity)getActivity()).updateDirectories(false);
+
         });
 
 

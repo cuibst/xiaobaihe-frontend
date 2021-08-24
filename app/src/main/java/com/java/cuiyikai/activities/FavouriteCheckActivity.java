@@ -5,8 +5,8 @@ import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CU
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -28,6 +28,7 @@ import com.java.cuiyikai.fragments.DirectoryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class FavouriteCheckActivity extends AppCompatActivity {
@@ -35,8 +36,8 @@ public class FavouriteCheckActivity extends AppCompatActivity {
     private ViewPager directoryPager;
     private TabLayout directoryNameTab;
 
-    private DirectoryFragment[] directoryFragments;
-    private String[] directoryNames;
+    private ArrayList<DirectoryFragment> directoryFragments;
+    private ArrayList<String> directoryNames;
 
     private FragmentStatePagerAdapter adapter;
 
@@ -50,17 +51,20 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         directoryNameTab.setupWithViewPager(directoryPager);
 
         JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
-        directoryFragments = new DirectoryFragment[favourite.size()];
-        directoryNames = new String[favourite.size()];
-        directoryNames = favourite.keySet().toArray(directoryNames);
+
+        directoryNames = new ArrayList<>(favourite.keySet());
+
+        directoryFragments = new ArrayList<>();
+        for(String name : directoryNames) {
+            DirectoryFragment fragment = DirectoryFragment.newInstance(name);
+            directoryFragments.add(fragment);
+        }
 
         adapter = new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
             public Fragment getItem(int position) {
-                if(directoryFragments[position] == null)
-                    directoryFragments[position] = DirectoryFragment.newInstance(directoryNames[position]);
-                return directoryFragments[position];
+                return directoryFragments.get(position);
             }
 
             @Override
@@ -70,14 +74,14 @@ public class FavouriteCheckActivity extends AppCompatActivity {
 
             @Override
             public int getCount() {
-                return directoryFragments.length;
+                return directoryFragments.size();
             }
 
             @Override
             public CharSequence getPageTitle(int position) {
-                if(directoryNames[position].equals("default"))
+                if(directoryNames.get(position).equals("default"))
                     return "默认收藏夹";
-                return directoryNames[position];
+                return directoryNames.get(position);
             }
 
         };
@@ -127,6 +131,10 @@ public class FavouriteCheckActivity extends AppCompatActivity {
 
     public void updateDirectories(boolean initialize) {
         directoryPager.setCurrentItem(0);
+        directoryPager.removeAllViewsInLayout();
+        ((MainApplication)getApplication()).updateFavourite();
+        JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
         recreate();
+        adapter.notifyDataSetChanged();
     }
 }
