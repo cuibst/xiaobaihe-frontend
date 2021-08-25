@@ -30,17 +30,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
-        <TextView
-            android:id="@+id/edit_event"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#CD5C5C"
-            android:text="编辑"
-            android:layout_marginRight="15dp"
-            android:textSize="18dp"
-            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
-    <com.java.cuiyikai.View.DragGridView
+    <com.yanzhenjie.recyclerview.SwipeRecyclerView
         android:id="@+id/user_gv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,18 +43,7 @@
         android:scrollbars="vertical"
         android:stretchMode="columnWidth"
         android:horizontalSpacing="14dp"/>
-<!--    <GridView-->
-<!--        android:id="@+id/user_gv"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginLeft="14dp"-->
-<!--        android:layout_marginRight="14dp"-->
-<!--        android:gravity="center"-->
-<!--        android:numColumns="4"-->
-<!--        android:verticalSpacing="14dp"-->
-<!--        android:scrollbars="vertical"-->
-<!--        android:stretchMode="columnWidth"-->
-<!--        android:horizontalSpacing="14dp"/>-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,7 +62,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
     </LinearLayout>
-    <com.java.cuiyikai.View.DragGridView
+    <com.yanzhenjie.recyclerview.SwipeRecyclerView
         android:id="@+id/other_gv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

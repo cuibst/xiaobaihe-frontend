@@ -12,17 +12,38 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
 import java.util.List;
 
-public class GridViewAdapter extends BaseAdapter {
-    private Context context;
-    private List<String> strList;
-    private int hidePosition = AdapterView.INVALID_POSITION;
-    private static boolean mIsEdit;
-    private int mType;
+class CategoryViewHolder extends RecyclerView.ViewHolder {
+
+    private final TextView textView;
+    private final ImageView imageView;
+
+    public TextView getTextView() {
+        return textView;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public CategoryViewHolder(@NonNull View itemView) {
+        super(itemView);
+        textView = itemView.findViewById(R.id.text_item);
+        imageView = itemView.findViewById(R.id.iv_edit);
+    }
+}
+
+public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final Context context;
+    private final List<String> strList;
+    private final int mType;
 
     public GridViewAdapter(Context context, List<String> strList, int type) {
         this.context = context;
@@ -30,93 +51,29 @@ public class GridViewAdapter extends BaseAdapter {
         this.mType = type;
     }
 
-    public interface OnListSwapChangeListener {
-        public void onListSwapChange();
-    }
-
-    private OnListSwapChangeListener onListSwapChangeListener = null;
-
-    public void setOnListSwapChangeListener(OnListSwapChangeListener onListSwapChangeListener) {
-        this.onListSwapChangeListener = onListSwapChangeListener;
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View categoryItem = LayoutInflater.from(context).inflate(R.layout.channel_item, parent, false);
+        return new CategoryViewHolder(categoryItem);
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
+        String name = strList.get(position);
+        categoryViewHolder.getTextView().setText(name);
+        if(mType == 0)
+            categoryViewHolder.getImageView().setImageResource(R.drawable.x);
+        else
+            categoryViewHolder.getImageView().setImageResource(R.drawable.add_channel);
+    }
+
+
+    @Override
+    public int getItemCount() {
         return strList.size();
     }
 
-    @Override
-    public String getItem(int position) {
-        return strList.get(position);
-    }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-//    @Override
-//    public View getView(int i, View view, ViewGroup viewGroup) {
-//        return null;
-//    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        RelativeLayout layout = (RelativeLayout) LayoutInflater.from(context).inflate(
-                R.layout.channel_item, null);
-
-        TextView tv = layout.findViewById(R.id.text_item);
-        ImageView iv = layout.findViewById(R.id.iv_edit);
-        tv.setText(strList.get(position));
-        Log.v("grid", strList.get(position));
-        if(mIsEdit){
-            iv.setVisibility(View.VISIBLE);
-            if (mType == 0)
-                iv.setImageResource(R.drawable.x);
-            else
-                iv.setImageResource(R.drawable.add_channel);
-        }
-        else {
-            iv.setVisibility(View.INVISIBLE);
-        }
-        if(position == hidePosition){
-            layout.setVisibility(View.INVISIBLE);
-        }
-        return layout;
-    }
-
-    public void hideView(int pos) {
-        hidePosition = pos;
-        notifyDataSetChanged();
-    }
-
-    public void showHideView() {
-        hidePosition = AdapterView.INVALID_POSITION;
-        notifyDataSetChanged();
-    }
-
-    public void removeView(int pos) {
-        strList.remove(pos);
-        notifyDataSetChanged();
-    }
-
-    //更新拖动时的gridView
-    public void swapView(int draggedPos, int destPos) {
-        //从前向后拖动，其他item依次前移
-        if(draggedPos < destPos) {
-            strList.add(destPos+1, getItem(draggedPos));
-            strList.remove(draggedPos);
-        }
-        //从后向前拖动，其他item依次后移
-        else if(draggedPos > destPos) {
-            strList.add(destPos, getItem(draggedPos));
-            strList.remove(draggedPos+1);
-        }
-        hidePosition = destPos;
-
-        if(onListSwapChangeListener != null)
-            onListSwapChangeListener.onListSwapChange();
-
-        notifyDataSetChanged();
-    }
 }
