@@ -14,8 +14,6 @@ p
 s
 Capp/src/main/java/com/java/cuiyikai/utilities/DensityUtilities.java,3\e\3eb83ebe4348a7c3d0fe26d80b57647e54ed91d9
 t
-Dapp/src/main/java/com/java/cuiyikai/activities/CategoryActivity.java,c\5\c576897c5745de9bcd25eec05a6549c2a509ca5c
-t
 Dapp/src/main/java/com/java/cuiyikai/activities/RegisterActivity.java,1\d\1d2f8eac66408b461b3828e1ef19e50bf80c3d88
 |
 Lapp/src/main/java/com/java/cuiyikai/exceptions/AuthorizeFaliedException.java,b\3\b378182cae501f2a2459fe6e9dd8022d48565f9e
@@ -50,11 +48,21 @@ v
 Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
 x
 Happ/src/main/java/com/java/cuiyikai/fragments/UserPageEntryFragment.java,0\b\0b00c668283686f2d13868607914ebd7dfcd8729
-o
-?app/src/main/java/com/java/cuiyikai/fragments/ItemFragment.java,8\8\88b543b8f8a404dc9f5e7be08cda17f8534f7300
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 v
 Fapp/src/main/java/com/java/cuiyikai/widgets/ListViewForScrollView.java,2\3\23421b4819dc389306582ddb25142dc8ec0f5591
 x
 Happ/src/main/java/com/java/cuiyikai/adapters/BottomFavouriteAdapter.java,f\c\fcef0406140a10475ec6d99bba7592bf55b25615
+q
+Aapp/src/main/java/com/java/cuiyikai/activities/LoginActivity.java,3\9\392ade7419e44f9f6339a729bdf931c740a33b5d
+v
+Fapp/src/main/java/com/java/cuiyikai/utilities/PermissionUtilities.java,b\4\b4c2eab2c2b46d58ba669857e693cda430c22104
+p
+@app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+p
+@app/src/main/java/com/java/cuiyikai/adapters/ProblemAdapter.java,0\a\0a1e353cb43b49942b46b48d8c20aa75545f0b8c
+q
+Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
