@@ -1,4 +1,4 @@
-package com.java.cuiyikai.adapters;
+package com.java.cuiyikai.adapters.category;
 
 public class CategoryItem extends CategoryObject {
 

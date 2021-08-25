@@ -1,6 +1,8 @@
-package com.java.cuiyikai.adapters;
+package com.java.cuiyikai.adapters.category;
 
 import androidx.recyclerview.widget.GridLayoutManager;
+
+import com.java.cuiyikai.adapters.GridViewAdapter;
 
 public class CategoryLayoutManagerSizeLookUp extends GridLayoutManager.SpanSizeLookup {
 

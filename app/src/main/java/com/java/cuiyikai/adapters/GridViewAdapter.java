@@ -1,6 +1,5 @@
 package com.java.cuiyikai.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.CategoryActivity;
+import com.java.cuiyikai.adapters.category.CategoryItem;
+import com.java.cuiyikai.adapters.category.CategoryObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 class CategoryViewHolder extends RecyclerView.ViewHolder {
