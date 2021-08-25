@@ -1,47 +1,33 @@
 package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.View.DragGridView;
 import com.java.cuiyikai.adapters.GridViewAdapter;
-import com.java.cuiyikai.adapters.SubjectAdapter;
+import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class CategoryActivity extends AppCompatActivity {
 
     private List<String> userList = new ArrayList<>();
     private List<String> otherList = new ArrayList<>();
-    private DragGridView otherDGV;
-    private DragGridView userDGV;
     private GridViewAdapter userAdapter;
     private GridViewAdapter otherAdapter;
-    private TextView mEditTextView;
+    private SwipeRecyclerView userView;
+    private SwipeRecyclerView otherView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,61 +44,81 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mEditTextView = findViewById(R.id.edit_event);
-        userDGV = (DragGridView)findViewById(R.id.user_gv);
-        otherDGV = findViewById(R.id.other_gv);
-        Log.v("grid", "in");
+        userView = (SwipeRecyclerView) findViewById(R.id.user_gv);
+        otherView = (SwipeRecyclerView) findViewById(R.id.other_gv);
         userAdapter = new GridViewAdapter(this, userList, 0);
-        userAdapter.setOnListSwapChangeListener(this::onSubjectChanged);
         otherAdapter = new GridViewAdapter(this, otherList, 1);
-        userDGV.setAdapter(userAdapter);
-        otherDGV.setAdapter(otherAdapter);
-        mEditTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SubjectAdapter.setEdit(!SubjectAdapter.getEdit());
 
-                mEditTextView.setText(SubjectAdapter.getEdit() ? "完成" : "编辑");
-                userAdapter.notifyDataSetChanged();
-                otherAdapter.notifyDataSetChanged();
+        GridLayoutManager userLayoutManager = new GridLayoutManager(CategoryActivity.this, 4);
+        userLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        userView.setLayoutManager(userLayoutManager);
+        userView.setLongPressDragEnabled(true);
+
+        GridLayoutManager otherLayoutManager = new GridLayoutManager(CategoryActivity.this, 4);
+        otherLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        otherView.setLayoutManager(otherLayoutManager);
+        otherView.setLongPressDragEnabled(true);
+
+
+        userView.setOnItemClickListener((View v, int adapterPosition) -> {
+            otherList.add(userList.get(adapterPosition));
+            otherAdapter.notifyItemInserted(otherList.size() - 1);
+            userList.remove(adapterPosition);
+            userAdapter.notifyItemRemoved(adapterPosition);
+            ((MainApplication)getApplication()).setSubjects(userList);
+        });
+        otherView.setOnItemClickListener((View v, int adapterPosition) -> {
+            userList.add(otherList.get(adapterPosition));
+            userAdapter.notifyItemInserted(userList.size() - 1);
+            otherList.remove(adapterPosition);
+            otherAdapter.notifyItemRemoved(adapterPosition);
+            ((MainApplication)getApplication()).setSubjects(userList);
+        });
+
+        userView.setOnItemMoveListener(new OnItemMoveListener() {
+            @Override
+            public boolean onItemMove(RecyclerView.ViewHolder srcHolder, RecyclerView.ViewHolder targetHolder) {
+                if(srcHolder.getItemViewType() != targetHolder.getItemViewType())
+                    return false;
+                int fromPosition = srcHolder.getAdapterPosition();
+                int toPosition = targetHolder.getAdapterPosition();
+
+                Collections.swap(userList, fromPosition, toPosition);
+                userAdapter.notifyItemMoved(fromPosition, toPosition);
+                ((MainApplication)getApplication()).setSubjects(userList);
+                return true;
+            }
+
+            @Override
+            public void onItemDismiss(RecyclerView.ViewHolder srcHolder) {
+                throw new UnsupportedOperationException("No swipe dismiss!!");
             }
         });
 
-        userDGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        otherView.setOnItemMoveListener(new OnItemMoveListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.v("grid", i + " " + l + " " + userList.get(i));
-                if(!SubjectAdapter.getEdit())
-                    return;
-                otherList.add(userList.get(i));
-                userList.remove(i);
-//                Log.v("mytag", userList.get(i));
-                userAdapter.notifyDataSetChanged();
-                otherAdapter.notifyDataSetChanged();
-                onSubjectChanged();
+            public boolean onItemMove(RecyclerView.ViewHolder srcHolder, RecyclerView.ViewHolder targetHolder) {
+                if(srcHolder.getItemViewType() != targetHolder.getItemViewType())
+                    return false;
+                int fromPosition = srcHolder.getAdapterPosition();
+                int toPosition = targetHolder.getAdapterPosition();
+
+                Collections.swap(otherList, fromPosition, toPosition);
+                otherAdapter.notifyItemMoved(fromPosition, toPosition);
+                return true;
+            }
+
+            @Override
+            public void onItemDismiss(RecyclerView.ViewHolder srcHolder) {
+                throw new UnsupportedOperationException("No swipe dismiss!!");
             }
         });
 
-        otherDGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(!SubjectAdapter.getEdit())
-                    return;
-                userList.add(otherList.get(i));
-                otherList.remove(i);
-                userAdapter.notifyDataSetChanged();
-                otherAdapter.notifyDataSetChanged();
-                onSubjectChanged();
-            }
-        });
+        userView.setAdapter(userAdapter);
+        otherView.setAdapter(otherAdapter);
 
-        findViewById(R.id.btn_close).setOnClickListener((View v) -> {
-            this.finish();
-        });
-    }
+        findViewById(R.id.btn_close).setOnClickListener((View v) -> this.finish());
 
-    private void onSubjectChanged() {
-        ((MainApplication)getApplication()).setSubjects(userList);
     }
 
 }
