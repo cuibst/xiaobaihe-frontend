@@ -1,5 +1,8 @@
 package com.java.cuiyikai.network;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 
 import androidx.annotation.Nullable;
@@ -40,6 +43,12 @@ public class RequestBuilder {
     public static final String BASE_URL = "http://open.edukg.cn/opedukg/api/";
     private static final String POST_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8";
     private static final String POST_JSON_CONTENT_TYPE = "application/json;charset=UTF-8";
+
+    public static boolean isNetworkNormal(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
 
     private RequestBuilder() {}
 
@@ -208,10 +217,10 @@ public class RequestBuilder {
 
     private static long expireTime = 0;
 
-    private static final String BACKEND_ADDRESS = "http://183.172.183.37:8080";
+    private static final String BACKEND_ADDRESS = "http://183.173.147.223:8080";
 
     public interface OnTokenChangedListener {
-        public void onTokenChanged();
+        void onTokenChanged();
     }
 
     public static OnTokenChangedListener onTokenChangedListener = null;
