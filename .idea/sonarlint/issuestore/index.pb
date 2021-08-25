@@ -66,3 +66,17 @@ p
 @app/src/main/java/com/java/cuiyikai/adapters/ProblemAdapter.java,0\a\0a1e353cb43b49942b46b48d8c20aa75545f0b8c
 q
 Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
+s
+Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac66820c7b908cbfc48435a6e1d33457358f
+v
+Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6
+p
+@app/src/main/java/com/java/cuiyikai/adapters/OfflineAdapter.java,0\3\03055e3b61cbee50b398747523c31ccb271e2eae
+q
+Aapp/src/main/java/com/java/cuiyikai/adapters/RelationAdapter.java,f\7\f762971bdcdc186f3a7e9dccc5c7b616e379ae61
+o
+?app/src/main/java/com/java/cuiyikai/fragments/MainFragment.java,f\a\fa1fcab14a94e61f102fa426f7440f6cc03d62c9
+o
+?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
+r
+Bapp/src/main/java/com/java/cuiyikai/adapters/FavouriteAdapter.java,c\f\cf98ed3ce36881cbf58cd221e0e66bb453cfd6cf
