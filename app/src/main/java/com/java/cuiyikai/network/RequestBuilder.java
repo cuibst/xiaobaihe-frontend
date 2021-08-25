@@ -102,7 +102,7 @@ public class RequestBuilder {
         return builder.toString();
     }
 
-    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private static Future<String> getToken() {
         return executorService.submit(() -> {
