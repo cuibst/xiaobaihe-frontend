@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.View.DragGridView;
 import com.java.cuiyikai.adapters.GridViewAdapter;
@@ -27,16 +28,15 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CategoryActivity extends AppCompatActivity {
 
-    private static final String DATA_FILE = "subject_data.json";
     private List<String> userList = new ArrayList<>();
     private List<String> otherList = new ArrayList<>();
-//    private GridView userGv;
     private DragGridView otherDGV;
     private DragGridView userDGV;
     private GridViewAdapter userAdapter;
@@ -50,36 +50,20 @@ public class CategoryActivity extends AppCompatActivity {
         initView();
     }
 
-    public static String getSubjectData(){
-        return DATA_FILE;
-    }
     private void initData(){
-        try {
-            InputStream is = getAssets().open(DATA_FILE);
-            int length = is.available();
-            byte[] buffer = new byte[length];
-            is.read(buffer);
-            String result = new String(buffer, "utf-8");
-            Log.v("newtag", result);
-            JSONObject jsonObject = new JSONObject(result);
-            JSONArray userArray = jsonObject.optJSONArray("user");
-            JSONArray otherArray = jsonObject.optJSONArray("other");
-            for (int i = 0; i <= userArray.length() - 1; i ++)
-                userList.add(userArray.optString(i));
-            for(int i = 0; i <= otherArray.length() - 1; i ++)
-                otherList.add(otherArray.optString(i));
-        }
-        catch (IOException | JSONException e){
-            e.printStackTrace();
-        }
+        userList = ((MainApplication) getApplication()).getSubjects();
+        for(String subject : Arrays.asList("推荐", "语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治"))
+            if(!userList.contains(subject))
+                otherList.add(subject);
     }
+
     private void initView() {
         mEditTextView = findViewById(R.id.edit_event);
         userDGV = (DragGridView)findViewById(R.id.user_gv);
-//        userGv = findViewById(R.id.user_gv);
         otherDGV = findViewById(R.id.other_gv);
         Log.v("grid", "in");
         userAdapter = new GridViewAdapter(this, userList, 0);
+        userAdapter.setOnListSwapChangeListener(this::onSubjectChanged);
         otherAdapter = new GridViewAdapter(this, otherList, 1);
         userDGV.setAdapter(userAdapter);
         otherDGV.setAdapter(otherAdapter);
@@ -105,6 +89,7 @@ public class CategoryActivity extends AppCompatActivity {
 //                Log.v("mytag", userList.get(i));
                 userAdapter.notifyDataSetChanged();
                 otherAdapter.notifyDataSetChanged();
+                onSubjectChanged();
             }
         });
 
@@ -117,7 +102,17 @@ public class CategoryActivity extends AppCompatActivity {
                 otherList.remove(i);
                 userAdapter.notifyDataSetChanged();
                 otherAdapter.notifyDataSetChanged();
+                onSubjectChanged();
             }
         });
+
+        findViewById(R.id.btn_close).setOnClickListener((View v) -> {
+            this.finish();
+        });
     }
+
+    private void onSubjectChanged() {
+        ((MainApplication)getApplication()).setSubjects(userList);
+    }
+
 }

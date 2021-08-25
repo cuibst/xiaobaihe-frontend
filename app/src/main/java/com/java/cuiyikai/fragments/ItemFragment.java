@@ -43,6 +43,7 @@ public class ItemFragment extends Fragment {
         super();
         TITLE=s;
         itemAdapter=a;
+        System.out.printf("Initialization called %b%n", itemAdapter == null);
         context=c;
     }
     public static ItemFragment newInstance(String item) {
@@ -78,6 +79,7 @@ public class ItemFragment extends Fragment {
         else
             view =inflater.inflate(R.layout.fragment_item_recommend, container, false);
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
+        System.out.printf("On item fragment, title = %s, result: %b%n", TITLE, itemAdapter == null);
         xRecyclerView.setAdapter(itemAdapter);
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override

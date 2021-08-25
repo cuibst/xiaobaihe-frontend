@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".activities.CategoryActivity"
     android:orientation="vertical">
-    <ImageView
+    <ImageButton
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:src="@drawable/x"/>
+        android:layout_marginStart="10dp"
+        android:src="@drawable/x"
+        android:id="@+id/btn_close"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

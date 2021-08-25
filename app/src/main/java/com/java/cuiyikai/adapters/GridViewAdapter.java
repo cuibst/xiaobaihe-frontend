@@ -1,5 +1,6 @@
 package com.java.cuiyikai.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
 import java.util.List;
@@ -26,6 +28,16 @@ public class GridViewAdapter extends BaseAdapter {
         this.context = context;
         this.strList = strList;
         this.mType = type;
+    }
+
+    public interface OnListSwapChangeListener {
+        public void onListSwapChange();
+    }
+
+    private OnListSwapChangeListener onListSwapChangeListener = null;
+
+    public void setOnListSwapChangeListener(OnListSwapChangeListener onListSwapChangeListener) {
+        this.onListSwapChangeListener = onListSwapChangeListener;
     }
 
     @Override
@@ -101,6 +113,10 @@ public class GridViewAdapter extends BaseAdapter {
             strList.remove(draggedPos+1);
         }
         hidePosition = destPos;
+
+        if(onListSwapChangeListener != null)
+            onListSwapChangeListener.onListSwapChange();
+
         notifyDataSetChanged();
     }
 }

@@ -10,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.adapters.ItemAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -32,7 +34,10 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainFragment extends Fragment {
@@ -40,7 +45,7 @@ public class MainFragment extends Fragment {
     private ViewPager viewpgr;
     private ImageView tabAdd;
     private ItemFragment[] itemFragment;
-    private final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
+    private List<String> all_subject_item=new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
     private TabLayout tabLayout;
 
     @Override
@@ -50,7 +55,7 @@ public class MainFragment extends Fragment {
 
         initViewPager(view);
 
-        itemFragment=new ItemFragment[all_subject_item.length];
+        itemFragment=new ItemFragment[all_subject_item.size()];
 
         tabLayout=view.findViewById(R.id.tablayout1);
         tabLayout.setupWithViewPager(viewpgr);
@@ -58,25 +63,30 @@ public class MainFragment extends Fragment {
         tabAdd = view.findViewById(R.id.tab_add);
         tabAdd.setOnClickListener((View v) -> {
             Intent intent=new Intent(getActivity(), CategoryActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         });
 
         return view;
     }
 
+    private ViewPagerFragmentAdapter viewPagerFragmentAdapter;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 1) {
+            viewPagerFragmentAdapter.clear(viewpgr);
+            itemFragment=new ItemFragment[all_subject_item.size()];
+            initViewPager(getView());
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private void initViewPager(View view) {
         viewpgr = view.findViewById(R.id.viewpgr1);
-        ViewPagerFragmentAdapter viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager());
-        try(InputStream is = getActivity().getAssets().open(CategoryActivity.getSubjectData())) {
-            int length = is.available();
-            byte[] buffer = new byte[length];
-            is.read(buffer);
-            String result = new String(buffer, "utf-8");
-            JSONObject jsonObject = JSON.parseObject(result);
-            viewpgr.setAdapter(viewPagerFragmentAdapter);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager());
+        all_subject_item = ((MainApplication)getActivity().getApplication()).getSubjects();
+        viewpgr.setAdapter(viewPagerFragmentAdapter);
     }
 
     public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
@@ -92,12 +102,20 @@ public class MainFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return all_subject_item.length;
+            return all_subject_item.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return all_subject_item[position];
+            return all_subject_item.get(position);
+        }
+
+        public void clear(ViewGroup container) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            for (ItemFragment fragment : itemFragment)
+                if (fragment != null)
+                    transaction.remove(fragment);
+            transaction.commit();
         }
     }
 
@@ -188,14 +206,16 @@ public class MainFragment extends Fragment {
 
     public void initfragment(int position)
     {
-        String TITLE=all_subject_item[position];
+        System.out.printf("On init fragment : %d%n", position);
+        String TITLE=all_subject_item.get(position);
         String chooseSubject = ((MainActivity)getActivity()).checkSubject(TITLE);
         Map<String,String> map=new HashMap<>();
         map.put("subject",chooseSubject);
         try {
             ItemAdapter itemAdapter = new ItemAdapter(getActivity(),chooseSubject);
-            JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_url, map,false);
+            JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_url, map, RequestBuilder.checkedLogin());
             itemAdapter.addSubject(msg.getJSONArray("data"));
+            System.out.printf("In init fragment result %b%n", itemAdapter == null);
             ItemFragment fragment = new ItemFragment(chooseSubject,itemAdapter,getActivity());
             itemFragment[position]=fragment;
         }
