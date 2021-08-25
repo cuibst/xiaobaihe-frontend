@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.View.DragGridView;
+import com.java.cuiyikai.adapters.GridViewAdapter;
 import com.java.cuiyikai.adapters.SubjectAdapter;
 
 import org.json.JSONArray;
@@ -34,27 +36,24 @@ public class CategoryActivity extends AppCompatActivity {
     private static final String DATA_FILE = "subject_data.json";
     private List<String> userList = new ArrayList<>();
     private List<String> otherList = new ArrayList<>();
-    private GridView userGv;
-    private GridView otherGv;
-    private SubjectAdapter userAdapter;
-    private SubjectAdapter otherAdapter;
+//    private GridView userGv;
+    private DragGridView otherDGV;
+    private DragGridView userDGV;
+    private GridViewAdapter userAdapter;
+    private GridViewAdapter otherAdapter;
     private TextView mEditTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
-
+        initData();
         initView();
     }
 
     public static String getSubjectData(){
         return DATA_FILE;
     }
-
-    private void initView() {
-        mEditTextView = findViewById(R.id.edit_event);
-        userGv = findViewById(R.id.user_gv);
-        otherGv = findViewById(R.id.other_gv);
+    private void initData(){
         try {
             InputStream is = getAssets().open(DATA_FILE);
             int length = is.available();
@@ -69,17 +68,21 @@ public class CategoryActivity extends AppCompatActivity {
                 userList.add(userArray.optString(i));
             for(int i = 0; i <= otherArray.length() - 1; i ++)
                 otherList.add(otherArray.optString(i));
-
         }
         catch (IOException | JSONException e){
             e.printStackTrace();
         }
-
-        userAdapter = new SubjectAdapter(this, userList, 0);
-        otherAdapter = new SubjectAdapter(this, otherList, 1);
-        userGv.setAdapter(userAdapter);
-        otherGv.setAdapter(otherAdapter);
-
+    }
+    private void initView() {
+        mEditTextView = findViewById(R.id.edit_event);
+        userDGV = (DragGridView)findViewById(R.id.user_gv);
+//        userGv = findViewById(R.id.user_gv);
+        otherDGV = findViewById(R.id.other_gv);
+        Log.v("grid", "in");
+        userAdapter = new GridViewAdapter(this, userList, 0);
+        otherAdapter = new GridViewAdapter(this, otherList, 1);
+        userDGV.setAdapter(userAdapter);
+        otherDGV.setAdapter(otherAdapter);
         mEditTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,29 +91,13 @@ public class CategoryActivity extends AppCompatActivity {
                 mEditTextView.setText(SubjectAdapter.getEdit() ? "完成" : "编辑");
                 userAdapter.notifyDataSetChanged();
                 otherAdapter.notifyDataSetChanged();
-//                if(!SubjectAdapter.getEdit()){
-//                    Log.v("err", "in");
-//                    File f = new File(DATA_FILE);
-//                    Map<String, List<String>> map = new HashMap<>();
-//                    map.put("user", userList);
-//                    map.put("other", otherList);
-////                    Log.v("newtag", map);
-//                    JSONObject json = new JSONObject(map);
-//                    try (Writer write = new OutputStreamWriter(new FileOutputStream(f), "UTF-8")) {
-//                        write.write(json.toString());
-//                        write.flush();
-//                        write.close();
-//                    } catch ( Exception e){
-//                        e.printStackTrace();
-//                    }
-//                }
             }
         });
 
-        userGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        userDGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.v("mytag", i + " " + l + " " + userList.get(i));
+                Log.v("grid", i + " " + l + " " + userList.get(i));
                 if(!SubjectAdapter.getEdit())
                     return;
                 otherList.add(userList.get(i));
@@ -121,7 +108,7 @@ public class CategoryActivity extends AppCompatActivity {
             }
         });
 
-        otherGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        otherDGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(!SubjectAdapter.getEdit())
