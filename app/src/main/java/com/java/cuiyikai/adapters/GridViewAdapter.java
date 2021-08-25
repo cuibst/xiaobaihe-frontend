@@ -67,7 +67,9 @@ public class GridViewAdapter extends BaseAdapter {
         else {
             iv.setVisibility(View.INVISIBLE);
         }
-
+        if(position == hidePosition){
+            layout.setVisibility(View.INVISIBLE);
+        }
         return layout;
     }
 

@@ -7,8 +7,8 @@
     tools:context=".activities.CategoryActivity"
     android:orientation="vertical">
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:src="@drawable/x"/>
@@ -21,9 +21,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="我的频道"
-            android:layout_marginLeft="40dp"
-
-            android:textSize="23sp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="20sp"
             android:textColor="#000000"/>
         <TextView
             android:layout_width="0dp"
@@ -36,7 +36,7 @@
             android:textColor="#CD5C5C"
             android:text="编辑"
             android:layout_marginRight="15dp"
-            android:textSize="23dp"
+            android:textSize="18dp"
             android:layout_gravity="center_horizontal"/>
     </LinearLayout>
     <com.java.cuiyikai.View.DragGridView
@@ -72,16 +72,16 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="推荐频道"
-            android:layout_marginLeft="40dp"
-
-            android:textSize="23sp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="20sp"
             android:textColor="#000000"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
     </LinearLayout>
-    <GridView
+    <com.java.cuiyikai.View.DragGridView
         android:id="@+id/other_gv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

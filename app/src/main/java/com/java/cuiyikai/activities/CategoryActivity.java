@@ -37,10 +37,10 @@ public class CategoryActivity extends AppCompatActivity {
     private List<String> userList = new ArrayList<>();
     private List<String> otherList = new ArrayList<>();
 //    private GridView userGv;
-    private GridView otherGv;
+    private DragGridView otherDGV;
     private DragGridView userDGV;
     private GridViewAdapter userAdapter;
-    private SubjectAdapter otherAdapter;
+    private GridViewAdapter otherAdapter;
     private TextView mEditTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,6 @@ public class CategoryActivity extends AppCompatActivity {
                 userList.add(userArray.optString(i));
             for(int i = 0; i <= otherArray.length() - 1; i ++)
                 otherList.add(otherArray.optString(i));
-
         }
         catch (IOException | JSONException e){
             e.printStackTrace();
@@ -78,13 +77,12 @@ public class CategoryActivity extends AppCompatActivity {
         mEditTextView = findViewById(R.id.edit_event);
         userDGV = (DragGridView)findViewById(R.id.user_gv);
 //        userGv = findViewById(R.id.user_gv);
-        otherGv = findViewById(R.id.other_gv);
+        otherDGV = findViewById(R.id.other_gv);
         Log.v("grid", "in");
         userAdapter = new GridViewAdapter(this, userList, 0);
-        otherAdapter = new SubjectAdapter(this, otherList, 1);
+        otherAdapter = new GridViewAdapter(this, otherList, 1);
         userDGV.setAdapter(userAdapter);
-        otherGv.setAdapter(otherAdapter);
-
+        otherDGV.setAdapter(otherAdapter);
         mEditTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,7 +108,7 @@ public class CategoryActivity extends AppCompatActivity {
             }
         });
 
-        otherGv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        otherDGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(!SubjectAdapter.getEdit())
