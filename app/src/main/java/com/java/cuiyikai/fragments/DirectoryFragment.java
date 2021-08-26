@@ -1,6 +1,7 @@
 package com.java.cuiyikai.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -8,19 +9,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
+import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.adapters.BottomFavouriteAdapter;
 import com.java.cuiyikai.adapters.FavouriteAdapter;
 import com.java.cuiyikai.entities.BottomFavouriteEntity;
@@ -35,12 +36,12 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -229,7 +230,48 @@ public class DirectoryFragment extends Fragment {
 
             bottomDialog.show();
         });
+        view.findViewById(R.id.btnGenerateProblems).setOnClickListener((View v) ->{
+//            Log.v("paper1", );
+//            ((MainApplication) getApplication()).getFavourite().toJSONString()
+//            Intent intent = new Intent(getActivity(), PaperActivity.class);
 
+//            intent.putExtra("containing", containing);
+//
+//            startActivity(intent);
+//            getActivity().finish();
+            JSONObject js = ((MainApplication) getActivity().getApplication()).getFavourite();
+            int sum = 0;
+            int right = 0;
+            JSONArray jsArray = (JSONArray) js.get(directoryName);
+            for(int i = 0; i < jsArray.size(); i ++){
+                JSONObject jsObject = (JSONObject) jsArray.get(i);
+                String uriname = (String) jsObject.get("name");
+                Map<String, String> request = new HashMap<String, String>();
+                request.put("uriName", uriname);
+                Log.v("mtag", "in");
+                JSONObject tmp = null;
+                try {
+                    tmp = (JSONObject) RequestBuilder.sendGetRequest(
+                            "typeOpen/open/questionListByUriName", request);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                List<String> mList = new ArrayList<>();
+                JSONArray mJSONArray = null;
+                mJSONArray = (JSONArray) tmp.get("data");
+                Map<String , String> mMap = (Map<String, String>) mJSONArray.get(0);
+                String qBody = mMap.get("qBody");
+                String answer = mMap.get("qAnswer");
+                Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
+                mIntent.putExtra("body", qBody);
+                mIntent.putExtra("answer", answer);
+//                String questionBody
+                startActivity(mIntent);
+            }
+
+        });
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
             //TODO: the logic for move!
 
