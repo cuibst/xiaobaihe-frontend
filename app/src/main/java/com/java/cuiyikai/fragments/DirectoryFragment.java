@@ -1,6 +1,7 @@
 package com.java.cuiyikai.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -114,6 +116,18 @@ public class DirectoryFragment extends Fragment {
         SwipeMenuCreator swipeMenuCreator = (SwipeMenu leftMenu, SwipeMenu rightMenu, int position) -> {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             int width = DensityUtilities.dp2px(getActivity(), 70);
+            SwipeMenuItem moveItem = new SwipeMenuItem(getActivity()).setBackground(R.color.xui_config_color_light_blue)
+                    .setText("移动")
+                    .setTextColor(Color.WHITE)
+                    .setWidth(width)
+                    .setHeight(height);
+            rightMenu.addMenuItem(moveItem);
+            SwipeMenuItem copyItem = new SwipeMenuItem(getActivity()).setBackground(R.color.xui_btn_green_normal_color)
+                    .setText("复制")
+                    .setTextColor(Color.WHITE)
+                    .setWidth(width)
+                    .setHeight(height);
+            rightMenu.addMenuItem(copyItem);
             SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity()).setBackground(R.color.bbl_ff0000)
                     .setText("删除")
                     .setTextColor(Color.WHITE)
@@ -126,11 +140,78 @@ public class DirectoryFragment extends Fragment {
 
         favouriteItemList.setSwipeMenuCreator(swipeMenuCreator);
 
+        Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_bottom_favourite, null);
+        contentView.findViewById(R.id.bottomAddNewFavourite).setVisibility(View.GONE);
+        bottomDialog.setContentView(contentView);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+        params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
+        params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
+        contentView.setLayoutParams(params);
+
+        ListViewForScrollView bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
+        JSONObject favouriteJson = ((MainApplication)getActivity().getApplication()).getFavourite();
+        List<BottomFavouriteEntity> entityList = new ArrayList<>();
+        for(String key : favouriteJson.keySet()) {
+            if(!key.equals(directoryName))
+                entityList.add(new BottomFavouriteEntity(false, key));
+        }
+
+        BottomFavouriteAdapter adapter = new BottomFavouriteAdapter(getActivity(), R.layout.bottom_dialog_favourite_item, entityList);
+
+        bottomFavouriteView.setAdapter(adapter);
+
         favouriteItemList.setOnItemMenuClickListener((SwipeMenuBridge menuBridge, int position) -> {
             menuBridge.closeMenu();
-            favouriteAdapter.getFavouriteArray().remove(position);
-            favouriteAdapter.notifyItemRemoved(position);
-            updateDirectoryBackend(favouriteAdapter.getFavouriteArray());
+            System.out.printf("Menu %d clicked%n", menuBridge.getPosition());
+            int menuPosition = menuBridge.getPosition();
+            JSONArray moveArray = new JSONArray();
+            moveArray.add(favouriteAdapter.getFavouriteArray().get(position));
+            if(menuPosition == 2) {
+                favouriteAdapter.getFavouriteArray().remove(position);
+                favouriteAdapter.notifyItemRemoved(position);
+                updateDirectoryBackend(favouriteAdapter.getFavouriteArray());
+            } else if(menuPosition == 1) {
+                bottomDialog.show();
+                Button btnBottomFinish = contentView.findViewById(R.id.buttonBottomFinish);
+                btnBottomFinish.setOnClickListener((View vi) -> {
+                    Set<String> checkedSet = adapter.getCheckedSet();
+                    for(String targetName : checkedSet) {
+                        JSONObject args = new JSONObject();
+                        args.put("directory", targetName);
+                        args.put("json", moveArray);
+                        try {
+                            RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    ((MainApplication)getActivity().getApplication()).updateFavourite();
+                    bottomDialog.dismiss();
+                });
+            } else if(menuPosition == 0) {
+                bottomDialog.show();
+                Button btnBottomFinish = contentView.findViewById(R.id.buttonBottomFinish);
+                btnBottomFinish.setOnClickListener((View vi) -> {
+                    Set<String> checkedSet = adapter.getCheckedSet();
+                    for(String targetName : checkedSet) {
+                        JSONObject args = new JSONObject();
+                        args.put("directory", targetName);
+                        args.put("json", moveArray);
+                        try {
+                            RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    favouriteAdapter.getFavouriteArray().remove(position);
+                    favouriteAdapter.notifyItemRemoved(position);
+                    updateDirectoryBackend(favouriteAdapter.getFavouriteArray());
+                    bottomDialog.dismiss();
+                });
+            }
         });
 
         favouriteItemList.setLongPressDragEnabled(true);
@@ -173,29 +254,6 @@ public class DirectoryFragment extends Fragment {
             favouriteAdapter.selectAll();
             favouriteAdapter.notifyDataSetChanged();
         });
-
-        Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
-        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_bottom_favourite, null);
-        contentView.findViewById(R.id.bottomAddNewFavourite).setVisibility(View.GONE);
-        bottomDialog.setContentView(contentView);
-        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
-        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
-        params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
-        params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
-        contentView.setLayoutParams(params);
-
-        ListViewForScrollView bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
-        JSONObject favouriteJson = ((MainApplication)getActivity().getApplication()).getFavourite();
-        List<BottomFavouriteEntity> entityList = new ArrayList<>();
-        for(String key : favouriteJson.keySet()) {
-            if(!key.equals(directoryName))
-                entityList.add(new BottomFavouriteEntity(false, key));
-        }
-
-        BottomFavouriteAdapter adapter = new BottomFavouriteAdapter(getActivity(), R.layout.bottom_dialog_favourite_item, entityList);
-
-        bottomFavouriteView.setAdapter(adapter);
 
         view.findViewById(R.id.btnMoveFavourite).setOnClickListener((View v) -> {
             //TODO: the logic for move!

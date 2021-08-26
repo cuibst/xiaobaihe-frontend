@@ -34,26 +34,44 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
         DatabaseEntity entity = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.itemSubjectPicture);
+        View itemView = view.findViewById(R.id.directoryFavouriteItem);
         switch(entity.getSubject()) {
-            case "physics":
-                imageView.setImageResource(R.drawable.phy);
+            case "chinese" :
+                itemView.setBackgroundResource(R.drawable.chinese_radius);
+                imageView.setImageResource(R.drawable.chinese);
                 break;
-            case "chemistry":
-                imageView.setImageResource(R.drawable.che);
+            case "math" :
+                itemView.setBackgroundResource(R.drawable.maths_radius);
+                imageView.setImageResource(R.drawable.maths);
                 break;
-            case "biology":
-                imageView.setImageResource(R.drawable.bio);
+            case "english" :
+                itemView.setBackgroundResource(R.drawable.english_radius);
+                imageView.setImageResource(R.drawable.english);
                 break;
-            case "geo":
-                imageView.setImageResource(R.drawable.geo);
+            case "physics" :
+                itemView.setBackgroundResource(R.drawable.physics_radius);
+                imageView.setImageResource(R.drawable.physics);
                 break;
-            case "chinese": //FIXME: add different resource for different subject!!
-            case "math":
-            case "english":
-            case "history":
+            case "chemistry" :
+                itemView.setBackgroundResource(R.drawable.chemistry_radius);
+                imageView.setImageResource(R.drawable.chemistry);
+                break;
+            case "biology" :
+                itemView.setBackgroundResource(R.drawable.biology_radius);
+                imageView.setImageResource(R.drawable.biology);
+                break;
+            case "history" :
+                itemView.setBackgroundResource(R.drawable.history_radius);
+                imageView.setImageResource(R.drawable.history);
+                break;
+            case "geo" :
+                itemView.setBackgroundResource(R.drawable.geography_radius);
+                imageView.setImageResource(R.drawable.geography);
+                break;
             case "politics":
             default:
-                imageView.setImageResource(R.drawable.book);
+                itemView.setBackgroundResource(R.drawable.politics_radius);
+                imageView.setImageResource(R.drawable.politics);
                 break;
         }
         TextView textView = (TextView) view.findViewById(R.id.favouriteItemName);

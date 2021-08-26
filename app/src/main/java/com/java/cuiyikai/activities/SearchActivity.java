@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -15,10 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,22 +88,14 @@ public class SearchActivity extends AppCompatActivity {
         search_rcy.setAdapter(sadapter);
         initSearchView(searchViewInSearch,SearchActivity.this);
     }
-    public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.RcyViewHolder>{
+
+
+    public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         SearchAdapter(Context context)
         {
             mContext=context;
         }
-        class RcyViewHolder extends RecyclerView.ViewHolder{
-            private TextView labeltxt,categorytxt;
-            public RcyViewHolder(View view)
-            {
-                super(view);
-                labeltxt=view.findViewById(R.id.label);
-                img=view.findViewById(R.id.img);
-                categorytxt=view.findViewById(R.id.category);
-                searchline=view.findViewById(R.id.search_line);
-            }
-        }
+
         public void addSubject(JSONObject arr) {
             subject=arr;
             Set<String> set=subject.keySet();
@@ -127,47 +117,66 @@ public class SearchActivity extends AppCompatActivity {
         int sum=0;
         private JSONObject subject=new JSONObject();
         private Context mContext;
-        private LinearLayout searchline;
-        private ImageView img;
-        public SearchAdapter.RcyViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
         {
-            return new SearchAdapter.RcyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+            return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
         }
         @Override
-        public void onBindViewHolder(SearchAdapter.RcyViewHolder holder, int position)
+        public void onBindViewHolder(ItemViewHolder holder, int position)
         {
             Map<String,Object> map=findActualItem(position);
-            searchline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent f=new Intent(SearchActivity.this,EntityActivity.class);
-                    f.putExtra("name",holder.labeltxt.getText());
-                    f.putExtra("subject",(String) map.get("name"));
-                    startActivity(f);
-                }
+            holder.getSearchLine().setOnClickListener((View view) -> {
+                Intent f=new Intent(SearchActivity.this,EntityActivity.class);
+                f.putExtra("name",holder.getLabelTextView().getText());
+                f.putExtra("subject",(String) map.get("name"));
+                startActivity(f);
             });
 
-            holder.labeltxt.setText(((JSONObject)map.get("item")).get("label").toString());
+            holder.getLabelTextView().setText(((JSONObject)map.get("item")).get("label").toString());
             switch ((String) map.get("name"))
             {
-                case "physics":
-                    img.setImageResource(R.drawable.phy);
+                case "chinese" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.chinese_radius);
+                    holder.getImg().setImageResource(R.drawable.chinese);
                     break;
-                case "chemistry":
-                    img.setImageResource(R.drawable.che);
+                case "math" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.maths_radius);
+                    holder.getImg().setImageResource(R.drawable.maths);
                     break;
-                case "biology":
-                    img.setImageResource(R.drawable.bio);
+                case "english" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.english_radius);
+                    holder.getImg().setImageResource(R.drawable.english);
                     break;
+                case "physics" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.physics_radius);
+                    holder.getImg().setImageResource(R.drawable.physics);
+                    break;
+                case "chemistry" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.chemistry_radius);
+                    holder.getImg().setImageResource(R.drawable.chemistry);
+                    break;
+                case "biology" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.biology_radius);
+                    holder.getImg().setImageResource(R.drawable.biology);
+                    break;
+                case "history" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.history_radius);
+                    holder.getImg().setImageResource(R.drawable.history);
+                    break;
+                case "geo" :
+                    holder.getSearchLine().setBackgroundResource(R.drawable.geography_radius);
+                    holder.getImg().setImageResource(R.drawable.geography);
+                    break;
+                case "politics":
                 default:
-                    img.setImageResource(R.drawable.book);
+                    holder.getSearchLine().setBackgroundResource(R.drawable.politics_radius);
+                    holder.getImg().setImageResource(R.drawable.politics);
                     break;
-
             }
             if(((JSONObject)map.get("item")).get("category").toString().length()==0)
-                holder.categorytxt.setText("无");
+                holder.getCategoryTextView().setText("无");
             else
-                holder.categorytxt.setText(((JSONObject)map.get("item")).get("category").toString());
+                holder.getCategoryTextView().setText(((JSONObject)map.get("item")).get("category").toString());
         }
         @Override
         public int getItemCount(){
