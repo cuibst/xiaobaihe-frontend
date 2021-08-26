@@ -4,8 +4,8 @@
         <ripple android:color="@color/xui_config_color_gray_9">
             <item>
                 <shape>
-                    <solid android:color="#AA6600"/>
-                    <corners android:radius="40dp"/>
+                    <solid android:color="#8887e5c1"/>
+                    <corners android:radius="10dp"/>
                 </shape>
             </item>
         </ripple>
@@ -13,7 +13,7 @@
     <item android:state_pressed="false">
         <shape>
             <solid android:color="#87E5C1"/>
-            <corners android:radius="40dp"/>
+            <corners android:radius="10dp"/>
         </shape>
     </item>
 </selector>
