@@ -61,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.out.printf("Network available : %b%n", RequestBuilder.isNetworkNormal(MainActivity.this));
+
+        if(!RequestBuilder.isNetworkNormal(MainActivity.this)) {
+            Intent intent = new Intent(MainActivity.this, OfflineActivity.class);
+            startActivity(intent);
+            this.finish();
+            return;
+        }
+
         init();
 
         btnForLogIn.setOnClickListener((View view) -> {
@@ -259,4 +268,5 @@ public class MainActivity extends AppCompatActivity {
             System.exit(0);
         }
     }
+
 }

@@ -35,6 +35,8 @@
     <string name="checkFavourite">收藏管理</string>
     <string name="moveFavourite">移动</string>
     <string name="selectAll">全选</string>
+    <string name="copy">复制</string>
     <string name="deleteItems">删除</string>
     <string name="hint_enter_a_message">add something here:</string>
+    <string name="returnOnline">返回在线模式</string>
 </resources>

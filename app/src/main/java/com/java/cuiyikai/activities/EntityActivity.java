@@ -192,7 +192,7 @@ public class EntityActivity extends AppCompatActivity {
 
             EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(EntityActivity.this, 1);
             helper.openReadLink();
-            List<DatabaseEntity> entityList = helper.queryEntityByName(entityName);
+            List<DatabaseEntity> entityList = helper.queryEntityByNameAndSubject(entityName, subject);
             helper.closeLink();
 
             if (!entityList.isEmpty()) {
@@ -214,8 +214,10 @@ public class EntityActivity extends AppCompatActivity {
                         for (String sub : SUBJECTS) {
                             arguments.put("course", sub);
                             JSONObject tmp = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
-                            if (tmp != null && tmp.toString().length() > reply.toString().length())
+                            if (tmp != null && tmp.toString().length() > reply.toString().length()) {
+                                subject = sub;
                                 reply = tmp;
+                            }
                         }
                     } else
                         reply = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
@@ -243,7 +245,7 @@ public class EntityActivity extends AppCompatActivity {
                 DatabaseEntity databaseEntity = new DatabaseEntity();
                 databaseEntity.setName(entityName);
                 databaseEntity.setJsonContent(entityJson.toJSONString());
-                databaseEntity.setUri("123");
+                databaseEntity.setSubject(subject);
                 databaseEntity.setProblemsJson(problems == null ? "" : problems.toJSONString());
                 helper.insert(databaseEntity);
                 helper.closeLink();

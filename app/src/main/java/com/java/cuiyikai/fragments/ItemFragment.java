@@ -36,7 +36,6 @@ public class ItemFragment extends Fragment {
     public  RecyclerView.LayoutManager layoutManager;
     public  ItemAdapter itemAdapter;
     private String main_activity_backend_url="/api/uri/getname";
-    public  static String main_activity_url="http://183.172.183.37:8080/api/uri/getname";
     public ItemFragment() {
     }
     public ItemFragment(String s, Context c)
@@ -79,7 +78,6 @@ public class ItemFragment extends Fragment {
             view =inflater.inflate(R.layout.fragment_item_recommend, container, false);
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
         itemAdapter=new ItemAdapter(getActivity(),TITLE);
-        System.out.println(TITLE);
         sendMessage();
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override

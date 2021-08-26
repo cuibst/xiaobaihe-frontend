@@ -1,48 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.CategoryActivity"
     android:orientation="vertical">
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:src="@drawable/x"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="我的频道"
-            android:layout_marginLeft="40dp"
-
-            android:textSize="23sp"
-            android:textColor="#000000"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-        <TextView
-            android:id="@+id/edit_event"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="#CD5C5C"
-            android:text="编辑"
-            android:layout_marginRight="15dp"
-            android:textSize="23dp"
-            android:layout_gravity="center_horizontal"/>
-    </LinearLayout>
-    <GridView
+        android:layout_marginStart="10dp"
+        android:src="@drawable/x"
+        android:id="@+id/btn_close"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_gv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="14dp"
         android:layout_marginRight="14dp"
         android:gravity="center"
@@ -50,37 +26,21 @@
         android:verticalSpacing="14dp"
         android:scrollbars="vertical"
         android:stretchMode="columnWidth"
-        android:horizontalSpacing="14dp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:horizontalSpacing="14dp"
+        android:layout_below="@id/btn_close"
+        android:layout_alignParentBottom="true"/>
+    <TextView
+        android:id="@+id/edit_event"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#CD5C5C"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="推荐频道"
-            android:layout_marginLeft="40dp"
-
-            android:textSize="23sp"
-            android:textColor="#000000"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-    </LinearLayout>
-    <GridView
-        android:id="@+id/other_gv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp"
-        android:gravity="center"
-        android:numColumns="4"
-        android:scrollbars="vertical"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="14dp"
-        android:horizontalSpacing="14dp"/>
+        android:layout_marginEnd="15dp"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignTop="@id/user_gv"
+        android:layout_alignEnd="@id/user_gv"/>
 
 
-</LinearLayout>
+
+</RelativeLayout>
