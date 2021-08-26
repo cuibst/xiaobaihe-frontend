@@ -240,10 +240,12 @@ public class DirectoryFragment extends Fragment {
 //            startActivity(intent);
 //            getActivity().finish();
             JSONObject js = ((MainApplication) getActivity().getApplication()).getFavourite();
-            int sum = 0;
-            int right = 0;
+            int cnt = 0;
             JSONArray jsArray = (JSONArray) js.get(directoryName);
+            List<String> qBodyList = new ArrayList<>();
+            List<String> qAnswerList = new ArrayList<>();
             for(int i = 0; i < jsArray.size(); i ++){
+                Log.v("num", i + "");
                 JSONObject jsObject = (JSONObject) jsArray.get(i);
                 String uriname = (String) jsObject.get("name");
                 Map<String, String> request = new HashMap<String, String>();
@@ -259,18 +261,31 @@ public class DirectoryFragment extends Fragment {
                     e.printStackTrace();
                 }
                 List<String> mList = new ArrayList<>();
+                Log.v("tmp", tmp.toJSONString());
+                Log.v("tmp", tmp.getClass().toString());
+//                onPause();
                 JSONArray mJSONArray = null;
                 mJSONArray = (JSONArray) tmp.get("data");
-                Map<String , String> mMap = (Map<String, String>) mJSONArray.get(0);
+                if(mJSONArray.isEmpty()){
+                    Log.v("tmp", "empty");
+                    continue;
+                }
+                Log.v("tmp", mJSONArray.toString());
+                Log.v("tmp", mJSONArray.get(i).toString());
+                Map<String , String> mMap = (Map<String, String>) mJSONArray.get(i);
                 String qBody = mMap.get("qBody");
                 String answer = mMap.get("qAnswer");
-                Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-                mIntent.putExtra("body", qBody);
-                mIntent.putExtra("answer", answer);
-//                String questionBody
-                startActivity(mIntent);
+                qAnswerList.add(answer);
+                qBodyList.add(qBody);
+                cnt ++;
             }
-
+            Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
+            mIntent.putExtra("body", qBodyList.toString());
+            mIntent.putExtra("answer", qAnswerList.toString());
+            mIntent.putExtra("type", "list");
+            mIntent.putExtra("sum", cnt + "");
+//                String questionBody
+            startActivity(mIntent);
         });
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
             //TODO: the logic for move!

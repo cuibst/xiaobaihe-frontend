@@ -36,6 +36,7 @@ public class ProblemAdapter extends ArrayAdapter<JSONObject> {
             Intent f=new Intent(entityActivity,ProblemActivity.class);
             f.putExtra("body", problemObject.getString("qBody"));
             f.putExtra("answer", problemObject.getString("qAnswer"));
+            f.putExtra("type", "single");
             entityActivity.startActivity(f);
         });
         TextView problemDescription = (TextView) view.findViewById(R.id.problem_description_in_entity);
