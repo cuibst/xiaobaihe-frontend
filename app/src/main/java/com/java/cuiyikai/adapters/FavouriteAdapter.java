@@ -30,6 +30,7 @@ class FavouriteItemHolder extends RecyclerView.ViewHolder {
     private final ImageView subjectImage;
     private final TextView itemName;
     private final ImageButton dragButton;
+    private final View viewLine;
 
     public CheckBox getCheckBox() { return checkBox; }
 
@@ -43,6 +44,10 @@ class FavouriteItemHolder extends RecyclerView.ViewHolder {
         return dragButton;
     }
 
+    public View getViewLine() {
+        return viewLine;
+    }
+
     public FavouriteItemHolder(@NonNull View itemView) {
 
         super(itemView);
@@ -51,6 +56,7 @@ class FavouriteItemHolder extends RecyclerView.ViewHolder {
         subjectImage = (ImageView) itemView.findViewById(R.id.itemSubjectPicture);
         itemName = (TextView) itemView.findViewById(R.id.favouriteItemName);
         dragButton = (ImageButton) itemView.findViewById(R.id.itemDragButton);
+        viewLine = itemView.findViewById(R.id.directoryFavouriteItem);
 
     }
 }
@@ -117,25 +123,42 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         JSONObject object = favouriteArray.getJSONObject(position);
         favouriteItemHolder.getItemName().setText(object.getString("name"));
         switch(object.getString("subject")) {
-            case "physics":
-                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.phy);
+            case "chinese" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.chinese_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.chinese);
                 break;
-            case "chemistry":
-                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.che);
+            case "math" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.maths_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.maths);
                 break;
-            case "biology":
-                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.bio);
+            case "english" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.english_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.english);
                 break;
-            case "geo":
-                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.geo);
+            case "physics" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.physics_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.physics);
                 break;
-            case "chinese": //FIXME: add different resource for different subject!!
-            case "math":
-            case "english":
-            case "history":
+            case "chemistry" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.chemistry_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.chemistry);
+                break;
+            case "biology" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.biology_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.biology);
+                break;
+            case "history" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.history_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.history);
+                break;
+            case "geo" :
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.geography_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.geography);
+                break;
             case "politics":
             default:
-                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.book);
+                favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.politics_radius);
+                favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.politics);
                 break;
         }
         if(editable) {
