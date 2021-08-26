@@ -148,8 +148,6 @@ public class SearchActivity extends AppCompatActivity {
 
                     }
                     finalInfo=new JSONObject(totalmap);
-//                    System.out.println(finalInfo.toString());
-//                    System.out.println(receivedMessage.toString());
                     sadapter=null;
                     sadapter=new SearchAdapter(SearchActivity.this);
                     sadapter.addSubject(finalInfo);

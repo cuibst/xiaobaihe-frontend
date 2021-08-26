@@ -48,13 +48,6 @@ public class RcyAdapter extends RecyclerView.Adapter<RcyAdapter.RcyViewHolder> {
         return new RcyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_linear_item,parent,false));
     }
 
-//    @Override
-//    public int getItemViewType(int position) {
-//        if(position%2==0)
-//            return 0;
-//        else
-//            return 1;
-//    }
 
     @Override
     public void onBindViewHolder(RcyViewHolder holder, int position)

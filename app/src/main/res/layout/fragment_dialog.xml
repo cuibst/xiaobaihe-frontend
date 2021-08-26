@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <com.stfalcon.chatkit.messages.MessagesList
+        android:id="@+id/messageListInDialog"
+        app:textAutoLink="all"
+        android:background="@drawable/littleblue"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/dialogLinearLayout"/>
+
+    <LinearLayout
+            android:id="@+id/dialogLinearLayout"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+        <com.stfalcon.chatkit.messages.MessageInput
+            android:id="@+id/messageInputInDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:inputHint="@string/hint_enter_a_message" />
+        <Button
+            android:id="@+id/clearbtn"
+            android:layout_width="match_parent"
+            android:text="clear"
+            android:textSize="10sp"
+            android:layout_weight="6.5"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</RelativeLayout>

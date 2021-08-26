@@ -71,6 +71,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.RcyViewHol
         searchline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println(map.get("name"));
                 Intent f=new Intent(mContext, EntityActivity.class);
                 f.putExtra("name",holder.labeltxt.getText());
                 f.putExtra("subject",(String) map.get("name"));
@@ -93,7 +94,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.RcyViewHol
             default:
                 img.setImageResource(R.drawable.book);
                 break;
-
         }
         if(((JSONObject)map.get("item")).get("category").toString().length()==0)
             holder.categorytxt.setText("无");

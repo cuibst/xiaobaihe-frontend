@@ -2,6 +2,8 @@ package com.java.cuiyikai.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +31,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainFragment extends Fragment {
-
     private ViewPager viewpgr;
     private ImageView tabAdd;
-    private ItemFragment[] itemFragment;
+    private Fragment[] itemFragment;
+    private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
     private final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     private TabLayout tabLayout;
 
@@ -40,26 +42,22 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = View.inflate(getActivity(), R.layout.fragment_main, null);
-
         initViewPager(view);
-
-        itemFragment=new ItemFragment[all_subject_item.length];
+        itemFragment=new Fragment[all_subject_item.length];
 
         tabLayout=view.findViewById(R.id.tablayout1);
         tabLayout.setupWithViewPager(viewpgr);
-
         tabAdd = view.findViewById(R.id.tab_add);
         tabAdd.setOnClickListener((View v) -> {
             Intent intent=new Intent(getActivity(), CategoryActivity.class);
             startActivity(intent);
         });
-
         return view;
     }
 
     private void initViewPager(View view) {
         viewpgr = view.findViewById(R.id.viewpgr1);
-        ViewPagerFragmentAdapter viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager());
+        viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager());
         try(InputStream is = getActivity().getAssets().open(CategoryActivity.getSubjectData())) {
             int length = is.available();
             byte[] buffer = new byte[length];
@@ -80,6 +78,7 @@ public class MainFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             initfragment(position);
+//            System.out.println(itemFragment[position].T);
             return itemFragment[position];
         }
 
@@ -98,20 +97,10 @@ public class MainFragment extends Fragment {
 
     public void initfragment(int position)
     {
+        System.out.println("position: "+position);
         String TITLE=all_subject_item[position];
         String chooseSubject = ((MainActivity)getActivity()).checkSubject(TITLE);
-        Map<String,String> map=new HashMap<>();
-        map.put("subject",chooseSubject);
-        try {
-            ItemAdapter itemAdapter = new ItemAdapter(getActivity(),chooseSubject);
-            JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_url, map,false);
-            itemAdapter.addSubject(msg.getJSONArray("data"));
-            ItemFragment fragment = new ItemFragment(chooseSubject,itemAdapter,getActivity());
-            itemFragment[position]=fragment;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        ItemFragment fragment=new ItemFragment(chooseSubject,getActivity());
+        itemFragment[position]=fragment;
     }
 }

@@ -36,4 +36,5 @@
     <string name="moveFavourite">移动</string>
     <string name="selectAll">全选</string>
     <string name="deleteItems">删除</string>
+    <string name="hint_enter_a_message">add something here:</string>
 </resources>

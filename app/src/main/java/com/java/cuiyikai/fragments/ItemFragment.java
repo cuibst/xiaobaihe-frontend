@@ -4,13 +4,18 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.java.cuiyikai.adapters.ItemAdapter;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -26,19 +31,18 @@ import java.util.Map;
 
 public class ItemFragment extends Fragment {
     public  XRecyclerView xRecyclerView;
-    public Context context;
-    public  static String TITLE = "tile";
-    public RecyclerView.LayoutManager layoutManager;
-    public ItemAdapter itemAdapter;
+    public  Context context;
+    public  String TITLE = "tile";
+    public  RecyclerView.LayoutManager layoutManager;
+    public  ItemAdapter itemAdapter;
     private String main_activity_backend_url="/api/uri/getname";
     public  static String main_activity_url="http://183.172.183.37:8080/api/uri/getname";
     public ItemFragment() {
     }
-    public ItemFragment(String s, ItemAdapter a, Context c)
+    public ItemFragment(String s, Context c)
     {
         super();
         TITLE=s;
-        itemAdapter=a;
         context=c;
     }
     public static ItemFragment newInstance(String item) {
@@ -74,14 +78,15 @@ public class ItemFragment extends Fragment {
         else
             view =inflater.inflate(R.layout.fragment_item_recommend, container, false);
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
-        xRecyclerView.setAdapter(itemAdapter);
+        itemAdapter=new ItemAdapter(getActivity(),TITLE);
+        System.out.println(TITLE);
+        sendMessage();
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 try {
                     Map<String,String> map=new HashMap<>();
                     map.put("subject",itemAdapter.chooseSubject);
-                    System.out.println(itemAdapter.chooseSubject);
                     JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
                     String rememberedSubject=itemAdapter.chooseSubject;
                     itemAdapter=null;
@@ -103,7 +108,6 @@ public class ItemFragment extends Fragment {
                 try {
                     Map<String, String> map = new HashMap<>();
                     map.put("subject", itemAdapter.chooseSubject);
-                    System.out.println(itemAdapter.chooseSubject);
                     JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
                     itemAdapter.addMoreSubject(msg.getJSONArray("data"));
                     xRecyclerView.loadMoreComplete();
@@ -117,5 +121,48 @@ public class ItemFragment extends Fragment {
             }
         });
         return view;
+    }
+    public void sendMessage()
+    {
+        ConnectToWeb runner=new ConnectToWeb(TITLE);
+        Thread thread=new Thread(runner);
+        thread.start();
+    }
+
+    MyHandler handler=new MyHandler();
+    private class ConnectToWeb implements Runnable{
+        private String chooseSubject;
+        ConnectToWeb(String s)
+        {
+            chooseSubject=s;
+        }
+        @Override
+        public void run() {
+            try {
+                Map<String, String> map = new HashMap<>();
+                map.put("subject", chooseSubject);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                Message message=new Message();
+                message.obj=msg.toString();
+                message.what=0;
+                handler.sendMessage(message);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class MyHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch(msg.what)
+            {
+                case 0:
+                    JSONObject object=JSONObject.parseObject(msg.obj.toString());
+                    itemAdapter.addSubject(object.getJSONArray("data"));
+                    xRecyclerView.setAdapter(itemAdapter);
+            }
+        }
     }
 }
