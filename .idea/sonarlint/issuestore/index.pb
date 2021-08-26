@@ -82,14 +82,10 @@ x
 Happ/src/main/java/com/java/cuiyikai/adapters/category/CategoryTitle.java,b\b\bbd66abf63d12024923c61ec79491d6993b9d7c2
 Š
 Zapp/src/main/java/com/java/cuiyikai/adapters/category/CategoryLayoutManagerSizeLookUp.java,7\3\73f30492fc2dce9a6c361b04776b4f31761aae29
-q
-Aapp/src/main/java/com/java/cuiyikai/adapters/GridViewAdapter.java,f\3\f39df24955e3822087de4cddf22b764606bccf77
 o
 ?app/src/main/java/com/java/cuiyikai/fragments/ItemFragment.java,8\8\88b543b8f8a404dc9f5e7be08cda17f8534f7300
 o
 ?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
-r
-Bapp/src/main/java/com/java/cuiyikai/adapters/FavouriteAdapter.java,c\f\cf98ed3ce36881cbf58cd221e0e66bb453cfd6cf
 r
 Bapp/src/main/java/com/java/cuiyikai/activities/SearchActivity.java,6\a\6a45b42281b379b3f125ce227e00b2fd7af60b18
 o

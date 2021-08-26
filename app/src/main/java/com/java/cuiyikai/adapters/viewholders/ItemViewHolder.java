@@ -1,4 +1,4 @@
-package com.java.cuiyikai.adapters;
+package com.java.cuiyikai.adapters.viewholders;
 
 import android.view.View;
 import android.widget.ImageView;

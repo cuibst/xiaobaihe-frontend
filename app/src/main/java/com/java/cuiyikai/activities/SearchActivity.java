@@ -6,21 +6,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.adapters.ItemViewHolder;
+import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;

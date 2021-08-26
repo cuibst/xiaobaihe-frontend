@@ -5,11 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson.JSONArray;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
+import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public ItemAdapter(Context context, String s) {

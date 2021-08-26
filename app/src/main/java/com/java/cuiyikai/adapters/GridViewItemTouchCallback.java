@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.java.cuiyikai.adapters.viewholders.CategoryViewHolder;
+
 public class GridViewItemTouchCallback extends ItemTouchHelper.Callback {
 
     private final GridViewAdapter adapter;
