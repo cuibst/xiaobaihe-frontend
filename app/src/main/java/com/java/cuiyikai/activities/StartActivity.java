@@ -23,6 +23,7 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startActivities(intent);
+                StartActivity.this.finish();
             }
         };
         timer.schedule(task, 500);
