@@ -3,8 +3,6 @@ package com.java.cuiyikai.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,51 +12,11 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.CategoryActivity;
 import com.java.cuiyikai.adapters.category.CategoryItem;
 import com.java.cuiyikai.adapters.category.CategoryObject;
+import com.java.cuiyikai.adapters.viewholders.CategoryTitleHolder;
+import com.java.cuiyikai.adapters.viewholders.CategoryViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-class CategoryViewHolder extends RecyclerView.ViewHolder {
-
-    private final TextView textView;
-    private final ImageView imageView;
-    private final View wholeView;
-
-    public TextView getTextView() {
-        return textView;
-    }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public View getWholeView() {
-        return wholeView;
-    }
-
-    public CategoryViewHolder(@NonNull View itemView) {
-        super(itemView);
-        textView = itemView.findViewById(R.id.text_item);
-        imageView = itemView.findViewById(R.id.iv_edit);
-        this.wholeView = itemView;
-    }
-}
-
-class CategoryTitleHolder extends RecyclerView.ViewHolder {
-
-    private final TextView textView;
-
-    public CategoryTitleHolder(@NonNull View itemView) {
-        super(itemView);
-        textView = itemView.findViewById(R.id.channel_title);
-    }
-
-    public TextView getTextView() {
-        return textView;
-    }
-
-
-}
 
 public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

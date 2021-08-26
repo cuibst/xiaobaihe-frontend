@@ -33,50 +33,81 @@
                 android:layout_gravity="center"
                 android:visibility="gone"/>
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/activity_entity_relation"
-            android:textSize="20sp"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_entity_relation"
+                android:textSize="20sp"/>
+            <ImageButton
+                android:layout_marginTop="5dp"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_radius"
+                android:id="@+id/relationButton"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
         <com.java.cuiyikai.widgets.ListViewForScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/relationsView"/>
-        <ImageButton
-            android:layout_width="100dp"
+            android:id="@+id/relationsView"
+            android:divider="#00000000"
+            android:dividerHeight="3dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_radius"
-            android:id="@+id/relationButton"
-            android:layout_gravity="center"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_entity_property"
-            android:textSize="20sp"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_entity_property"
+                android:textSize="20sp"/>
+            <ImageButton
+                android:layout_marginTop="5dp"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_radius"
+                android:id="@+id/propertyButton"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
         <com.java.cuiyikai.widgets.ListViewForScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/propertiesView"/>
-        <ImageButton
-            android:layout_width="100dp"
+            android:id="@+id/propertiesView"
+            android:divider="#00000000"
+            android:dividerHeight="3dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_radius"
-            android:id="@+id/propertyButton"
-            android:layout_gravity="center"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_entity_relate_problems"
-            android:textSize="20sp"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_entity_relate_problems"
+                android:textSize="20sp"/>
+            <ImageButton
+                android:layout_marginTop="5dp"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_radius"
+                android:id="@+id/problemButton"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+
         <com.java.cuiyikai.widgets.ListViewForScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/problemsView"/>
-        <ImageButton
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/white_radius"
-            android:id="@+id/problemButton"
-            android:layout_gravity="center"/>
+            android:id="@+id/problemsView"
+            android:divider="#00000000"
+            android:dividerHeight="3dp"/>
     </LinearLayout>
 </ScrollView>

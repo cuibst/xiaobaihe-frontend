@@ -21,13 +21,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
+import com.java.cuiyikai.adapters.SearchAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import com.java.cuiyikai.adapters.SearchAdapter;
 
 public class SearchActivity extends AppCompatActivity {
     private final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
@@ -110,53 +110,51 @@ public class SearchActivity extends AppCompatActivity {
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentTransaction=fragmentManager.beginTransaction();
-                if(selectFragment.isHidden())
-                {
+                fragmentTransaction = fragmentManager.beginTransaction();
+                if (selectFragment.isHidden()) {
                     selectButton.setText("完成");
                     fragmentTransaction.show(selectFragment);
-                }
-                else
-                {
+                } else {
                     selectButton.setText("筛选");
                     fragmentTransaction.hide(selectFragment);
-                    checkMarked=selectFragment.returnCheckMarked();
-                    checkSubject=selectFragment.returnCheckSubject();
-                    Set<String> set=receivedMessage.keySet();
-                    Map<String,Object> totalmap=new HashMap<>();
+                    checkMarked = selectFragment.returnCheckMarked();
+                    checkSubject = selectFragment.returnCheckSubject();
+                    Set<String> set = receivedMessage.keySet();
+                    Map<String, Object> totalmap = new HashMap<>();
                     JSONObject finalInfo;
-                    for(int lesson=0;lesson<checkSubject.size();lesson++) {
-                        Map<String,Object> lessonmap=new HashMap<>();
+                    for (int lesson = 0; lesson < checkSubject.size(); lesson++) {
+                        Map<String, Object> lessonmap = new HashMap<>();
                         for (String str : set) {
-                            if(!str.equals(CheckSubject(checkSubject.get(lesson))))
+                            if (!str.equals(CheckSubject(checkSubject.get(lesson))))
                                 continue;
-                            JSONArray categorymap=new JSONArray();
-                            for(int category=0;category<checkMarked.size();category++) {
+                            JSONArray categorymap = new JSONArray();
+                            for (int category = 0; category < checkMarked.size(); category++) {
                                 for (int i = 0; i < receivedMessage.getJSONObject(str).getJSONArray("data").size(); i++) {
                                     String s = (String) ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i)).get("category");
                                     if (!s.equals(checkMarked.get(category)))
                                         continue;
-                                    JSONObject cate=((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i));
-                                    if(categorymap.contains(cate))
+                                    JSONObject cate = ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i));
+                                    if (categorymap.contains(cate))
                                         continue;
                                     categorymap.add(cate);
                                 }
-                                lessonmap.put("data",categorymap);
+                                lessonmap.put("data", categorymap);
                             }
-                            totalmap.put(CheckSubject(checkSubject.get(lesson)),lessonmap);
+                            totalmap.put(CheckSubject(checkSubject.get(lesson)), lessonmap);
                         }
 
                     }
-                    finalInfo=new JSONObject(totalmap);
-                    sadapter=null;
-                    sadapter=new SearchAdapter(SearchActivity.this);
+                    finalInfo = new JSONObject(totalmap);
+                    sadapter = null;
+                    sadapter = new SearchAdapter(SearchActivity.this);
                     sadapter.addSubject(finalInfo);
                     search_rcy.setAdapter(sadapter);
                 }
-                fragmentTransaction.commit();
             }
         });
+        initSearchView(searchViewInSearch,SearchActivity.this);
     }
+
 
     public void initSearchView(SearchView searchView,Context mcontext)
     {

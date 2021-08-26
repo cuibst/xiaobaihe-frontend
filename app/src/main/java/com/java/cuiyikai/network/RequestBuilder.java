@@ -219,7 +219,7 @@ public class RequestBuilder {
 
     private static long expireTime = 0;
 
-    private static final String BACKEND_ADDRESS = "http://183.173.148.99:8080";
+    private static final String BACKEND_ADDRESS = "http://183.172.183.37:8080";
 
     public interface OnTokenChangedListener {
         void onTokenChanged();
