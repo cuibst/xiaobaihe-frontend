@@ -19,6 +19,9 @@
         android:layout_height="match_parent"
         android:layout_below="@id/btnReturnToOnlineMode"
         android:layout_alignParentBottom="true"
-        android:id="@+id/listViewOffline"/>
+        android:id="@+id/listViewOffline"
+        android:divider="#00000000"
+        android:layout_margin="10dp"
+        android:dividerHeight="5dp"/>
 
 </RelativeLayout>

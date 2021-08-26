@@ -42,8 +42,6 @@ A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
 p
 @app/src/main/java/com/java/cuiyikai/entities/RelationEntity.java,1\9\1923b44d9a25ffcc836db52b0005811847c390fd
-s
-Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
 v
 Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
 x
@@ -64,8 +62,6 @@ P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 p
 @app/src/main/java/com/java/cuiyikai/adapters/ProblemAdapter.java,0\a\0a1e353cb43b49942b46b48d8c20aa75545f0b8c
-q
-Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
 s
 Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac66820c7b908cbfc48435a6e1d33457358f
 v
@@ -98,8 +94,6 @@ r
 Bapp/src/main/java/com/java/cuiyikai/activities/SearchActivity.java,6\a\6a45b42281b379b3f125ce227e00b2fd7af60b18
 o
 ?app/src/main/java/com/java/cuiyikai/fragments/MainFragment.java,f\a\fa1fcab14a94e61f102fa426f7440f6cc03d62c9
-r
-Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
 {
 Kapp/src/main/java/com/java/cuiyikai/adapters/GridViewItemTouchCallback.java,8\8\882eba0faecdd590079ca178e7555fd3bb453ccd
 p
@@ -110,3 +104,9 @@ z
 Japp/src/main/java/com/java/cuiyikai/activities/FavouriteCheckActivity.java,7\6\7645f034a4c363e373aaedeb65ed209b40001637
 t
 Dapp/src/main/java/com/java/cuiyikai/fragments/DirectoryFragment.java,8\6\861563394ce0a70ff84d96654c9bbef2d226ec88
+q
+Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
+
+Oapp/src/main/java/com/java/cuiyikai/widgets/RoundCornerBackgroundColorSpan.java,5\3\53c2aecdd6e9e7f35e7fe2389d77990870dbdaf7
+r
+Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b

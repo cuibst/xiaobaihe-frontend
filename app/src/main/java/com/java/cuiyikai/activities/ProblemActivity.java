@@ -41,7 +41,13 @@ public class ProblemActivity extends AppCompatActivity {
         System.out.println(questionAnswer);
 
         if(Character.isAlphabetic(questionAnswer.charAt(0))) {
-            optionId = questionAnswer.charAt(0) - 'A';
+
+            for(int i=0;i<questionAnswer.length();i++)
+                if(Character.isLowerCase(questionAnswer.charAt(i)) || Character.isUpperCase(questionAnswer.charAt(i))) {
+                    System.out.printf("%d %c%n", i, questionAnswer.charAt(i));
+                    optionId = Character.toUpperCase(questionAnswer.charAt(i)) - 'A';
+                    break;
+                }
 
             int placeA = questionBody.indexOf("A.");
             int placeB = questionBody.indexOf("B.");
