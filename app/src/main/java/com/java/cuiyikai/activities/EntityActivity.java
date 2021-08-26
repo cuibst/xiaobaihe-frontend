@@ -66,7 +66,7 @@ import java.util.concurrent.Executors;
 
 public class EntityActivity extends AppCompatActivity {
 
-    private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE};
+    private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
 
     public class RelationViewItemOnClickListener implements View.OnClickListener {
         private final String name;
@@ -381,7 +381,7 @@ public class EntityActivity extends AppCompatActivity {
     private IWBAPI mWBAPI = null;
 
     private void initSdk() {
-        if(PermissionUtilities.verifyPermissions(EntityActivity.this, Manifest.permission.READ_PHONE_STATE) == 0) {
+        if(PermissionUtilities.verifyPermissions(EntityActivity.this, Manifest.permission.CHANGE_WIFI_STATE) == 0) {
             ActivityCompat.requestPermissions(EntityActivity.this, PERMISSIONS, 3);
             return;
         }
