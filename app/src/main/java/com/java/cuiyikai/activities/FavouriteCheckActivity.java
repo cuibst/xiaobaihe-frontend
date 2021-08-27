@@ -52,7 +52,6 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         directoryNameTab.setupWithViewPager(directoryPager);
 
         JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
-        Log.v("paper", favourite.toJSONString());
 
         directoryNames = new ArrayList<>(favourite.keySet());
 
