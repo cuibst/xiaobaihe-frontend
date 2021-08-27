@@ -342,11 +342,14 @@ public class DirectoryFragment extends Fragment {
 //            Log.v("debug", qBodyList.get(1).toString());
             Log.v("answer", qAnswerList.toString());
             Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-            mIntent.putExtra("body", qBodyList.toString());
-            mIntent.putExtra("answer", qAnswerList.toString());
+            for(int j = 0; j < cnt; j ++){
+                mIntent.putExtra("body" + " " + j, qBodyList.get(j));
+                mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
+
+            }
+    //                String questionBody
             mIntent.putExtra("type", "list");
             mIntent.putExtra("sum", cnt + "");
-//                String questionBody
             startActivity(mIntent);
         });
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {

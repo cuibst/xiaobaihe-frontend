@@ -34,9 +34,10 @@ public class ProblemAdapter extends ArrayAdapter<JSONObject> {
         View problemItem = view.findViewById(R.id.problem_item);
         problemItem.setOnClickListener((View v) -> {
             Intent f=new Intent(entityActivity,ProblemActivity.class);
-            f.putExtra("body", problemObject.getString("qBody"));
-            f.putExtra("answer", problemObject.getString("qAnswer"));
+            f.putExtra("body 0", problemObject.getString("qBody"));
+            f.putExtra("answer 0", problemObject.getString("qAnswer"));
             f.putExtra("type", "single");
+            f.putExtra("sum", 1 + "");
             entityActivity.startActivity(f);
         });
         TextView problemDescription = (TextView) view.findViewById(R.id.problem_description_in_entity);
