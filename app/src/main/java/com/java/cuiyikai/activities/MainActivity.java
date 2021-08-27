@@ -22,6 +22,7 @@ import com.chaychan.library.BottomBarItem;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
+import com.java.cuiyikai.fragments.DialogFragment;
 import com.java.cuiyikai.fragments.MainFragment;
 import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
@@ -60,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.out.printf("Network available : %b%n", RequestBuilder.isNetworkNormal(MainActivity.this));
+
+        if(!RequestBuilder.isNetworkNormal(MainActivity.this)) {
+            Intent intent = new Intent(MainActivity.this, OfflineActivity.class);
+            startActivity(intent);
+            this.finish();
+            return;
+        }
+
         init();
 
         btnForLogIn.setOnClickListener((View view) -> {
@@ -75,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         //FIXME: add all four fragments, current 2 of 4.
         fragmentList.add(new MainFragment());
         fragmentList.add(new UserPageEntryFragment());
-
+        fragmentList.add(new DialogFragment());
         ViewPager mainPager = findViewById(R.id.mainPager);
         mainPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
@@ -98,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
         BottomBarItem btnUser = (BottomBarItem) findViewById(R.id.btnBottomBarUser);
         btnUser.setOnClickListener((View view) -> {
             mainPager.setCurrentItem(1); //FIXME: this should be 3!!
+        });
+
+        BottomBarItem btnPoint= (BottomBarItem) findViewById(R.id.btnBottomBarPoint);
+        btnPoint.setOnClickListener((View view)->{
+            mainPager.setCurrentItem(2);
         });
     }
 
@@ -124,7 +139,11 @@ public class MainActivity extends AppCompatActivity {
                         map.put("course",  checkSubject(all_subject_item[i]));
                         map.put("searchKey",s);
                         JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                        if(!msg.getJSONArray("data").isEmpty()) {
+                        if((String)msg.get("code")=="-1")
+                        {
+                            Toast.makeText(MainActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
                             receivedMessage.put(checkSubject(all_subject_item[i]),msg);
                         }
                     }
@@ -183,6 +202,47 @@ public class MainActivity extends AppCompatActivity {
         }
         return chooseSubject;
     }
+    public String reverseCheckSubject(String TITLE)
+    {
+        String chooseSubject="";
+        if(TITLE.equals("chinese"))
+        {
+            chooseSubject="语文";
+        }
+        else if(TITLE.equals("math"))
+        {
+            chooseSubject="数学";
+        }
+        else if(TITLE.equals("english"))
+        {
+            chooseSubject="英语";
+        }
+        else if(TITLE.equals("physics"))
+        {
+            chooseSubject="物理";
+        }
+        else if(TITLE.equals("chemistry"))
+        {
+            chooseSubject="化学";
+        }
+        else if(TITLE.equals("history"))
+        {
+            chooseSubject="历史";
+        }
+        else if(TITLE.equals("geo"))
+        {
+            chooseSubject="地理";
+        }
+        else if(TITLE.equals("politics"))
+        {
+            chooseSubject="政治";
+        }
+        else if(TITLE.equals("biology"))
+        {
+            chooseSubject="生物";
+        }
+        return chooseSubject;
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -208,4 +268,5 @@ public class MainActivity extends AppCompatActivity {
             System.exit(0);
         }
     }
+
 }

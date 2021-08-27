@@ -13,7 +13,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -23,6 +27,17 @@ public class MainApplication extends Application {
     private String savePassword = "";
 
     private JSONObject favourite = null;
+
+    private List<String> subjects = new ArrayList<>(Arrays.asList("推荐", "语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治"));
+
+    public List<String> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<String> subjects) {
+        this.subjects = subjects;
+        dumpCacheData();
+    }
 
     public JSONObject getFavourite() {
         if(!RequestBuilder.checkedLogin()) {
@@ -51,16 +66,32 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         File loadFile = new File(getFilesDir(), "cache.txt");
-        if(!loadFile.exists())
-            return;
-        try (Scanner scanner = new Scanner(new FileInputStream(loadFile))) {
-            String savedToken = scanner.nextLine();
-            saveUsername = scanner.nextLine();
-            savePassword = scanner.nextLine();
-            if(!savedToken.equals(""))
-                RequestBuilder.setBackendToken(savedToken);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(loadFile.exists()) {
+            try (Scanner scanner = new Scanner(new FileInputStream(loadFile))) {
+                String savedToken = scanner.nextLine();
+                saveUsername = scanner.nextLine();
+                savePassword = scanner.nextLine();
+                if (!savedToken.equals(""))
+                    RequestBuilder.setBackendToken(savedToken);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        RequestBuilder.onTokenChangedListener = this::dumpCacheData;
+
+        loadFile = new File(getFilesDir(), "subjects.txt");
+        if(loadFile.exists()) {
+            subjects = new ArrayList<>();
+            try (Scanner scanner = new Scanner(new FileInputStream(loadFile))) {
+                int num = scanner.nextInt();
+                scanner.nextLine();
+                for(int i=0;i<num;i++) {
+                    String subject = scanner.nextLine();
+                    subjects.add(subject);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -77,6 +108,21 @@ public class MainApplication extends Application {
             printStream.println(RequestBuilder.getBackendToken());
             printStream.println(saveUsername);
             printStream.println(savePassword);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        loadFile = new File(getFilesDir(), "subjects.txt");
+        if(!loadFile.exists())
+            try {
+                loadFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        try(PrintStream printStream = new PrintStream(new FileOutputStream(loadFile))) {
+            printStream.println(subjects.size());
+            for(String subject : subjects)
+                printStream.println(subject);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -41,81 +41,83 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/searchline"
-            android:id="@+id/mainPager"/>
+            android:id="@+id/mainPager"
+            android:layout_above="@id/bottomBar"/>
+
+        <com.chaychan.library.BottomBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottomBar"
+            android:background="#F3F4F5"
+            android:gravity="center"
+            android:layout_alignParentBottom="true">
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btnBottomBarHome"
+                app:iconHeight="31dp"
+                app:iconWidth="31dp"
+                app:iconNormal="@drawable/home"
+                app:iconSelected="@drawable/home_selected"
+                app:touchDrawable="@drawable/selector_bottom_tab"
+                app:itemText="首页"
+                app:itemTextSize="8sp"
+                app:textColorNormal="#515051"
+                app:textColorSelected="#D33D3C"
+                app:itemMarginTop="0dp"
+                app:openTouchBg="true"/>
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btnBottomBarProblems"
+                app:iconWidth="31dp"
+                app:iconHeight="31dp"
+                app:iconNormal="@drawable/question"
+                app:iconSelected="@drawable/question_selected"
+                app:touchDrawable="@drawable/selector_bottom_tab"
+                app:itemText="题库"
+                app:itemTextSize="8sp"
+                app:textColorNormal="#515051"
+                app:textColorSelected="#D33D3C"
+                app:openTouchBg="true"/>
+
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btnBottomBarPoint"
+                app:iconHeight="31dp"
+                app:iconNormal="@drawable/knowledge"
+                app:iconSelected="@drawable/knowledge_selected"
+                app:iconWidth="31dp"
+                app:itemText="知识点"
+                app:itemTextSize="8sp"
+                app:openTouchBg="true"
+                app:textColorNormal="#515051"
+                app:textColorSelected="#D33D3C"
+                app:touchDrawable="@drawable/selector_bottom_tab" />
+
+            <com.chaychan.library.BottomBarItem
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btnBottomBarUser"
+                app:iconHeight="31dp"
+                app:iconWidth="31dp"
+                app:iconNormal="@drawable/user"
+                app:iconSelected="@drawable/user_selected"
+                app:touchDrawable="@drawable/selector_bottom_tab"
+                app:itemText="我的"
+                app:itemTextSize="8sp"
+                app:textColorNormal="#515051"
+                app:textColorSelected="#D33D3C"
+                app:openTouchBg="true"/>
+
+
+        </com.chaychan.library.BottomBarLayout>
 
     </RelativeLayout>
-    <com.chaychan.library.BottomBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:id="@+id/bottomBar"
-        android:background="#F3F4F5"
-        android:gravity="center">
-        <com.chaychan.library.BottomBarItem
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/btnBottomBarHome"
-            app:iconHeight="31dp"
-            app:iconWidth="31dp"
-            app:iconNormal="@drawable/home"
-            app:iconSelected="@drawable/home_selected"
-            app:touchDrawable="@drawable/selector_bottom_tab"
-            app:itemText="首页"
-            app:itemTextSize="8sp"
-            app:textColorNormal="#515051"
-            app:textColorSelected="#D33D3C"
-            app:itemMarginTop="0dp"
-            app:openTouchBg="true"/>
-        <com.chaychan.library.BottomBarItem
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/btnBottomBarProblems"
-            app:iconWidth="31dp"
-            app:iconHeight="31dp"
-            app:iconNormal="@drawable/question"
-            app:iconSelected="@drawable/question_selected"
-            app:touchDrawable="@drawable/selector_bottom_tab"
-            app:itemText="题库"
-            app:itemTextSize="8sp"
-            app:textColorNormal="#515051"
-            app:textColorSelected="#D33D3C"
-            app:openTouchBg="true"/>
-
-        <com.chaychan.library.BottomBarItem
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/btnBottomBarPoint"
-            app:iconHeight="31dp"
-            app:iconNormal="@drawable/knowledge"
-            app:iconSelected="@drawable/knowledge_selected"
-            app:iconWidth="31dp"
-            app:itemText="知识点"
-            app:itemTextSize="8sp"
-            app:openTouchBg="true"
-            app:textColorNormal="#515051"
-            app:textColorSelected="#D33D3C"
-            app:touchDrawable="@drawable/selector_bottom_tab" />
-
-        <com.chaychan.library.BottomBarItem
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/btnBottomBarUser"
-            app:iconHeight="31dp"
-            app:iconWidth="31dp"
-            app:iconNormal="@drawable/user"
-            app:iconSelected="@drawable/user_selected"
-            app:touchDrawable="@drawable/selector_bottom_tab"
-            app:itemText="我的"
-            app:itemTextSize="8sp"
-            app:textColorNormal="#515051"
-            app:textColorSelected="#D33D3C"
-            app:openTouchBg="true"/>
-
-
-    </com.chaychan.library.BottomBarLayout>
-
 
 </LinearLayout>

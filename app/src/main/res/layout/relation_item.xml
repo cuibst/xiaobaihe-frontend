@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:layout_margin="10dp"
-    android:background="@drawable/orange_radius"
+    android:layout_margin="20dp"
+    android:background="@drawable/relation_radius"
     android:id="@+id/relationItem">
     <TextView
         android:layout_width="0dp"
@@ -16,7 +16,10 @@
         android:ellipsize="none"
         android:singleLine="false"
         android:gravity="center"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:background="@drawable/relation_entity_radius"
+        android:textColor="#ffffff"
+        android:textStyle="bold"/>
     <ImageView
         android:layout_width="0dp"
         android:layout_height="30dp"

@@ -2,7 +2,7 @@ package com.java.cuiyikai.database;
 
 public class DatabaseEntity {
     private String name;
-    private String uri;
+    private String subject;
     private String jsonContent;
     private String problemsJson;
 
@@ -14,12 +14,12 @@ public class DatabaseEntity {
         this.name = name;
     }
 
-    public String getUri() {
-        return uri;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getJsonContent() {

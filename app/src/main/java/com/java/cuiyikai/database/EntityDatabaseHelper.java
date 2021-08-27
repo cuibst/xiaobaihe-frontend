@@ -82,7 +82,7 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
         String createTable = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 "name VARCHAR NOT NULL," +
-                "uri VARCHAR NOT NULL," +
+                "subject VARCHAR NOT NULL," +
                 "jsonContent VARCHAR NOT NULL," +
                 "problemsJson VARCHAR NOT NULL);";
         db.execSQL(createTable);
@@ -100,7 +100,7 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
     public long insert(DatabaseEntity databaseEntity) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", databaseEntity.getName());
-        contentValues.put("uri", databaseEntity.getUri());
+        contentValues.put("subject", databaseEntity.getSubject());
         contentValues.put("jsonContent", databaseEntity.getJsonContent());
         contentValues.put("problemsJson", databaseEntity.getProblemsJson());
         return database.insert(TABLE_NAME, null, contentValues);
@@ -112,14 +112,30 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
      * @param entityName the entity name you wants to get.
      * @return a list of entity with the name given.
      */
-    public List<DatabaseEntity> queryEntityByName(String entityName) {
-        String query = String.format("SELECT name, uri, jsonContent, problemsJson FROM %s WHERE name = ?", TABLE_NAME);
+    public List<DatabaseEntity> queryEntityByNameAndSubject(String entityName, String subject) {
+        String query = String.format("SELECT name, subject, jsonContent, problemsJson FROM %s WHERE name = ? and subject = ?", TABLE_NAME);
         ArrayList<DatabaseEntity> results = new ArrayList<>();
-        Cursor cursor = database.rawQuery(query, new String[]{entityName});
+        Cursor cursor = database.rawQuery(query, new String[]{entityName, subject});
         while(cursor.moveToNext()) {
             DatabaseEntity databaseEntity = new DatabaseEntity();
             databaseEntity.setName(cursor.getString(0));
-            databaseEntity.setUri(cursor.getString(1));
+            databaseEntity.setSubject(cursor.getString(1));
+            databaseEntity.setJsonContent(cursor.getString(2));
+            databaseEntity.setProblemsJson(cursor.getString(3));
+            results.add(databaseEntity);
+        }
+        cursor.close();
+        return results;
+    }
+
+    public List<DatabaseEntity> queryAllEntity() {
+        String query = String.format("SELECT name, subject, jsonContent, problemsJson FROM %s", TABLE_NAME);
+        ArrayList<DatabaseEntity> results = new ArrayList<>();
+        Cursor cursor = database.rawQuery(query, new String[0]);
+        while(cursor.moveToNext()) {
+            DatabaseEntity databaseEntity = new DatabaseEntity();
+            databaseEntity.setName(cursor.getString(0));
+            databaseEntity.setSubject(cursor.getString(1));
             databaseEntity.setJsonContent(cursor.getString(2));
             databaseEntity.setProblemsJson(cursor.getString(3));
             results.add(databaseEntity);

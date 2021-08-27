@@ -2,35 +2,47 @@ package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.alibaba.fastjson.JSONArray;
+import com.java.cuiyikai.adapters.SelectAdapter;
+import com.java.cuiyikai.fragments.SelectFragment;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.TextView;
+import android.widget.Toast;
+import com.java.cuiyikai.adapters.SearchAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
+
 
 public class SearchActivity extends AppCompatActivity {
-    private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
-    JSONObject receivedMessage;
+    private final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
+    private JSONObject receivedMessage;
+    private Vector<String> checkSubject=new Vector<>();
+    private Vector<String> checkMarked=new Vector<>();
+    private FragmentManager fragmentManager=getFragmentManager();
+    private FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
     private SearchView searchViewInSearch;
     private String searchContent;
     private XRecyclerView search_rcy;
     private SearchAdapter sadapter;
+    private SelectFragment selectFragment;
+    private Button selectButton;
+    SelectAdapter selectAdapter;
     String search_url="typeOpen/open/instanceList";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +50,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Intent prevIntent=getIntent();
         Bundle prevBundle = prevIntent.getExtras();
+        selectAdapter=new SelectAdapter(SearchActivity.this);
+        selectFragment=new SelectFragment(selectAdapter);
         search_rcy=findViewById(R.id.search_rcy);
         search_rcy.setArrowImageView(R.drawable.waiting);
         search_rcy.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
@@ -88,118 +102,64 @@ public class SearchActivity extends AppCompatActivity {
         sadapter=new SearchAdapter(SearchActivity.this);
         sadapter.addSubject(receivedMessage);
         search_rcy.setAdapter(sadapter);
+        selectButton=findViewById(R.id.selectButton);
+        fragmentTransaction.add(R.id.selectFragment, selectFragment);
+        fragmentTransaction.hide(selectFragment);
+        fragmentTransaction.commit();
+        initFragment();
+        selectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentTransaction = fragmentManager.beginTransaction();
+                if (selectFragment.isHidden()) {
+                    selectButton.setText("完成");
+                    fragmentTransaction.show(selectFragment);
+                } else {
+                    selectButton.setText("筛选");
+                    fragmentTransaction.hide(selectFragment);
+                    checkMarked = selectFragment.returnCheckMarked();
+                    checkSubject = selectFragment.returnCheckSubject();
+                    Set<String> set = receivedMessage.keySet();
+                    Map<String, Object> totalmap = new HashMap<>();
+                    JSONObject finalInfo;
+                    for (int lesson = 0; lesson < checkSubject.size(); lesson++) {
+                        Map<String, Object> lessonmap = new HashMap<>();
+                        for (String str : set) {
+                            if (!str.equals(CheckSubject(checkSubject.get(lesson))))
+                                continue;
+                            JSONArray categorymap = new JSONArray();
+                            for (int category = 0; category < checkMarked.size(); category++) {
+                                for (int i = 0; i < receivedMessage.getJSONObject(str).getJSONArray("data").size(); i++) {
+                                    String s = (String) ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i)).get("category");
+                                    if (!s.equals(checkMarked.get(category)))
+                                        continue;
+                                    JSONObject cate = ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i));
+                                    if (categorymap.contains(cate))
+                                        continue;
+                                    categorymap.add(cate);
+                                }
+                                lessonmap.put("data", categorymap);
+                            }
+                            totalmap.put(CheckSubject(checkSubject.get(lesson)), lessonmap);
+                        }
+
+                    }
+                    finalInfo = new JSONObject(totalmap);
+                    sadapter = null;
+                    sadapter = new SearchAdapter(SearchActivity.this);
+                    sadapter.addSubject(finalInfo);
+                    search_rcy.setAdapter(sadapter);
+                }
+            }
+        });
         initSearchView(searchViewInSearch,SearchActivity.this);
     }
-    public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.RcyViewHolder>{
-        SearchAdapter(Context context)
-        {
-            mContext=context;
-        }
-        class RcyViewHolder extends RecyclerView.ViewHolder{
-            private TextView labeltxt,categorytxt;
-            public RcyViewHolder(View view)
-            {
-                super(view);
-                labeltxt=view.findViewById(R.id.label);
-                img=view.findViewById(R.id.img);
-                categorytxt=view.findViewById(R.id.category);
-                searchline=view.findViewById(R.id.search_line);
-            }
-        }
-        public void addSubject(JSONObject arr) {
-            subject=arr;
-            Set<String> set=subject.keySet();
-            for(String str:set)
-            {
-                System.out.println(str);
-                sum+=subject.getJSONObject(str).getJSONArray("data").size();
-            }
-            if(sum<=10)
-                size=sum;
-            else
-                size=10;
-        }
-        public int getRealLength()
-        {
-            return sum;
-        }
-        private int size=0;
-        int sum=0;
-        private JSONObject subject=new JSONObject();
-        private Context mContext;
-        private LinearLayout searchline;
-        private ImageView img;
-        public SearchAdapter.RcyViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
-        {
-            return new SearchAdapter.RcyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
-        }
-        @Override
-        public void onBindViewHolder(SearchAdapter.RcyViewHolder holder, int position)
-        {
-            Map<String,Object> map=findActualItem(position);
-            searchline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent f=new Intent(SearchActivity.this,EntityActivity.class);
-                    f.putExtra("name",holder.labeltxt.getText());
-                    f.putExtra("subject",(String) map.get("name"));
-                    startActivity(f);
-                }
-            });
 
-            holder.labeltxt.setText(((JSONObject)map.get("item")).get("label").toString());
-            switch ((String) map.get("name"))
-            {
-                case "physics":
-                    img.setImageResource(R.drawable.phy);
-                    break;
-                case "chemistry":
-                    img.setImageResource(R.drawable.che);
-                    break;
-                case "biology":
-                    img.setImageResource(R.drawable.bio);
-                    break;
-                default:
-                    img.setImageResource(R.drawable.book);
-                    break;
 
-            }
-            if(((JSONObject)map.get("item")).get("category").toString().length()==0)
-                holder.categorytxt.setText("无");
-            else
-                holder.categorytxt.setText(((JSONObject)map.get("item")).get("category").toString());
-        }
-        @Override
-        public int getItemCount(){
-            return size;
-        }
-        public Map<String,Object> findActualItem(int position)
-        {
-            Set<String> set=subject.keySet();
-            Map<String,Object> map=new HashMap<String, Object>();
-            for(String str:set)
-            {
-                System.out.println(subject.getJSONObject(str).getJSONArray("data"));
-                if((subject.getJSONObject(str).getJSONArray("data").size())>position) {
-                    map.put("item", subject.getJSONObject(str).getJSONArray("data").get(position));
-                    map.put("name",str);
-                    break;
-                }
-                else
-                    position-=subject.getJSONObject(str).getJSONArray("data").size();
-            }
-            return map;
-        }
-    }
     public void initSearchView(SearchView searchView,Context mcontext)
     {
         searchView.setSubmitButtonEnabled(true);
         searchView.setIconifiedByDefault(true);
-        searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -212,13 +172,18 @@ public class SearchActivity extends AppCompatActivity {
                         map.put("course",  CheckSubject(all_subject_item[i]));
                         map.put("searchKey",s);
                         JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                        if(msg.getJSONArray("data").size()!=0) {
+                        if((String)msg.get("code")=="-1")
+                        {
+                            Toast.makeText(SearchActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
                             receivedMessage.put(CheckSubject(all_subject_item[i]),msg);
                         }
                     }
                     sadapter=null;
                     sadapter=new SearchAdapter(SearchActivity.this);
                     sadapter.addSubject(receivedMessage);
+                    initFragment();
                     search_rcy.setAdapter(sadapter);
                 }
                 catch (Exception e)
@@ -233,6 +198,47 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    public String reverseCheckSubject(String TITLE)
+    {
+        String chooseSubject="";
+        if(TITLE.equals("chinese"))
+        {
+            chooseSubject="语文";
+        }
+        else if(TITLE.equals("math"))
+        {
+            chooseSubject="数学";
+        }
+        else if(TITLE.equals("english"))
+        {
+            chooseSubject="英语";
+        }
+        else if(TITLE.equals("physics"))
+        {
+            chooseSubject="物理";
+        }
+        else if(TITLE.equals("chemistry"))
+        {
+            chooseSubject="化学";
+        }
+        else if(TITLE.equals("history"))
+        {
+            chooseSubject="历史";
+        }
+        else if(TITLE.equals("geo"))
+        {
+            chooseSubject="地理";
+        }
+        else if(TITLE.equals("politics"))
+        {
+            chooseSubject="政治";
+        }
+        else if(TITLE.equals("biology"))
+        {
+            chooseSubject="生物";
+        }
+        return chooseSubject;
     }
     public String CheckSubject(String TITLE)
     {
@@ -274,5 +280,25 @@ public class SearchActivity extends AppCompatActivity {
             chooseSubject="biology";
         }
         return chooseSubject;
+    }
+    public void initFragment()
+    {
+        Set<String> set=receivedMessage.keySet();
+        Vector<String> type=new Vector<>();
+        Vector<String> subjectType=new Vector<>();
+        for(String str:set)
+        {
+            subjectType.add(str);
+            for(int i=0;i<receivedMessage.getJSONObject(str).getJSONArray("data").size();i++)
+            {
+                String s=(String)((JSONObject)receivedMessage.getJSONObject(str).getJSONArray("data").get(i)).get("category");
+                if(!type.contains(s))
+                    type.add(s);
+            }
+        }
+        selectFragment.getSubjectType(subjectType);
+        selectFragment.getType(type);
+        initSearchView(searchViewInSearch,SearchActivity.this);
+        selectButton.setText("筛选");
     }
 }

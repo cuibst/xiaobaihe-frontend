@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <ripple android:color="@color/xui_config_color_gray_9">
+            <item>
+                <shape>
+                    <solid android:color="#88aa6600"/>
+                    <corners android:radius="10dp"/>
+                </shape>
+            </item>
+        </ripple>
+    </item>
+    <item android:state_pressed="false">
+        <shape>
+            <solid android:color="#EBA8A9"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</selector>

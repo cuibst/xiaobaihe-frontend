@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".MainApplication"
@@ -20,6 +21,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidhomework"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.StartActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.OfflineActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.FavouriteCheckActivity"
             android:exported="true" />
@@ -50,11 +63,6 @@
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
@@ -67,6 +75,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
+
+    <queries>
+        <package android:name="com.sina.weibo" />
+    </queries>
 
 </manifest>
