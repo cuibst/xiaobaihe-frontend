@@ -1,14 +1,19 @@
 package com.java.cuiyikai.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.telecom.Call;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +21,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.BottomFavouriteAdapter;
@@ -36,7 +41,14 @@ import com.java.cuiyikai.entities.RelationEntity;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
+import com.java.cuiyikai.utilities.PermissionUtilities;
+import com.java.cuiyikai.utilities.WeiboShareCallback;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
+import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.openapi.IWBAPI;
+import com.sina.weibo.sdk.openapi.WBAPIFactory;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 import java.util.ArrayList;
@@ -53,6 +65,8 @@ import java.util.concurrent.Executors;
 
 
 public class EntityActivity extends AppCompatActivity {
+
+    private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
 
     public class RelationViewItemOnClickListener implements View.OnClickListener {
         private final String name;
@@ -176,6 +190,7 @@ public class EntityActivity extends AppCompatActivity {
     private List<JSONObject> questionPrevList;
 
     private String entityName;
+    private String description;
 
     private class EntityActivityLoadCallable implements Callable<String> {
 
@@ -303,6 +318,8 @@ public class EntityActivity extends AppCompatActivity {
 
             objectList = entityJson.getJSONArray("property").toJavaList(JSONObject.class);
 
+            StringBuilder stringBuilder = null;
+
             propertyFullList = new ArrayList<>();
             for (JSONObject propertyJson : objectList) {
                 PropertyEntity entity = new PropertyEntity();
@@ -311,8 +328,23 @@ public class EntityActivity extends AppCompatActivity {
                 entity.setLabel(propertyJson.getString("predicateLabel"));
                 entity.setObject(propertyJson.getString("object"));
 
+                if(stringBuilder == null || stringBuilder.length() < 100) {
+                    if (stringBuilder == null)
+                        stringBuilder = new StringBuilder();
+                    else
+                        stringBuilder.append("；");
+                    stringBuilder.append(entity.getLabel()).append("：").append(entity.getObject());
+                }
+
                 propertyFullList.add(entity);
             }
+
+            description = (stringBuilder == null ? "" : stringBuilder.toString());
+
+            if(description.length() >= 60)
+                description = description.substring(0, 60) + "...";
+            else
+                description = description + "。";
 
             System.out.printf("Adapting properties: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
@@ -344,10 +376,41 @@ public class EntityActivity extends AppCompatActivity {
 
     private boolean loadingFlag = false;
 
+    private static final String APP_KEY = "1760115939";
+    private static final String REDIRECT_URL = "http://open.weibo.com/apps/1760115939/privilege/oauth";
+    private static final String SCOPE = "";
+
+    private IWBAPI mWBAPI = null;
+
+    private void initSdk() {
+        if(PermissionUtilities.verifyPermissions(EntityActivity.this, Manifest.permission.CHANGE_WIFI_STATE) == 0) {
+            ActivityCompat.requestPermissions(EntityActivity.this, PERMISSIONS, 3);
+            return;
+        }
+        AuthInfo authInfo = new AuthInfo(this, APP_KEY, REDIRECT_URL, SCOPE);
+        mWBAPI = WBAPIFactory.createWBAPI(this);
+        mWBAPI.registerApp(this, authInfo);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for(int i : grantResults) {
+            if(i != PERMISSION_GRANTED) {
+                findViewById(R.id.shareButton).setVisibility(View.GONE);
+                return;
+            }
+        }
+        initSdk();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entity);
+
+        initSdk();
 
         Intent prevIntent = getIntent();
 
@@ -427,6 +490,9 @@ public class EntityActivity extends AppCompatActivity {
         };
         executorService.submit(new EntityActivityLoadCallable(handler));
 
+        FloatingActionButton shareButton = (FloatingActionButton) findViewById(R.id.shareButton);
+        shareButton.setOnClickListener((View vi) -> doWeiboShare());
+
         System.out.println("Finish submitting!!");
 
         if(((MainApplication)getApplication()).getFavourite() != null) {
@@ -445,9 +511,9 @@ public class EntityActivity extends AppCompatActivity {
             bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
 
             updateFavourite(((MainApplication)getApplication()).getFavourite());
-            ImageButton button = (ImageButton) findViewById(R.id.favouriteButton);
+            FloatingActionButton button = (FloatingActionButton) findViewById(R.id.favouriteButton);
 
-            bottomFavouriteView.setAdapter(bottomFavouriteAdapter); // TODO: finish the adapter
+            bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
             System.out.println("Dialog finish initialization!!");
 
             button.setOnClickListener((View view) -> bottomDialog.show());
@@ -537,8 +603,7 @@ public class EntityActivity extends AppCompatActivity {
         bottomFavouriteAdapter = new BottomFavouriteAdapter(EntityActivity.this, R.layout.bottom_dialog_favourite_item, favouriteEntities);
         bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
 
-        ImageButton button = (ImageButton) findViewById(R.id.favouriteButton);
-        button.setVisibility(View.VISIBLE);
+        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.favouriteButton);
         for(Map.Entry<String, Object> entry : favourite.entrySet()) {
             JSONArray array = JSON.parseArray(entry.getValue().toString());
             for(Object obj : array) {
@@ -551,5 +616,25 @@ public class EntityActivity extends AppCompatActivity {
             }
         }
         button.setBackgroundResource(R.drawable.star_gray_16);
+    }
+
+    private void doWeiboShare() {
+
+        System.out.println("Doing weibo share!!!");
+
+        WeiboMultiMessage message = new WeiboMultiMessage();
+
+        TextObject textObject = new TextObject();
+        textObject.text = "我正在小白盒中看：" + entityName + "\n" + description;
+
+        message.textObject = textObject;
+        mWBAPI.shareMessage(message, true);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(mWBAPI != null)
+            mWBAPI.doResultIntent(data, new WeiboShareCallback(EntityActivity.this));
     }
 }

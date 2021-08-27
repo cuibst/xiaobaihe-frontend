@@ -219,17 +219,19 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public Map<String,Object> findActualItem(int position)
     {
         Set<String> set=subject.keySet();
-        Map<String,Object> map=new HashMap<String, Object>();
+        Map<String,Object> map=new HashMap<>();
         for(String str:set)
         {
             System.out.println(subject.getJSONObject(str).getJSONArray("data"));
             if((subject.getJSONObject(str).getJSONArray("data").size())>position) {
+                System.out.printf("Enter: %s %s%n", subject.getJSONObject(str).getJSONArray("data").get(position), str);
                 map.put("item", subject.getJSONObject(str).getJSONArray("data").get(position));
                 map.put("name",str);
                 break;
+            } else {
+                position = position - (subject.getJSONObject(str).getJSONArray("data").size());
             }
-//            fragmentTransaction.commit();
         }
         return  map;
-    };
+    }
 }

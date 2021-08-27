@@ -12,7 +12,8 @@
         android:orientation="vertical"
         android:layout_margin="10dp">
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_margin="5dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/titleSection"
@@ -121,5 +122,19 @@
             android:dividerHeight="3dp"
             android:layout_below="@id/problemsSection"
             android:layout_alignParentBottom="true"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true">
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shareButton"
+                android:background="@drawable/share"/>
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
     </RelativeLayout>
+
 </ScrollView>
