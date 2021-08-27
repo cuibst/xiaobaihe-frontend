@@ -32,6 +32,10 @@ public class ProblemActivity extends AppCompatActivity {
 
     private int type;
 
+    private int sum;
+
+    private int cur;
+
     private List<String> questionList;
 
     private List<String> answerList;
@@ -39,13 +43,13 @@ public class ProblemActivity extends AppCompatActivity {
     public int getType(){return type;}
 
 
-    public void setView(int i){
-        if(Character.isAlphabetic(answerList.get(i).charAt(0))) {
+    public void initView(){
+        if(Character.isAlphabetic(answerList.get(0).charAt(0))) {
 
-            for(int j=0;j<answerList.get(i).length();j++)
-                if(Character.isLowerCase(answerList.get(i).charAt(i)) || Character.isUpperCase(answerList.get(i).charAt(i))) {
-                    System.out.printf("%d %c%n", i, answerList.get(i).charAt(i));
-                    optionId[i] = Character.toUpperCase(answerList.get(i).charAt(i)) - 'A';
+            for(int j=0;j<answerList.get(0).length();j++)
+                if(Character.isLowerCase(answerList.get(0).charAt(j)) || Character.isUpperCase(answerList.get(0).charAt(j))) {
+                    System.out.printf("%d %c%n", i, answerList.get(0).charAt(j));
+                    optionId[i] = Character.toUpperCase(answerList.get(0).charAt(j)) - 'A';
                     break;
                 }
             optionId[i] = answerList.get(i).charAt(0) - 'A';
@@ -65,8 +69,12 @@ public class ProblemActivity extends AppCompatActivity {
 
             System.out.printf("%d %d %d %d%n", placeA, placeB, placeC, placeD);
 
-
-            problemDescription.setText(questionList.get(i).substring(0, placeA));
+            String tmp = questionList.get(i).substring(0, placeA);
+            Log.v("mNew", tmp);
+            if(problemDescription != null)
+                problemDescription.setText(questionList.get(i).substring(0, placeA));
+            else
+                Log.v("HHHH", "az");
 
             String aText = questionList.get(i).substring(placeA + 2, placeB);
             String bText = questionList.get(i).substring(placeB + 2, placeC);
@@ -99,23 +107,38 @@ public class ProblemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problem);
-        TextView problemDescription = (TextView) findViewById(R.id.problem_description);
+        cur = 0;
+        problemDescription = (TextView) findViewById(R.id.problem_description);
+        if(problemDescription == null)
+            Log.v("HHHH", "b");
         optionView = (ListView) findViewById(R.id.problem_options);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        String questionBody = bundle.getString("body");
-        Log.v("mtag", questionBody.toString());
-        String questionAnswer = bundle.getString("answer");
-        int sum = Integer.parseInt(bundle.getString("sum"));
+//        String questionBody = bundle.getString("body");
+////        Log.v("mtag", questionBody.toString());
+//        String questionAnswer = bundle.getString("answer");
+        sum = Integer.parseInt(bundle.getString("sum"));
+        questionList = new ArrayList<>();
+        answerList = new ArrayList<>();
+        for(int i = 0; i < sum; i ++){
+            String bodyKey = "body " + i;
+            String answerKey = "answer " + i;
+            questionList.add(bundle.getString(bodyKey));
+            answerList.add(bundle.getString(answerKey));
+        }
         optionId = new int[sum];
         optionList = new List[sum];
-        questionList = Arrays.asList(questionBody);
-        answerList = Arrays.asList(questionAnswer);
-        for(int i = 0; i < questionList.size(); i ++)
-            questionList.set(i, questionList.get(i).substring(1, questionList.get(0).length() - 1));
-        Log.v("mtag", answerList.get(0).getClass().toString());
-        Log.v("mtag", answerList.toString());
+//        questionBody = questionBody.substring(1, questionBody.length() - 1);
+//        questionAnswer = questionAnswer.substring(1, questionAnswer.length() - 1);
+//        questionList = Arrays.asList(questionBody.split(","));
+//        Log.v("mTag", questionBody.toString());
+//        questionList = Arrays.asList(questionBody);
+//        answerList = Arrays.asList(questionAnswer);
+//        for(int i = 0; i < questionList.size(); i ++)
+//            questionList.set(i, questionList.get(i).substring(1, questionList.get(0).length() - 1));
+//        Log.v("mtag", answerList.get(0).getClass().toString());
+//        Log.v("mtag", questionAnswer.toString());
 //        Log.v("mtag", answerList.get(0).substring(1, questionList.get(0).length() - 1));
 
 //        String mType = bundle.getString("list");
@@ -129,12 +152,12 @@ public class ProblemActivity extends AppCompatActivity {
 //        if(mType.equals("list")){
 //            type = 1;
 //        }
-        Log.v("bbzl",questionList.get(0));
+//        Log.v("bbzl",questionList.get(0));
 //        problem
 //        System.out.println(questionBody);
 //        System.out.println(questionAnswer);
-        setView(0);
-        Log.v("bbzl", problemDescription.getText().toString());
+        initView();
+//        Log.v("bbzl", problemDescription.getText().toString());
 
     }
 
@@ -150,9 +173,15 @@ public class ProblemActivity extends AppCompatActivity {
         public void onClick(View view) {
             Log.v("mTag", "inClick");
 
-//            optionView.setAdapter(new OptionAdapter(ProblemActivity.this, R.layout.option_item, optionList, optionId, id));
-            finish();
-            return;
+            optionView.setAdapter(new OptionAdapter(ProblemActivity.this, R.layout.option_item, optionList[cur], optionId[cur], id));
+            if(cur == sum - 1)
+                finish();
+            else {
+                cur ++;
+                setView(cur);
+            }
+//            finish();
+//            return;
         }
     }
 }
