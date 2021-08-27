@@ -345,11 +345,12 @@ public class DirectoryFragment extends Fragment {
             for(int j = 0; j < cnt; j ++){
                 mIntent.putExtra("body" + " " + j, qBodyList.get(j));
                 mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
-                mIntent.putExtra("type", "list");
-                mIntent.putExtra("sum", cnt + "");
+
             }
     //                String questionBody
-                startActivity(mIntent);
+            mIntent.putExtra("type", "list");
+            mIntent.putExtra("sum", cnt + "");
+            startActivity(mIntent);
         });
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
             //TODO: the logic for move!
