@@ -512,6 +512,7 @@ public class EntityActivity extends AppCompatActivity {
 
             updateFavourite(((MainApplication)getApplication()).getFavourite());
             FloatingActionButton button = (FloatingActionButton) findViewById(R.id.favouriteButton);
+            button.setVisibility(View.VISIBLE);
 
             bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
             System.out.println("Dialog finish initialization!!");
@@ -610,12 +611,12 @@ public class EntityActivity extends AppCompatActivity {
                 JSONObject object = JSON.parseObject(obj.toString());
                 System.out.printf("Receive object in favourite %s%n", object.getString("name"));
                 if(object.getString("name").equals(entityName)) {
-                    button.setBackgroundResource(R.drawable.star_yellow_16);
+                    button.setImageResource(R.drawable.star_yellow_16);
                     return;
                 }
             }
         }
-        button.setBackgroundResource(R.drawable.star_gray_16);
+        button.setImageResource(R.drawable.star_gray_16);
     }
 
     private void doWeiboShare() {
@@ -625,7 +626,7 @@ public class EntityActivity extends AppCompatActivity {
         WeiboMultiMessage message = new WeiboMultiMessage();
 
         TextObject textObject = new TextObject();
-        textObject.text = "我正在小白盒中看：" + entityName + "\n" + description;
+        textObject.text = "我正在 #小白盒# 中看：" + entityName + "。\n" + description;
 
         message.textObject = textObject;
         mWBAPI.shareMessage(message, true);
