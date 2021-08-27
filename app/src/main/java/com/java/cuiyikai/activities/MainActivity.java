@@ -19,11 +19,13 @@ import android.widget.SearchView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chaychan.library.BottomBarItem;
+import com.chaychan.library.BottomBarLayout;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
 import com.java.cuiyikai.fragments.DialogFragment;
 import com.java.cuiyikai.fragments.MainFragment;
+import com.java.cuiyikai.fragments.PointExtractFragment;
 import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
@@ -82,10 +84,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        //FIXME: add all four fragments, current 2 of 4.
+        //FIXME: add all four fragments, current 3 of 4.
         fragmentList.add(new MainFragment());
-        fragmentList.add(new UserPageEntryFragment());
+        fragmentList.add(PointExtractFragment.newInstance()); //FIXME: this fragment is used to fill the places.
         fragmentList.add(new DialogFragment());
+        fragmentList.add(new UserPageEntryFragment());
+
         ViewPager mainPager = findViewById(R.id.mainPager);
         mainPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
@@ -100,20 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        BottomBarItem btnHome = (BottomBarItem) findViewById(R.id.btnBottomBarHome);
-        btnHome.setOnClickListener((View view) -> {
-            mainPager.setCurrentItem(0);
-        });
-
-        BottomBarItem btnUser = (BottomBarItem) findViewById(R.id.btnBottomBarUser);
-        btnUser.setOnClickListener((View view) -> {
-            mainPager.setCurrentItem(1); //FIXME: this should be 3!!
-        });
-
-        BottomBarItem btnPoint= (BottomBarItem) findViewById(R.id.btnBottomBarPoint);
-        btnPoint.setOnClickListener((View view)->{
-            mainPager.setCurrentItem(2);
-        });
+        ((BottomBarLayout)findViewById(R.id.bottomBar)).setViewPager(mainPager);
     }
 
     public void init(){
