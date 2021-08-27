@@ -245,12 +245,12 @@ public class DirectoryFragment extends Fragment {
             List<String> qBodyList = new ArrayList<>();
             List<String> qAnswerList = new ArrayList<>();
             for(int i = 0; i < jsArray.size(); i ++){
-                Log.v("num", i + "");
+//                Log.v("num", i + "");
                 JSONObject jsObject = (JSONObject) jsArray.get(i);
                 String uriname = (String) jsObject.get("name");
                 Map<String, String> request = new HashMap<String, String>();
                 request.put("uriName", uriname);
-                Log.v("mtag", "in");
+//                Log.v("mtag", "in");
                 JSONObject tmp = null;
                 try {
                     tmp = (JSONObject) RequestBuilder.sendGetRequest(
@@ -261,8 +261,8 @@ public class DirectoryFragment extends Fragment {
                     e.printStackTrace();
                 }
                 List<String> mList = new ArrayList<>();
-                Log.v("tmp", tmp.toJSONString());
-                Log.v("tmp", tmp.getClass().toString());
+//                Log.v("tmp", tmp.toJSONString());
+//                Log.v("tmp", tmp.getClass().toString());
 //                onPause();
                 JSONArray mJSONArray = null;
                 mJSONArray = (JSONArray) tmp.get("data");
@@ -270,15 +270,19 @@ public class DirectoryFragment extends Fragment {
                     Log.v("tmp", "empty");
                     continue;
                 }
-                Log.v("tmp", mJSONArray.toString());
-                Log.v("tmp", mJSONArray.get(i).toString());
+//                Log.v("tmp", mJSONArray.toString());
+//                Log.v("tmp", mJSONArray.get(i).toString());
                 Map<String , String> mMap = (Map<String, String>) mJSONArray.get(i);
                 String qBody = mMap.get("qBody");
+//                Log.v("num", i + " " + qBody);
                 String answer = mMap.get("qAnswer");
+                Log.v("answer", i + " " + answer);
                 qAnswerList.add(answer);
                 qBodyList.add(qBody);
                 cnt ++;
             }
+//            Log.v("debug", qBodyList.get(1).toString());
+            Log.v("answer", qAnswerList.toString());
             Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
             mIntent.putExtra("body", qBodyList.toString());
             mIntent.putExtra("answer", qAnswerList.toString());

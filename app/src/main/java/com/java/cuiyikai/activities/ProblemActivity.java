@@ -24,13 +24,15 @@ public class ProblemActivity extends AppCompatActivity {
 
     List<String> []optionList;
 
-    ListView []optionView;
+    ListView optionView;
 
     int []optionId;
 
+    TextView problemDescription;
+
     private int type;
 
-    public List<String> questionList;
+    private List<String> questionList;
 
     private List<String> answerList;
 
@@ -55,7 +57,6 @@ public class ProblemActivity extends AppCompatActivity {
 
             System.out.printf("%d %d %d %d%n", placeA, placeB, placeC, placeD);
 
-            TextView problemDescription = (TextView) findViewById(R.id.problem_description);
 
             problemDescription.setText(questionList.get(i).substring(0, placeA));
 
@@ -66,10 +67,8 @@ public class ProblemActivity extends AppCompatActivity {
 
             optionList[i] = Arrays.asList(aText, bText, cText, dText);
 
-            optionView[i] = (ListView) findViewById(R.id.problem_options);
-
-            optionView[i].setAdapter(new OptionAdapter(ProblemActivity.this, R.layout.option_item, optionList[i], -1, -1));
-
+            optionView.setAdapter(new OptionAdapter(ProblemActivity.this, R.layout.option_item, optionList[i], -1, -1));
+//            optionView.getAdapter().
             findViewById(R.id.fill_blank).setVisibility(View.GONE);
         }
         else
@@ -92,18 +91,25 @@ public class ProblemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problem);
-
+        TextView problemDescription = (TextView) findViewById(R.id.problem_description);
+        optionView = (ListView) findViewById(R.id.problem_options);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
         String questionBody = bundle.getString("body");
+        Log.v("mtag", questionBody.toString());
         String questionAnswer = bundle.getString("answer");
         int sum = Integer.parseInt(bundle.getString("sum"));
         optionId = new int[sum];
         optionList = new List[sum];
-        optionView = new ListView[sum];
-        questionList = Arrays.asList(questionAnswer);
+        questionList = Arrays.asList(questionBody);
         answerList = Arrays.asList(questionAnswer);
+        for(int i = 0; i < questionList.size(); i ++)
+            questionList.set(i, questionList.get(i).substring(1, questionList.get(0).length() - 1));
+        Log.v("mtag", answerList.get(0).getClass().toString());
+        Log.v("mtag", answerList.toString());
+//        Log.v("mtag", answerList.get(0).substring(1, questionList.get(0).length() - 1));
+
 //        String mType = bundle.getString("list");
 //        if(mType == null){
 //            Log.v("mTag", "what");
@@ -115,13 +121,12 @@ public class ProblemActivity extends AppCompatActivity {
 //        if(mType.equals("list")){
 //            type = 1;
 //        }
-
-
-        System.out.println(questionBody);
-        System.out.println(questionAnswer);
-        for(int i = 0; i < sum; i ++){
-
-        }
+        Log.v("bbzl",questionList.get(0));
+//        problem
+//        System.out.println(questionBody);
+//        System.out.println(questionAnswer);
+        setView(0);
+        Log.v("bbzl", problemDescription.getText().toString());
 
     }
 
@@ -137,7 +142,7 @@ public class ProblemActivity extends AppCompatActivity {
         public void onClick(View view) {
             Log.v("mTag", "inClick");
 
-            optionView.setAdapter(new OptionAdapter(ProblemActivity.this, R.layout.option_item, optionList, optionId, id));
+//            optionView.setAdapter(new OptionAdapter(ProblemActivity.this, R.layout.option_item, optionList, optionId, id));
             finish();
             return;
         }
