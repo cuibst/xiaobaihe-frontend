@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         directoryNameTab.setupWithViewPager(directoryPager);
 
         JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
+        Log.v("paper", favourite.toJSONString());
 
         directoryNames = new ArrayList<>(favourite.keySet());
 
