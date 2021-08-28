@@ -235,7 +235,7 @@ public class RequestBuilder {
             args.put("token", backendToken);
             try {
                 JSONObject reply = sendBackendGetRequest("/api/login/exchangeToken", args, false);
-                backendToken = reply.getString("etoken");
+                backendToken = reply.getString("token");
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DAY_OF_WEEK, 1);
                 expireTime = calendar.getTimeInMillis();

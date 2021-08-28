@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         MainApplication mainApplication = (MainApplication) getApplication();
         usernameTextView.setText(mainApplication.getSaveUsername());
         passwordTextView.setText(mainApplication.getSavePassword());
+        checkBox.setChecked(mainApplication.isSaveChecked());
 
         logInPostBtn.setOnClickListener((View view) -> {
             username = usernameTextView.getText().toString();
@@ -57,9 +58,11 @@ public class LoginActivity extends AppCompatActivity {
                 if(checkBox.isChecked()) {
                     mainApplication.setSaveUsername(username);
                     mainApplication.setSavePassword(password);
+                    mainApplication.setSaveChecked(checkBox.isChecked());
                 } else {
                     mainApplication.setSavePassword("");
                     mainApplication.setSaveUsername(username);
+                    mainApplication.setSaveChecked(checkBox.isChecked());
                 }
                 mainApplication.dumpCacheData();
                 this.finish();
