@@ -39,7 +39,7 @@ public class OptionAdapter extends ArrayAdapter<String> {
         String description = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         View optionItem = view.findViewById(R.id.option_item);
-        optionItem.setOnClickListener(problemActivity.new OptionOnClickListener(position));
+//        optionItem.setOnClickListener(problemActivity.new OptionOnClickListener(position));
         TextView choiceView = (TextView) view.findViewById(R.id.option_id);
         TextView descriptionView = (TextView) view.findViewById(R.id.option_description);
         Character option = (char)('A' + position);

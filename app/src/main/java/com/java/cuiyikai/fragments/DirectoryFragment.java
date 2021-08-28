@@ -322,12 +322,14 @@ public class DirectoryFragment extends Fragment {
 //                Log.v("tmp", tmp.toJSONString());
 //                Log.v("tmp", tmp.getClass().toString());
 //                onPause();
+                Log.v("tmp", tmp.toJSONString());
+
                 JSONArray mJSONArray = null;
                 mJSONArray = (JSONArray) tmp.get("data");
-                if(mJSONArray.isEmpty()){
-                    Log.v("tmp", "empty");
-                    continue;
-                }
+//                if(mJSONArray.isEmpty()){
+//                    Log.v("tmp", "empty");
+//                    continue;
+//                }
 //                Log.v("tmp", mJSONArray.toString());
 //                Log.v("tmp", mJSONArray.get(i).toString());
                 Map<String , String> mMap = (Map<String, String>) mJSONArray.get(i);
