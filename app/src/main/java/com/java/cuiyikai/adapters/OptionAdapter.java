@@ -51,7 +51,6 @@ public class OptionAdapter extends ArrayAdapter<String> {
             optionItem.setBackgroundResource(R.drawable.red_radius);
         else
             optionItem.setBackgroundResource(R.drawable.white_radius);
-        notifyDataSetChanged();
         return view;
     }
 

@@ -14,8 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeechService;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +22,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -58,9 +55,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -197,8 +192,6 @@ public class EntityActivity extends AppCompatActivity {
     private String entityName;
     private String description;
 
-    private String speech;
-
     private class EntityActivityLoadCallable implements Callable<String> {
 
         private final Handler handler;
@@ -294,10 +287,6 @@ public class EntityActivity extends AppCompatActivity {
                 return "fail";
             }
 
-            StringBuilder speechBuilder = new StringBuilder();
-            speechBuilder.append(entityName).append("。");
-            speechBuilder.append("关系").append("：");
-
 
             System.out.printf("load finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
 
@@ -306,7 +295,6 @@ public class EntityActivity extends AppCompatActivity {
             List<JSONObject> objectList = entityJson.getJSONArray("content").toJavaList(JSONObject.class);
 
             relationFullList = new ArrayList<>();
-            Set<RelationEntity> relationSet = new HashSet<>();
             for (JSONObject relationJson : objectList) {
                 RelationEntity entity = new RelationEntity();
                 entity.setRelationName(relationJson.getString("predicate_label"));
@@ -317,48 +305,10 @@ public class EntityActivity extends AppCompatActivity {
                     entity.setSubject(true);
                     entity.setTargetName(relationJson.getString("subject_label"));
                 }
-                if(!relationSet.contains(entity)) {
-                    relationFullList.add(entity);
-                    relationSet.add(entity);
-                }
+                relationFullList.add(entity);
             }
             System.out.printf("Sorting relations: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
             Collections.sort(relationFullList);
-
-            Map<String, List<String>> objectRelationMap = new HashMap<>();
-            Map<String, List<String>> subjectRelationMap = new HashMap<>();
-
-            for(RelationEntity relationEntity : relationFullList) {
-                if(relationEntity.isSubject()) {
-                    if(subjectRelationMap.containsKey(relationEntity.getRelationName())) {
-                        List<String> tmp = subjectRelationMap.get(relationEntity.getRelationName());
-                        tmp.add(relationEntity.getTargetName());
-                        subjectRelationMap.replace(relationEntity.getRelationName(), tmp);
-                    } else {
-                        List<String> tmp = new ArrayList<>();
-                        tmp.add(relationEntity.getTargetName());
-                        subjectRelationMap.put(relationEntity.getRelationName(), tmp);
-                    }
-                } else {
-                    if(objectRelationMap.containsKey(relationEntity.getRelationName())) {
-                        List<String> tmp = objectRelationMap.get(relationEntity.getRelationName());
-                        tmp.add(relationEntity.getTargetName());
-                        objectRelationMap.replace(relationEntity.getRelationName(), tmp);
-                    } else {
-                        List<String> tmp = new ArrayList<>();
-                        tmp.add(relationEntity.getTargetName());
-                        objectRelationMap.put(relationEntity.getRelationName(), tmp);
-                    }
-                }
-            }
-
-            for(Map.Entry<String, List<String>> entry : objectRelationMap.entrySet()) {
-                speechBuilder.append(entry.getKey()).append("：").append(String.join("，", entry.getValue())).append("。");;
-            }
-
-            for(Map.Entry<String, List<String>> entry : subjectRelationMap.entrySet()) {
-                speechBuilder.append(String.join("，", entry.getValue())).append(entry.getKey()).append(entityName).append("。");
-            }
 
             Message message = handler.obtainMessage();
             message.what = 3;
@@ -371,7 +321,6 @@ public class EntityActivity extends AppCompatActivity {
             StringBuilder stringBuilder = null;
 
             propertyFullList = new ArrayList<>();
-            Set<PropertyEntity> propertyEntitySet = new HashSet<>();
             for (JSONObject propertyJson : objectList) {
                 PropertyEntity entity = new PropertyEntity();
                 if (propertyJson.getString("object").contains("http"))
@@ -386,21 +335,9 @@ public class EntityActivity extends AppCompatActivity {
                         stringBuilder.append("；");
                     stringBuilder.append(entity.getLabel()).append("：").append(entity.getObject());
                 }
-                if(!propertyEntitySet.contains(entity)) {
-                    propertyFullList.add(entity);
-                    propertyEntitySet.add(entity);
-                }
+
+                propertyFullList.add(entity);
             }
-
-            Collections.sort(propertyFullList);
-
-            speechBuilder.append("属性：");
-
-            for(PropertyEntity propertyEntity : propertyFullList) {
-                speechBuilder.append(propertyEntity.getLabel()).append("：").append(propertyEntity.getObject()).append('。');
-            }
-
-            speech = speechBuilder.toString();
 
             description = (stringBuilder == null ? "" : stringBuilder.toString());
 
@@ -558,8 +495,6 @@ public class EntityActivity extends AppCompatActivity {
 
         System.out.println("Finish submitting!!");
 
-        findViewById(R.id.playButton).setOnClickListener((View v) -> onTextToSpeech(textToSpeech == null || !textToSpeech.isSpeaking()));
-
         if(((MainApplication)getApplication()).getFavourite() != null) {
             System.out.println("Into favourite!!");
 
@@ -702,37 +637,5 @@ public class EntityActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(mWBAPI != null)
             mWBAPI.doResultIntent(data, new WeiboShareCallback(EntityActivity.this));
-    }
-
-    private TextToSpeech textToSpeech = null;
-
-    private void onTextToSpeech(boolean flag) {
-        if(!flag && textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech = null;
-        } else if (flag) {
-            System.out.println("Enter speech!");
-            textToSpeech = new TextToSpeech(EntityActivity.this, (int i) -> {
-                int result = textToSpeech.setLanguage(Locale.CHINA);
-                System.out.printf("Result %d%n\n", result);
-                if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
-                    Toast.makeText(EntityActivity.this, "您的手机目前不支持中文tts，请下载语音包", Toast.LENGTH_LONG).show();
-                } else {
-                    textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, null);
-                }
-            });
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        onTextToSpeech(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        onTextToSpeech(false);
     }
 }

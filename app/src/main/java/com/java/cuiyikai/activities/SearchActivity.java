@@ -150,6 +150,7 @@ public class SearchActivity extends AppCompatActivity {
                     sadapter.addSubject(finalInfo);
                     search_rcy.setAdapter(sadapter);
                 }
+                fragmentTransaction.commit();
             }
         });
         initSearchView(searchViewInSearch,SearchActivity.this);

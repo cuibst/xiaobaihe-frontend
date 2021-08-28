@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -16,26 +15,20 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.SearchView;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.chaychan.library.BottomBarItem;
 import com.chaychan.library.BottomBarLayout;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
-import com.java.cuiyikai.adapters.HistoryListAdapter;
 import com.java.cuiyikai.fragments.DialogFragment;
 import com.java.cuiyikai.fragments.MainFragment;
 import com.java.cuiyikai.fragments.PointExtractFragment;
 import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
-import com.yanzhenjie.recyclerview.SwipeRecyclerView;
-
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -44,19 +37,19 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private ChipsLayoutManager chipsLayoutManager;
+
     private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     private Button btnForLogIn;
     public JSONObject receivedMessage=new JSONObject();
-    private SwipeRecyclerView historyList;
-    private String search_url="typeOpen/open/instanceList";
+    String search_url="typeOpen/open/instanceList";
+
     private SearchView searchView;
-    private String getHistoryUrl="/api/history/getHistory";
-    private String sendHistoryUrl="/api/history/addHistory";
+
     private List<Fragment> fragmentList = new ArrayList<>();
-    private HistoryListAdapter historyListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         exitHandler = new Handler(getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
@@ -69,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         XUI.debug(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        chipsLayoutManager= ChipsLayoutManager.newBuilder(MainActivity.this).build();
+
         System.out.printf("Network available : %b%n", RequestBuilder.isNetworkNormal(MainActivity.this));
 
         if(!RequestBuilder.isNetworkNormal(MainActivity.this)) {
@@ -125,25 +118,12 @@ public class MainActivity extends AppCompatActivity {
     {
         searchView.setSubmitButtonEnabled(true);
         searchView.setIconifiedByDefault(true);
-        historyList=findViewById(R.id.historylist);
-        historyListAdapter=new HistoryListAdapter(MainActivity.this);
-//        searchView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 try {
                     receivedMessage.clear();
-                    if(RequestBuilder.checkedLogin())
-                    {
-                        Map<String,String> m=new HashMap<>();
-                        m.put("content",s);
-                        RequestBuilder.sendBackendGetRequest(sendHistoryUrl,m,true);
-                    }
                     for(int i=0;i<all_subject_item.length;i++)
                     {
                         Map<String,String> map =new HashMap<String,String>();
@@ -172,13 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                System.out.println("in");
-                if(!RequestBuilder.checkedLogin())
-                    return false;
-                GetHistory history=new GetHistory();
-                Thread thread=new Thread(history);
-                thread.start();
-                return true;
+                return false;
             }
         });
     }
@@ -285,40 +259,5 @@ public class MainActivity extends AppCompatActivity {
             System.exit(0);
         }
     }
-    MyHandler handler=new MyHandler();
-    public class GetHistory implements Runnable{
 
-        @Override
-        public void run() {
-            Map<String,String> map=new HashMap<>();
-            try {
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(getHistoryUrl, map, true);
-                System.out.println(msg.toString());
-                Message message=new Message();
-                message.what=0;
-                message.obj=msg.toString();
-                handler.sendMessage(message);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-    private class MyHandler extends Handler {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            switch(msg.what)
-            {
-                case 0:
-                    JSONObject object=JSONObject.parseObject(msg.obj.toString());
-                    JSONArray data=object.getJSONArray("data");
-                    System.out.println(data.toString());
-                    historyListAdapter.addData(data);
-                    historyList.setAdapter(historyListAdapter);
-                    historyList.setLayoutManager(chipsLayoutManager);
-                    break;
-            }
-        }
-    }
 }

@@ -30,6 +30,7 @@ public class MainFragment extends Fragment {
     private ImageView tabAdd;
     private ItemFragment[] itemFragment;
     private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
+//    private final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     private List<String> all_subject_item=new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
     private TabLayout tabLayout;
 
