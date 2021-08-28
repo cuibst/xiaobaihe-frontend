@@ -19,4 +19,5 @@
     <color name="common_stroke">#fff5f5f5</color>
     <color name="pressed_bg">#ffcdcdcd</color>
     <color name="pressed_stroke">#ff3e3e3e</color>
+    <color name="line_green">#01AE66</color>
 </resources>
