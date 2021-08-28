@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -29,6 +31,8 @@ import com.java.cuiyikai.fragments.PointExtractFragment;
 import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
+import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -41,10 +45,12 @@ public class MainActivity extends AppCompatActivity {
     private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     private Button btnForLogIn;
     public JSONObject receivedMessage=new JSONObject();
+    private SwipeRecyclerView historyList;
     String search_url="typeOpen/open/instanceList";
 
     private SearchView searchView;
-
+    String historyurl="/api/history/getHistory";
+    String send="/api/history/addHistory";
     private List<Fragment> fragmentList = new ArrayList<>();
 
     @Override
@@ -118,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
     {
         searchView.setSubmitButtonEnabled(true);
         searchView.setIconifiedByDefault(true);
+        historyList=findViewById(R.id.historylist);
+
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -152,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                return false;
+
+                return true;
             }
         });
     }
