@@ -120,7 +120,7 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         for(CategoryObject obj : itemList.subList(1, userSectionSize + 1))
                             subjectList.add(obj.getName());
 
-                        ((MainApplication)((CategoryActivity)context).getApplication()).setSubjects(subjectList);
+                        ((MainApplication)(context).getApplication()).setSubjects(subjectList);
                         notifyDataSetChanged();
                     });
                 else
@@ -130,21 +130,21 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         return true;
                     });
             } else {
+                ((CategoryViewHolder) holder).getImageView().setVisibility(View.VISIBLE);
                 ((CategoryViewHolder) holder).getImageView().setImageResource(R.drawable.add_channel);
-                if(isEditable)
-                    ((CategoryViewHolder) holder).getWholeView().setOnClickListener((View v) -> {
-                        CategoryObject object = itemList.get(position);
-                        itemList.remove(position);
-                        itemList.add(userSectionSize + 1, object);
-                        userSectionSize ++;
-                        List<String> subjectList = new ArrayList<>();
-                        for(CategoryObject obj : itemList.subList(1, userSectionSize + 1))
-                            subjectList.add(obj.getName());
+                ((CategoryViewHolder) holder).getWholeView().setOnClickListener((View v) -> {
+                    CategoryObject object = itemList.get(position);
+                    itemList.remove(position);
+                    itemList.add(userSectionSize + 1, object);
+                    userSectionSize ++;
+                    List<String> subjectList = new ArrayList<>();
+                    for(CategoryObject obj : itemList.subList(1, userSectionSize + 1))
+                        subjectList.add(obj.getName());
 
-                        ((MainApplication)((CategoryActivity)context).getApplication()).setSubjects(subjectList);
-                        notifyDataSetChanged();
-                    });
-                else
+                    ((MainApplication)(context).getApplication()).setSubjects(subjectList);
+                    notifyDataSetChanged();
+                });
+                if(!isEditable)
                     ((CategoryViewHolder) holder).getWholeView().setOnLongClickListener((View v) -> {
                         setEditable(true);
                         context.onEditableChanged(true);

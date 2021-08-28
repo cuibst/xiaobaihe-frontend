@@ -5,6 +5,7 @@
     android:id="@+id/subject_tab"
     android:layout_marginTop="5dp">
     <TextView
+        android:layout_marginTop="10dp"
         android:minHeight="30dp"
         android:minWidth="78dp"
         android:id="@+id/text_item"
@@ -15,10 +16,12 @@
         android:textColor="@color/text_color"
         android:gravity="center"/>
     <ImageView
+        android:layout_marginTop="-5dp"
         android:id="@+id/iv_edit"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_alignTop="@id/text_item"
         android:layout_alignRight="@id/text_item"
-        android:src="@drawable/add_channel"/>
+        android:src="@drawable/add_channel"
+        android:background="@drawable/channel_button_background"/>
 </RelativeLayout>
