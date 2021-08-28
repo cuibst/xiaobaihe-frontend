@@ -431,6 +431,17 @@ public class EntityActivity extends AppCompatActivity {
             message.what = 1;
             handler.sendMessage(message);
 
+            if(RequestBuilder.checkedLogin()) {
+                Map<String, String> args = new HashMap<>();
+                args.put("name", entityName);
+                args.put("subject", subject);
+                try {
+                    RequestBuilder.asyncSendBackendGetRequest("/api/history/addVisitHistory", args, true);
+                } catch (BackendTokenExpiredException e) {
+                    e.printStackTrace();
+                }
+            }
+
             return "done!";
         }
     }
