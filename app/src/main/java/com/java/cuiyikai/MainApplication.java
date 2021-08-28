@@ -25,6 +25,7 @@ public class MainApplication extends Application {
 
     private String saveUsername = "";
     private String savePassword = "";
+    private boolean saveChecked = false;
 
     private JSONObject favourite = null;
 
@@ -65,12 +66,13 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        File loadFile = new File(getFilesDir(), "cache.txt");
+        File loadFile = new File(getFilesDir(), "cacheV2.txt");
         if(loadFile.exists()) {
             try (Scanner scanner = new Scanner(new FileInputStream(loadFile))) {
                 String savedToken = scanner.nextLine();
                 saveUsername = scanner.nextLine();
                 savePassword = scanner.nextLine();
+                saveChecked = Boolean.parseBoolean(scanner.nextLine());
                 if (!savedToken.equals(""))
                     RequestBuilder.setBackendToken(savedToken);
             } catch (IOException e) {
@@ -96,7 +98,7 @@ public class MainApplication extends Application {
     }
 
     public void dumpCacheData() {
-        File loadFile = new File(getFilesDir(), "cache.txt");
+        File loadFile = new File(getFilesDir(), "cacheV2.txt");
         if(!loadFile.exists())
             try {
                 loadFile.createNewFile();
@@ -108,6 +110,7 @@ public class MainApplication extends Application {
             printStream.println(RequestBuilder.getBackendToken());
             printStream.println(saveUsername);
             printStream.println(savePassword);
+            printStream.println(saveChecked);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,6 +137,18 @@ public class MainApplication extends Application {
 
     public String getSavePassword() {
         return savePassword;
+    }
+
+    public boolean isSaveChecked() {
+        return saveChecked;
+    }
+
+    public void setSaveChecked(boolean saveChecked) {
+        this.saveChecked = saveChecked;
+    }
+
+    public void setFavourite(JSONObject favourite) {
+        this.favourite = favourite;
     }
 
     public void setSaveUsername(String saveUsername) {
