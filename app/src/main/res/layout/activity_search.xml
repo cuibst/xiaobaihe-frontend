@@ -31,15 +31,13 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            <SearchView
-                android:id="@+id/searchViewInSearch"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_gravity="right"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                >
-            </SearchView>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/searchImageView"
+                    android:src="@drawable/searchbutton"
+                    android:layout_margin="9dp"
+                    android:layout_gravity="right"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

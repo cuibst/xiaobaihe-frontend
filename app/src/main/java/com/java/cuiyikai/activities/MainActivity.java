@@ -5,34 +5,37 @@ import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ON
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.SearchView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.chaychan.library.BottomBarItem;
 import com.chaychan.library.BottomBarLayout;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 
 import com.java.cuiyikai.fragments.DialogFragment;
+import com.java.cuiyikai.fragments.HistoryFragment;
 import com.java.cuiyikai.fragments.MainFragment;
 import com.java.cuiyikai.fragments.PointExtractFragment;
 import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.xuexiang.xui.XUI;
-import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -42,15 +45,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     private Button btnForLogIn;
-    public JSONObject receivedMessage=new JSONObject();
-    private SwipeRecyclerView historyList;
-    String search_url="typeOpen/open/instanceList";
+    private ImageView searchImageView;
 
-    private SearchView searchView;
-    String historyurl="/api/history/getHistory";
-    String send="/api/history/addHistory";
     private List<Fragment> fragmentList = new ArrayList<>();
 
     @Override
@@ -68,7 +65,43 @@ public class MainActivity extends AppCompatActivity {
         XUI.debug(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        init();
+        searchImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,SearchViewActivity.class);
+                startActivity(intent);
+            }
+        });
+//        hideText=findViewById(R.id.hidetext);
+//        hideText.setText("显示历史记录");
+//        hideText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(!RequestBuilder.checkedLogin())
+//                {
+//                    Toast.makeText(MainActivity.this, "请先登录！", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if(hideText.getText().equals("显示历史记录"))
+//                {
+//                    GetHistory getHistory=new GetHistory();
+//                    Thread thread=new Thread(getHistory);
+//                    thread.start();
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.show(historyFragment);
+//                    fragmentTransaction.commit();
+//                    hideText.setText("收起");
+//                }
+//                else if(hideText.getText().equals("收起"))
+//                {
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.hide(historyFragment);
+//                    fragmentTransaction.commit();
+//                    hideText.setText("显示历史记录");
+//                }
+//            }
+//        });
         System.out.printf("Network available : %b%n", RequestBuilder.isNetworkNormal(MainActivity.this));
 
         if(!RequestBuilder.isNetworkNormal(MainActivity.this)) {
@@ -77,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
             this.finish();
             return;
         }
-
-        init();
 
         btnForLogIn.setOnClickListener((View view) -> {
             if(RequestBuilder.checkedLogin()) {
@@ -114,58 +145,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init(){
-        searchView=findViewById(R.id.searchViewInMain);
+//        searchView=findViewById(R.id.searchViewInMain);
         btnForLogIn=findViewById(R.id.btn_for_login);
-        initSearchView(searchView);
+        searchImageView=findViewById(R.id.searchImageView);
+//        initSearchView(searchView);
     }
 
 
-    public void initSearchView(SearchView searchView)
-    {
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setIconifiedByDefault(true);
-        historyList=findViewById(R.id.historylist);
-
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                try {
-                    receivedMessage.clear();
-                    for(int i=0;i<all_subject_item.length;i++)
-                    {
-                        Map<String,String> map =new HashMap<String,String>();
-                        map.put("course",  checkSubject(all_subject_item[i]));
-                        map.put("searchKey",s);
-                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                        if((String)msg.get("code")=="-1")
-                        {
-                            Toast.makeText(MainActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
-                            receivedMessage.put(checkSubject(all_subject_item[i]),msg);
-                        }
-                    }
-                    Intent intent=new Intent(MainActivity.this,SearchActivity.class);
-                    intent.putExtra("msg",receivedMessage.toString());
-                    intent.putExtra("name",s);
-                    startActivity(intent);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-
-                return true;
-            }
-        });
-    }
+//    public void initSearchView(SearchView searchView)
+//    {
+//        searchView.setSubmitButtonEnabled(true);
+//        searchView.setIconifiedByDefault(true);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                AddHistory addHistory=new AddHistory(s);
+//                Thread thread=new Thread(addHistory);
+//                thread.start();
+//                try {
+//                    receivedMessage.clear();
+//                    for(int i=0;i<all_subject_item.length;i++)
+//                    {
+//                        Map<String,String> map =new HashMap<String,String>();
+//                        map.put("course",  checkSubject(all_subject_item[i]));
+//                        map.put("searchKey",s);
+//                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+//                        if((String)msg.get("code")=="-1")
+//                        {
+//                            Toast.makeText(MainActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
+//                        }
+//                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
+//                            receivedMessage.put(checkSubject(all_subject_item[i]),msg);
+//                        }
+//                    }
+//                    Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+//                    intent.putExtra("msg",receivedMessage.toString());
+//                    intent.putExtra("name",s);
+//                    startActivity(intent);
+//                }
+//                catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                return false;
+//            }
+//        });
+//    }
     public String checkSubject(String title)
     {
         String chooseSubject;
@@ -270,4 +300,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    private MyHandler handler=new MyHandler();
+//
+//    private class MyHandler extends Handler {
+//        @Override
+//        public void handleMessage(@NonNull Message msg) {
+//            switch(msg.what)
+//            {
+//                case 0:
+//                    JSONObject data=JSONObject.parseObject(msg.obj.toString());
+//                    JSONArray arr=data.getJSONArray("data");
+//                    historyFragment.historyListAdapter.addData(arr);
+//                    historyFragment.array=arr;
+//                    historyFragment.recyclerViewForHistory.setAdapter(historyFragment.historyListAdapter);
+//                    break;
+//            }
+//        }
+//    }
 }
