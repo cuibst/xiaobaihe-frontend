@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".activities.EntityActivity"
     android:orientation="vertical">
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -19,8 +19,7 @@
                 android:layout_margin="5dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:id="@+id/titleSection"
-                android:layout_alignParentTop="true">
+                android:id="@+id/titleSection">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_margin="5dp"
@@ -35,64 +34,53 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_below="@id/titleSection"
                 android:id="@+id/relationSection">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/activity_entity_relation"
                     android:textSize="20sp"/>
+
                 <ImageButton
-                    android:layout_marginTop="5dp"
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/white_radius"
                     android:id="@+id/relationButton"
-                    android:layout_gravity="center"/>
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/pulldown" />
             </LinearLayout>
 
-            <com.java.cuiyikai.widgets.ListViewForScrollView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/relationsView"
-                android:divider="#00000000"
-                android:dividerHeight="3dp"
-                android:layout_below="@id/relationSection"/>
+                android:id="@+id/relationsView"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:id="@+id/propertySection"
-                android:layout_below="@id/relationsView">
+                android:id="@+id/propertySection">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/activity_entity_property"
                     android:textSize="20sp"/>
                 <ImageButton
-                    android:layout_marginTop="5dp"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/white_radius"
                     android:id="@+id/propertyButton"
                     android:layout_gravity="center"/>
             </LinearLayout>
 
-            <com.java.cuiyikai.widgets.ListViewForScrollView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/propertiesView"
-                android:divider="#00000000"
-                android:dividerHeight="3dp"
-                android:layout_below="@id/propertySection"/>
+                android:id="@+id/propertiesView"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:id="@+id/problemsSection"
-                android:layout_below="@id/propertiesView">
+                android:id="@+id/problemsSection">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,29 +90,25 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/white_radius"
                     android:id="@+id/problemButton"
                     android:layout_gravity="center"/>
             </LinearLayout>
 
 
-            <com.java.cuiyikai.widgets.ListViewForScrollView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/problemsView"
-                android:divider="#00000000"
-                android:dividerHeight="3dp"
-                android:layout_below="@id/problemsSection"
-                android:layout_alignParentBottom="true"/>
+                android:id="@+id/problemsView"/>
 
-        </RelativeLayout>
-    </ScrollView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:id="@+id/floatMenu">
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -136,6 +120,11 @@
             android:id="@+id/favouriteButton"
             android:src="@drawable/star_yellow_16"
             android:visibility="gone"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/playButton"
+            android:src="@drawable/voice"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

@@ -1,49 +1,76 @@
 package com.java.cuiyikai.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
+import com.java.cuiyikai.adapters.viewholders.RelationViewHolder;
 import com.java.cuiyikai.entities.RelationEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RelationAdapter extends ArrayAdapter<RelationEntity> {
+public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
 
-    private final int resourceId;
+    private final List<RelationEntity> fullList;
+    private final List<RelationEntity> curList;
+    private final Context mContext;
     private final String subject;
 
-    private final EntityActivity entityActivity;
+    public void switchList() {
+        if(curList.size() == fullList.size()) {
+            if (curList.size() > 5) {
+                curList.subList(5, curList.size()).clear();
+            }
+            notifyItemRangeRemoved(5, fullList.size()-5);
+        } else {
+            for(int i=5;i<fullList.size();i++) {
+                curList.add(fullList.get(i));
+            }
+            notifyItemRangeInserted(5, curList.size() - 5);
+        }
+    }
 
-    public RelationAdapter(Context context, int textViewResourceId, List<RelationEntity> relationEntities, final String subject) {
-        super(context, textViewResourceId, relationEntities);
-        resourceId = textViewResourceId;
+    public RelationAdapter(Context context, List<RelationEntity> fullList, List<RelationEntity> prevList, String subject) {
+        this.fullList = fullList;
+        this.curList = new ArrayList<>();
+        this.curList.addAll(prevList);
+        this.mContext = context;
         this.subject = subject;
-        this.entityActivity = (EntityActivity) context;
+    }
+
+    @NonNull
+    @Override
+    public RelationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new RelationViewHolder(LayoutInflater.from(mContext).inflate(R.layout.relation_item, parent, false));
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        RelationEntity relationEntity = getItem(position);
-        View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        View relationItem = view.findViewById(R.id.relationItem);
-        relationItem.setOnClickListener(entityActivity.new RelationViewItemOnClickListener(relationEntity.getTargetName(), subject));
-        TextView relationName = (TextView) view.findViewById(R.id.relationName);
-        relationName.setText(relationEntity.getRelationName());
-        ImageView relationPic = (ImageView) view.findViewById(R.id.relationPic);
-        if(relationEntity.isSubject())
-            relationPic.setImageResource(R.drawable.left);
+    public void onBindViewHolder(@NonNull RelationViewHolder holder, int position) {
+        holder.getRelationName().setText(curList.get(position).getRelationName());
+        if(curList.get(position).isSubject())
+            holder.getRelationPic().setImageResource(R.drawable.left);
         else
-            relationPic.setImageResource(R.drawable.right);
-        TextView targetName = (TextView) view.findViewById(R.id.targetName);
-        targetName.setText(relationEntity.getTargetName());
-        return view;
+            holder.getRelationPic().setImageResource(R.drawable.right);
+        holder.getTargetName().setText(curList.get(position).getTargetName());
+        holder.getRelationView().setOnClickListener((View view) -> {
+            Intent f=new Intent(mContext ,EntityActivity.class);
+            f.putExtra("name",curList.get(position).getTargetName());
+            f.putExtra("subject",subject);
+            mContext.startActivity(f);
+        });
     }
 
+    @Override
+    public int getItemCount() {
+        return curList.size();
+    }
 }
+
