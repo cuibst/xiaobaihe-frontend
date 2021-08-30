@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -15,7 +17,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeechService;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,113 +73,6 @@ import java.util.concurrent.Executors;
 public class EntityActivity extends AppCompatActivity {
 
     private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
-
-    public class RelationViewItemOnClickListener implements View.OnClickListener {
-        private final String name;
-        private final String subject;
-
-        public RelationViewItemOnClickListener(String name, String subject) {
-            this.name = name;
-            this.subject = subject;
-        }
-
-        @Override
-        public void onClick(View view) {
-            Intent f=new Intent(EntityActivity.this,EntityActivity.class);
-            f.putExtra("name",name);
-            f.putExtra("subject",subject);
-            startActivity(f);
-        }
-    }
-
-    private class RelationViewOnClickListener implements View.OnClickListener {
-        private final List<RelationEntity> fullList;
-        private final List<RelationEntity> prevList;
-        private boolean extended;
-        private final ListViewForScrollView relatedView;
-        private final ImageButton relatedButton;
-        private final String subject;
-
-        @Override
-        public void onClick(View v) {
-            if (extended) {
-                relatedButton.setBackgroundResource(R.drawable.pulldown);
-                extended = false;
-                relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, prevList, subject));
-            } else {
-                relatedButton.setBackgroundResource(R.drawable.pullback);
-                extended = true;
-                relatedView.setAdapter(new RelationAdapter(EntityActivity.this, R.layout.relation_item, fullList, subject));
-            }
-        }
-
-        public RelationViewOnClickListener(List<RelationEntity> fullList, List<RelationEntity> prevList, boolean extended, ListViewForScrollView relatedView, ImageButton relatedButton, final String subject) {
-            this.fullList = fullList;
-            this.prevList = prevList;
-            this.extended = extended;
-            this.relatedView = relatedView;
-            this.relatedButton = relatedButton;
-            this.subject = subject;
-        }
-    }
-
-    private class PropertyViewOnClickListener implements View.OnClickListener {
-        private final List<PropertyEntity> fullList;
-        private final List<PropertyEntity> prevList;
-        private boolean extended;
-        private final ListViewForScrollView propertyView;
-        private final ImageButton propertyButton;
-
-        @Override
-        public void onClick(View v) {
-            if (extended) {
-                propertyButton.setBackgroundResource(R.drawable.pulldown);
-                extended = false;
-                propertyView.setAdapter(new PropertyAdapter(EntityActivity.this, R.layout.property_item, prevList));
-            } else {
-                propertyButton.setBackgroundResource(R.drawable.pullback);
-                extended = true;
-                propertyView.setAdapter(new PropertyAdapter(EntityActivity.this, R.layout.property_item, fullList));
-            }
-        }
-
-        public PropertyViewOnClickListener(List<PropertyEntity> fullList, List<PropertyEntity> prevList, boolean extended, ListViewForScrollView propertyView, ImageButton propertyButton) {
-            this.fullList = fullList;
-            this.prevList = prevList;
-            this.extended = extended;
-            this.propertyView = propertyView;
-            this.propertyButton = propertyButton;
-        }
-    }
-
-    private class ProblemViewOnClickListener implements View.OnClickListener {
-        private final List<JSONObject> fullList;
-        private final List<JSONObject> prevList;
-        private boolean extended;
-        private final ListViewForScrollView problemView;
-        private final ImageButton problemButton;
-
-        @Override
-        public void onClick(View v) {
-            if (extended) {
-                problemButton.setBackgroundResource(R.drawable.pulldown);
-                extended = false;
-                problemView.setAdapter(new ProblemAdapter(EntityActivity.this, R.layout.problem_item, prevList));
-            } else {
-                problemButton.setBackgroundResource(R.drawable.pullback);
-                extended = true;
-                problemView.setAdapter(new ProblemAdapter(EntityActivity.this, R.layout.problem_item, fullList));
-            }
-        }
-
-        public ProblemViewOnClickListener(List<JSONObject> fullList, List<JSONObject> prevList, boolean extended, ListViewForScrollView propertyView, ImageButton propertyButton) {
-            this.fullList = fullList;
-            this.prevList = prevList;
-            this.extended = extended;
-            this.problemView = propertyView;
-            this.problemButton = propertyButton;
-        }
-    }
 
     private static final String[] SUBJECTS = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
 
@@ -353,7 +247,7 @@ public class EntityActivity extends AppCompatActivity {
             }
 
             for(Map.Entry<String, List<String>> entry : objectRelationMap.entrySet()) {
-                speechBuilder.append(entry.getKey()).append("：").append(String.join("，", entry.getValue())).append("。");;
+                speechBuilder.append(entry.getKey()).append("：").append(String.join("，", entry.getValue())).append("。");
             }
 
             for(Map.Entry<String, List<String>> entry : subjectRelationMap.entrySet()) {
@@ -521,47 +415,81 @@ public class EntityActivity extends AppCompatActivity {
                 } else if (message.what == 2) {
                     loadingDialog.loadFailed();
                 } else if (message.what == 3) {
-                    ListViewForScrollView relationsView = (ListViewForScrollView) findViewById(R.id.relationsView);
+                    RecyclerView relationsView = (RecyclerView) findViewById(R.id.relationsView);
                     ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
                     if (relationFullList.size() > 5) {
                         relationPrevList = relationFullList.subList(0, 5);
-                        relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationPrevList, "");
+                        relationAdapter = new RelationAdapter(EntityActivity.this, relationFullList, relationPrevList, subject);
                         relationButton.setBackgroundResource(R.drawable.pulldown);
-                        relationButton.setOnClickListener(new RelationViewOnClickListener(relationFullList, relationPrevList, false, relationsView, relationButton, ""));
+                        relationButton.setOnClickListener((View v) -> {
+                            if(relationAdapter.getItemCount() <=5) {
+                                relationButton.setBackgroundResource(R.drawable.pullback);
+                            } else {
+                                relationButton.setBackgroundResource(R.drawable.pulldown);
+                            }
+                            relationAdapter.switchList();
+                        });
                     } else {
                         relationButton.setVisibility(View.GONE);
-                        relationAdapter = new RelationAdapter(EntityActivity.this, R.layout.relation_item, relationFullList, "");
+                        relationAdapter = new RelationAdapter(EntityActivity.this, relationFullList, relationFullList, subject);
                     }
                     relationsView.setAdapter(relationAdapter);
                 } else if (message.what == 4) {
-                    ListViewForScrollView propertiesView = (ListViewForScrollView) findViewById(R.id.propertiesView);
+                    RecyclerView propertiesView = (RecyclerView) findViewById(R.id.propertiesView);
                     ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
                     if (propertyFullList.size() > 5) {
                         propertyPrevList = propertyFullList.subList(0, 5);
-                        propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyPrevList);
                         propertyButton.setBackgroundResource(R.drawable.pulldown);
-                        propertyButton.setOnClickListener(new PropertyViewOnClickListener(propertyFullList, propertyPrevList, false, propertiesView, propertyButton));
+                        propertyAdapter = new PropertyAdapter(EntityActivity.this, propertyFullList, propertyPrevList);
+                        propertyButton.setOnClickListener((View view) -> {
+                            if(propertyAdapter.getItemCount() <= 5) {
+                                propertyButton.setBackgroundResource(R.drawable.pullback);
+                            } else {
+                                propertyButton.setBackgroundResource(R.drawable.pulldown);
+                            }
+                            propertyAdapter.switchList();
+                        });
                     } else {
                         propertyButton.setVisibility(View.GONE);
-                        propertyAdapter = new PropertyAdapter(EntityActivity.this, R.layout.property_item, propertyFullList);
+                        propertyAdapter = new PropertyAdapter(EntityActivity.this, propertyFullList, propertyFullList);
                     }
                     propertiesView.setAdapter(propertyAdapter);
                 } else if (message.what == 5) {
-                    ListViewForScrollView problemsView = (ListViewForScrollView) findViewById(R.id.problemsView);
+                    RecyclerView problemsView = (RecyclerView) findViewById(R.id.problemsView);
                     ImageButton problemButton = (ImageButton) findViewById(R.id.problemButton);
                     if (questionFullList.size() > 5) {
                         questionPrevList = questionFullList.subList(0, 5);
-                        problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionPrevList);
+                        problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionPrevList);
                         problemButton.setBackgroundResource(R.drawable.pulldown);
-                        problemButton.setOnClickListener(new ProblemViewOnClickListener(questionFullList, questionPrevList, false, problemsView, problemButton));
+                        problemButton.setOnClickListener((View view) -> {
+                            if(problemAdapter.getItemCount() <= 5) {
+                                problemButton.setBackgroundResource(R.drawable.pullback);
+                            } else {
+                                problemButton.setBackgroundResource(R.drawable.pulldown);
+                            }
+                            problemAdapter.switchList();
+                        });
                     } else {
                         problemButton.setVisibility(View.GONE);
-                        problemAdapter = new ProblemAdapter(EntityActivity.this, R.layout.problem_item, questionFullList);
+                        problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionFullList);
                     }
                     problemsView.setAdapter(problemAdapter);
                 }
             }
         };
+
+        relationAdapter = new RelationAdapter(EntityActivity.this, new ArrayList<>(), new ArrayList<>(), subject);
+        ((RecyclerView) findViewById(R.id.relationsView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
+        ((RecyclerView) findViewById(R.id.relationsView)).setAdapter(relationAdapter);
+
+        propertyAdapter = new PropertyAdapter(EntityActivity.this, new ArrayList<>(), new ArrayList<>());
+        ((RecyclerView) findViewById(R.id.propertiesView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
+        ((RecyclerView) findViewById(R.id.propertiesView)).setAdapter(propertyAdapter);
+
+        problemAdapter = new ProblemAdapter(EntityActivity.this, new ArrayList<>(), new ArrayList<>());
+        ((RecyclerView) findViewById(R.id.problemsView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
+        ((RecyclerView) findViewById(R.id.problemsView)).setAdapter(problemAdapter);
+
         executorService.submit(new EntityActivityLoadCallable(handler));
 
         FloatingActionButton shareButton = (FloatingActionButton) findViewById(R.id.shareButton);
@@ -632,7 +560,7 @@ public class EntityActivity extends AppCompatActivity {
 
             confirm.setOnClickListener((View view) -> {
                 EditText editText = directoryContentView.findViewById(R.id.newDirectoryName);
-                if(editText.getText().equals(""))
+                if(editText.getText().toString().equals(""))
                     return;
                 JSONObject args = new JSONObject();
                 args.put("directory", editText.getText().toString());
@@ -725,7 +653,7 @@ public class EntityActivity extends AppCompatActivity {
             System.out.println("Enter speech!");
             textToSpeech = new TextToSpeech(EntityActivity.this, (int i) -> {
                 int result = textToSpeech.setLanguage(Locale.CHINA);
-                System.out.printf("Result %d%n\n", result);
+                System.out.printf("Result %d%n%n", result);
                 if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
                     Toast.makeText(EntityActivity.this, "您的手机目前不支持中文tts，请下载语音包", Toast.LENGTH_LONG).show();
                 } else {

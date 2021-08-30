@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.EntityActivity"
     android:orientation="vertical">
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -49,12 +49,10 @@
                     android:background="@drawable/pulldown" />
             </LinearLayout>
 
-            <com.java.cuiyikai.widgets.ListViewForScrollView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/relationsView"
-                android:divider="#00000000"
-                android:dividerHeight="3dp"/>
+                android:id="@+id/relationsView"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -73,12 +71,10 @@
                     android:layout_gravity="center"/>
             </LinearLayout>
 
-            <com.java.cuiyikai.widgets.ListViewForScrollView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/propertiesView"
-                android:divider="#00000000"
-                android:dividerHeight="3dp"/>
+                android:id="@+id/propertiesView"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -99,21 +95,20 @@
             </LinearLayout>
 
 
-            <com.java.cuiyikai.widgets.ListViewForScrollView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/problemsView"
-                android:divider="#00000000"
-                android:dividerHeight="3dp"/>
+                android:id="@+id/problemsView"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:id="@+id/floatMenu">
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,7 +123,8 @@
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/playButton" />
+            android:id="@+id/playButton"
+            android:src="@drawable/voice"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:layout_margin="20dp"
     android:background="@drawable/relation_radius"
+    android:layout_marginTop="5dp"
     android:id="@+id/relationItem">
     <TextView
         android:layout_width="0dp"
