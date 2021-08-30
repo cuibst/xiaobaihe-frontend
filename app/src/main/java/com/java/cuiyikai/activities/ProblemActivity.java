@@ -9,18 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.adapters.OptionAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,13 +24,9 @@ public class ProblemActivity extends AppCompatActivity {
 
     List<String> []optionList;
 
-//    ListView optionView;
-
     int []optionId;
 
     TextView problemDescription;
-
-    private int type;
 
     private int sum;
 
@@ -44,7 +34,7 @@ public class ProblemActivity extends AppCompatActivity {
 
     private int[] optionNum;
 
-    private String letter[] = {"A", "B", "C", "D","E"};
+    private final String[] letter = {"A", "B", "C", "D","E"};
 
     private List<String> questionList;
 
@@ -55,10 +45,6 @@ public class ProblemActivity extends AppCompatActivity {
     private TextView explanationTv;
 
     private Button confirmButton;
-
-//    private List<String> nowList;
-
-    public int getType(){return type;}
 
     public void initData(){
         for(int i = 0; i < sum; i ++){
@@ -114,25 +100,8 @@ public class ProblemActivity extends AppCompatActivity {
                     optionNum[i] = 5;
                 }
 
-//                String dText = questionList.get(i).substring(placeD + 2);
-
-
                 optionList[i] = Arrays.asList(aText, bText, cText, dText, eText);
             }
-//            else
-//            {
-//                findViewById(R.id.problem_options).setVisibility(View.GONE);
-//                EditText answerInput = (EditText) findViewById(R.id.answer_input);
-//                Button submitAnswer = (Button) findViewById(R.id.submit_ans);
-//                ImageView answerImage = (ImageView) findViewById(R.id.answer_image);
-//                submitAnswer.setOnClickListener((View view) -> {
-//                    if(answerInput.getText().toString().equals(answerList.get(0))) {
-//                        answerImage.setImageResource(R.drawable.correct);
-//                    }
-//                    else
-//                        answerImage.setImageResource(R.drawable.wrong);
-//                });
-//            }
         }
     }
     private void setView(int rank){
@@ -258,7 +227,6 @@ public class ProblemActivity extends AppCompatActivity {
         optionNum = new int[sum];
         optionGroup.removeAllViews();
         initData();
-//        Log.v("button",optionGroup.get)
         setView(0);
     }
 }

@@ -34,6 +34,8 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         for(String str:set)
         {
             System.out.println(str);
+            if(subject.getJSONObject(str).isEmpty())
+                continue;
             sum+=subject.getJSONObject(str).getJSONArray("data").size();
         }
         if(sum<=10)
@@ -41,15 +43,15 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         else
             size=10;
     }
-    public int getRealLength()
+    public  int getRealLength()
     {
         return sum;
     }
-    public int size=0;
-    int sum=0;
+    public  int size=0;
+    private int sum=0;
     private JSONObject subject=new JSONObject();
     private Context mContext;
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
+    public  ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
     {
         return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
     }

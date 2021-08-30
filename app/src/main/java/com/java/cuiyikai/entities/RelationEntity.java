@@ -44,10 +44,6 @@ public class RelationEntity implements Comparable<RelationEntity> {
     public int compareTo(RelationEntity entity) {
         if(subject != entity.subject)
             return subject ? 1 : -1;
-        if(!relationName.equals(entity.relationName))
-            return relationName.compareTo(entity.relationName);
-        if(!targetName.equals(entity.targetName))
-            return targetName.compareTo(entity.targetName);
         return 0;
     }
 

@@ -15,8 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -289,26 +287,16 @@ public class DirectoryFragment extends Fragment {
             bottomDialog.show();
         });
         view.findViewById(R.id.btnGenerateProblems).setOnClickListener((View v) ->{
-//            Log.v("paper1", );
-//            ((MainApplication) getApplication()).getFavourite().toJSONString()
-//            Intent intent = new Intent(getActivity(), PaperActivity.class);
-
-//            intent.putExtra("containing", containing);
-//
-//            startActivity(intent);
-//            getActivity().finish();
             JSONObject js = ((MainApplication) getActivity().getApplication()).getFavourite();
             int cnt = 0;
             JSONArray jsArray = (JSONArray) js.get(directoryName);
             List<String> qBodyList = new ArrayList<>();
             List<String> qAnswerList = new ArrayList<>();
             for(int i = 0; i < jsArray.size(); i ++){
-//                Log.v("num", i + "");
                 JSONObject jsObject = (JSONObject) jsArray.get(i);
                 String uriname = (String) jsObject.get("name");
                 Map<String, String> request = new HashMap<String, String>();
                 request.put("uriName", uriname);
-//                Log.v("mtag", "in");
                 JSONObject tmp = null;
                 try {
                     tmp = (JSONObject) RequestBuilder.sendGetRequest(
@@ -319,29 +307,18 @@ public class DirectoryFragment extends Fragment {
                     e.printStackTrace();
                 }
                 List<String> mList = new ArrayList<>();
-//                Log.v("tmp", tmp.toJSONString());
-//                Log.v("tmp", tmp.getClass().toString());
-//                onPause();
                 Log.v("tmp", tmp.toJSONString());
 
                 JSONArray mJSONArray = null;
                 mJSONArray = (JSONArray) tmp.get("data");
-//                if(mJSONArray.isEmpty()){
-//                    Log.v("tmp", "empty");
-//                    continue;
-//                }
-//                Log.v("tmp", mJSONArray.toString());
-//                Log.v("tmp", mJSONArray.get(i).toString());
                 Map<String , String> mMap = (Map<String, String>) mJSONArray.get(i);
                 String qBody = mMap.get("qBody");
-//                Log.v("num", i + " " + qBody);
                 String answer = mMap.get("qAnswer");
                 Log.v("answer", i + " " + answer);
                 qAnswerList.add(answer);
                 qBodyList.add(qBody);
                 cnt ++;
             }
-//            Log.v("debug", qBodyList.get(1).toString());
             Log.v("answer", qAnswerList.toString());
             Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
             for(int j = 0; j < cnt; j ++){
@@ -349,11 +326,12 @@ public class DirectoryFragment extends Fragment {
                 mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
 
             }
-    //                String questionBody
             mIntent.putExtra("type", "list");
             mIntent.putExtra("sum", cnt + "");
             startActivity(mIntent);
         });
+
+
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
             //TODO: the logic for move!
 

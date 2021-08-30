@@ -6,8 +6,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerviewForSelect"
         android:layout_width="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
+        android:layoutDirection="ltr"
         android:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
+<!--    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
+
 </LinearLayout>

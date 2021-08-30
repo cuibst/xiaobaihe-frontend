@@ -36,7 +36,6 @@ public class SearchActivity extends AppCompatActivity {
     private Vector<String> checkMarked=new Vector<>();
     private FragmentManager fragmentManager=getFragmentManager();
     private FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-    private SearchView searchViewInSearch;
     private String searchContent;
     private XRecyclerView search_rcy;
     private SearchAdapter sadapter;
@@ -56,7 +55,6 @@ public class SearchActivity extends AppCompatActivity {
         search_rcy.setArrowImageView(R.drawable.waiting);
         search_rcy.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
         sadapter=new SearchAdapter(SearchActivity.this);
-        searchViewInSearch=findViewById(R.id.searchViewInSearch);
         receivedMessage=JSONObject.parseObject(prevBundle.getString("msg"));
         searchContent=prevBundle.getString("name");
         search_rcy.setLoadingListener(new XRecyclerView.LoadingListener() {
@@ -150,55 +148,56 @@ public class SearchActivity extends AppCompatActivity {
                     sadapter.addSubject(finalInfo);
                     search_rcy.setAdapter(sadapter);
                 }
+                fragmentTransaction.commit();
             }
         });
-        initSearchView(searchViewInSearch,SearchActivity.this);
+//        initSearchView(searchViewInSearch,SearchActivity.this);
     }
 
 
-    public void initSearchView(SearchView searchView,Context mcontext)
-    {
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setIconifiedByDefault(true);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                try {
-                    receivedMessage.clear();
-                    searchContent=s;
-                    for(int i=0;i<all_subject_item.length;i++)
-                    {
-                        Map<String,String> map =new HashMap<String,String>();
-                        map.put("course",  CheckSubject(all_subject_item[i]));
-                        map.put("searchKey",s);
-                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                        if((String)msg.get("code")=="-1")
-                        {
-                            Toast.makeText(SearchActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
-                            receivedMessage.put(CheckSubject(all_subject_item[i]),msg);
-                        }
-                    }
-                    sadapter=null;
-                    sadapter=new SearchAdapter(SearchActivity.this);
-                    sadapter.addSubject(receivedMessage);
-                    initFragment();
-                    search_rcy.setAdapter(sadapter);
-                }
-                catch (Exception e)
-                {
-                    System.out.println(e);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });
-    }
+//    public void initSearchView(SearchView searchView,Context mcontext)
+//    {
+//        searchView.setSubmitButtonEnabled(true);
+//        searchView.setIconifiedByDefault(true);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                try {
+//                    receivedMessage.clear();
+//                    searchContent=s;
+//                    for(int i=0;i<all_subject_item.length;i++)
+//                    {
+//                        Map<String,String> map =new HashMap<String,String>();
+//                        map.put("course",  CheckSubject(all_subject_item[i]));
+//                        map.put("searchKey",s);
+//                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+//                        if((String)msg.get("code")=="-1")
+//                        {
+//                            Toast.makeText(SearchActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
+//                        }
+//                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
+//                            receivedMessage.put(CheckSubject(all_subject_item[i]),msg);
+//                        }
+//                    }
+//                    sadapter=null;
+//                    sadapter=new SearchAdapter(SearchActivity.this);
+//                    sadapter.addSubject(receivedMessage);
+//                    initFragment();
+//                    search_rcy.setAdapter(sadapter);
+//                }
+//                catch (Exception e)
+//                {
+//                    System.out.println(e);
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                return false;
+//            }
+//        });
+//    }
     public String reverseCheckSubject(String TITLE)
     {
         String chooseSubject="";
@@ -298,7 +297,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         selectFragment.getSubjectType(subjectType);
         selectFragment.getType(type);
-        initSearchView(searchViewInSearch,SearchActivity.this);
+//        initSearchView(searchViewInSearch,SearchActivity.this);
         selectButton.setText("筛选");
     }
 }

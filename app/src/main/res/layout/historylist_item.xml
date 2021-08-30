@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <TextView
         android:id="@+id/historyrecord"
-        android:layout_width="match_parent"
+        android:textSize="15sp"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:textColor="#8E8E8E"
+        android:layout_margin="10dp"
+        android:padding="5dp"
         android:layout_height="wrap_content"
         android:singleLine="true" />
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@id/historyrecord"
+        android:layout_alignRight="@id/historyrecord"
+        android:src="@drawable/edit"/>
 </LinearLayout>

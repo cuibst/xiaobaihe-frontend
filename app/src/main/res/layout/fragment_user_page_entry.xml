@@ -1,78 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.UserPageEntryFragment"
-    android:orientation="vertical">
+    tools:context=".fragments.UserPageEntryFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="30dp">
-        <TextView
-            android:id="@+id/tv_collect"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="收藏"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:drawableTop="@drawable/collect"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="历史记录"
-            android:gravity="center"
-            android:id="@+id/tv_history"
-            android:drawableTop="@drawable/history_record"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/pleaseLogin"
+        android:textSize="50sp"
+        android:visibility="gone"
+        android:id="@+id/loginTextView"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="50sp"
+        android:visibility="gone"
+        android:text="@string/checkFavourite"
+        android:id="@+id/btnCheckFavourite"
+        android:background="@drawable/white_radius"/>
 
-    </LinearLayout>
-
-    <RelativeLayout style="@style/MineFunctionRl"
-        android:id="@+id/clear_cache">
-
-        <TextView
-            style="@style/MineFunctionTvLeft"
-            android:text="清除缓存"
-            android:textColor="#000000" />
-
-        <ImageView
-            style="@style/MineFunctionArrow"
-            android:background="@drawable/right_arrow" />
-
-    </RelativeLayout>
-    <RelativeLayout style="@style/MineFunctionRl"
-        android:id="@+id/setting">
-
-        <TextView
-            style="@style/MineFunctionTvLeft"
-            android:text="设置"
-            android:textColor="#000000" />
-
-        <ImageView
-            style="@style/MineFunctionArrow"
-            android:background="@drawable/right_arrow" />
-
-    </RelativeLayout>
-    <RelativeLayout style="@style/MineFunctionRl"
-        android:layout_marginTop="50dp"
-        android:id="@+id/logout">
-
-        <TextView
-            style="@style/MineFunctionTvLeft"
-            android:text="退出登录"
-            android:textColor="#DC143C" />
-
-        <ImageView
-            style="@style/MineFunctionArrow"
-            android:background="@drawable/right_arrow" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</FrameLayout>
