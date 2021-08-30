@@ -2,16 +2,21 @@ package com.java.cuiyikai.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import com.beloo.widget.chipslayoutmanager.gravity.IChildGravityResolver;
+import com.beloo.widget.chipslayoutmanager.layouter.breaker.IRowBreaker;
 import com.java.cuiyikai.adapters.SelectAdapter;
 
 import com.java.cuiyikai.R;
@@ -32,6 +37,20 @@ public class SelectFragment extends Fragment {
     {
         View view = View.inflate(getActivity(), R.layout.fragment_select, null);
         RecyclerViewForSelect=view.findViewById(R.id.recyclerviewForSelect);
+        ChipsLayoutManager chipsLayoutManager = ChipsLayoutManager.newBuilder(getActivity())
+                .setChildGravity(Gravity.TOP)
+                .setScrollingEnabled(true)
+                .setGravityResolver(new IChildGravityResolver() {
+                    @Override
+                    public int getItemGravity(int position) {
+                        return Gravity.CENTER;
+                    }
+                })
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_VIEW)
+                .withLastRow(true)
+                .build();
+        RecyclerViewForSelect.setLayoutManager(chipsLayoutManager);
         RecyclerViewForSelect.setAdapter(selectAdapter);
         return view;
     }

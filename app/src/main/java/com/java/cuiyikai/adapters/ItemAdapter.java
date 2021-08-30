@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
@@ -23,13 +24,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public  String chooseSubject;
     public JSONArray subject=new JSONArray();
     private Context mContext;
-    private LinearLayout searchline;
     public void addSubject(JSONArray arr) {
         subject=arr;
     }
     public void addMoreSubject(JSONArray arr) {
-        subject.addAll(arr);
-        System.out.println(subject.toString());
+        JSONArray newSubject=new JSONArray();
+        for(int i=0;i<subject.size();i++)
+            newSubject.add(subject.get(i));
+        for(int i=0;i<arr.size();i++)
+            newSubject.add(arr.get(i));
+        subject=newSubject;
+        System.out.println(arr.size());
+        System.out.println(newSubject.size());
+        System.out.println(subject.size());
     }
     public void clearSubject()
     {

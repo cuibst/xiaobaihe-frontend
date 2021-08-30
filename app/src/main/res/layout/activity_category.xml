@@ -6,15 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".activities.CategoryActivity"
     android:orientation="vertical">
+
     <ImageButton
+        android:id="@+id/btn_close"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:src="@drawable/x"
-        android:id="@+id/btn_close"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/x" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_gv"
         android:layout_width="match_parent"

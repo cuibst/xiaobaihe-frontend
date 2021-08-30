@@ -83,15 +83,9 @@ public class ItemFragment extends Fragment {
             @Override
             public void onRefresh() {
                 try {
-                    Map<String,String> map=new HashMap<>();
-                    map.put("subject",itemAdapter.chooseSubject);
-                    JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
-                    String rememberedSubject=itemAdapter.chooseSubject;
-                    itemAdapter=null;
-                    itemAdapter=new ItemAdapter(getActivity(),rememberedSubject);
-                    itemAdapter.addSubject(msg.getJSONArray("data"));
-                    xRecyclerView.setAdapter(itemAdapter);
-                    xRecyclerView.refreshComplete();
+                    Refresh runner=new Refresh(TITLE);
+                    Thread thread=new Thread(runner);
+                    thread.start();
                 }
                 catch (Exception e)
                 {
@@ -104,11 +98,14 @@ public class ItemFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 try {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("subject", itemAdapter.chooseSubject);
-                    JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
-                    itemAdapter.addMoreSubject(msg.getJSONArray("data"));
-                    xRecyclerView.loadMoreComplete();
+                    LoadMore runner=new LoadMore(TITLE);
+                    Thread thread=new Thread(runner);
+                    thread.start();
+//                    Map<String, String> map = new HashMap<>();
+//                    map.put("subject", itemAdapter.chooseSubject);
+//                    JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+//                    itemAdapter.addMoreSubject(msg.getJSONArray("data"));
+//                    xRecyclerView.loadMoreComplete();
                 }
                 catch (Exception e)
                 {
@@ -151,15 +148,74 @@ public class ItemFragment extends Fragment {
             }
         }
     }
+    private class Refresh implements Runnable{
+        private String chooseSubject;
+        Refresh(String s)
+        {
+            chooseSubject=s;
+        }
+        @Override
+        public void run() {
+            try {
+                Map<String, String> map = new HashMap<>();
+                map.put("subject", chooseSubject);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                Message message=new Message();
+                message.obj=msg.toString();
+                message.what=1;
+                handler.sendMessage(message);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class LoadMore implements Runnable{
+        private String chooseSubject;
+        LoadMore(String s)
+        {
+            chooseSubject=s;
+        }
+        @Override
+        public void run() {
+            try {
+                Map<String, String> map = new HashMap<>();
+                map.put("subject", itemAdapter.chooseSubject);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                Message message=new Message();
+                message.obj=msg.toString();
+                message.what=2;
+                handler.sendMessage(message);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
+            JSONObject object;
             switch(msg.what)
             {
                 case 0:
-                    JSONObject object=JSONObject.parseObject(msg.obj.toString());
+                    object=JSONObject.parseObject(msg.obj.toString());
                     itemAdapter.addSubject(object.getJSONArray("data"));
                     xRecyclerView.setAdapter(itemAdapter);
+                    break;
+                case 1:
+                    object=JSONObject.parseObject(msg.obj.toString());
+                    itemAdapter.addSubject(object.getJSONArray("data"));
+                    itemAdapter.notifyDataSetChanged();
+                    xRecyclerView.refreshComplete();
+                    break;
+                case 2:
+                    object=JSONObject.parseObject(msg.obj.toString());
+                    itemAdapter.addMoreSubject(object.getJSONArray("data"));
+                    itemAdapter.notifyDataSetChanged();
+                    xRecyclerView.loadMoreComplete();
             }
         }
     }
