@@ -1,5 +1,6 @@
 package com.java.cuiyikai.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.FavouriteItemHolder;
 import com.java.cuiyikai.fragments.DirectoryFragment;
 
@@ -77,6 +79,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         FavouriteItemHolder favouriteItemHolder = (FavouriteItemHolder) holder;
         JSONObject object = favouriteArray.getJSONObject(position);
+        favouriteItemHolder.getViewLine().setOnClickListener((View v) -> {
+            Intent intent = new Intent(directoryFragment.getActivity(), EntityActivity.class);
+            intent.putExtra("name", object.getString("name"));
+            intent.putExtra("subject", object.getString("subject"));
+            directoryFragment.getActivity().startActivity(intent);
+        });
         favouriteItemHolder.getItemName().setText(object.getString("name"));
         switch(object.getString("subject")) {
             case "chinese" :
@@ -127,7 +135,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             favouriteItemHolder.getCheckBox().setOnCheckedChangeListener((CompoundButton compoundButton, boolean b) -> selected[position] = b);
         } else {
             favouriteItemHolder.getCheckBox().setVisibility(View.GONE);
-            favouriteItemHolder.getDragButton().setVisibility(View.GONE);
+            favouriteItemHolder.getDragButton().setVisibility(View.INVISIBLE);
         }
     }
 

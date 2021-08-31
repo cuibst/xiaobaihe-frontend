@@ -44,6 +44,7 @@ public class MainFragment extends Fragment {
         tabLayout=view.findViewById(R.id.tablayout1);
         tabLayout.setupWithViewPager(viewpgr);
         tabAdd = view.findViewById(R.id.tab_add);
+
         tabAdd.setOnClickListener((View v) -> {
             Intent intent=new Intent(getActivity(), CategoryActivity.class);
             startActivityForResult(intent, 1);
