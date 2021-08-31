@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +25,10 @@ public class UserPageEntryFragment extends Fragment {
     public UserPageEntryFragment() {
         // Required empty public constructor
     }
-    private RelativeLayout settings;
-    private RelativeLayout logout;
-    private RelativeLayout clearCache;
-    private TextView tvCollect;
-    private TextView tvHistory;
+    private LinearLayout mSettings;
+    private LinearLayout mLogout;
+    private LinearLayout mCollect;
+    private LinearLayout mHistory;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -36,12 +36,11 @@ public class UserPageEntryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_page_entry, container, false);
-        settings = view.findViewById(R.id.setting);
-        logout = view.findViewById(R.id.logout);
-        clearCache = view.findViewById(R.id.clear_cache);
-        tvCollect = view.findViewById(R.id.tv_collect);
-        tvHistory = view.findViewById(R.id.tv_history);
-        tvCollect.setOnClickListener((View v) -> {
+        mSettings = view.findViewById(R.id.user_setting);
+        mLogout = view.findViewById(R.id.user_logout);
+        mCollect = view.findViewById(R.id.user_collect);
+        mHistory = view.findViewById(R.id.user_history);
+        mCollect.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
                 Toast.makeText(getContext(), "您尚未登录", 100).show();
             }

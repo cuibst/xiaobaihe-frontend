@@ -12,67 +12,141 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="30dp">
-        <TextView
-            android:id="@+id/tv_collect"
-            android:layout_width="0dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="100dp">
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="收藏"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:drawableTop="@drawable/collect"/>
+            android:src="@drawable/user_page"/>
+
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="历史记录"
-            android:gravity="center"
-            android:id="@+id/tv_history"
-            android:drawableTop="@drawable/history_record"/>
-
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="请先登录"
+            android:layout_gravity="center"
+            android:textSize="27dp"/>
     </LinearLayout>
 
-    <RelativeLayout style="@style/MineFunctionRl"
-        android:id="@+id/clear_cache">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <LinearLayout
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:orientation="vertical"
+                android:id="@+id/user_collect"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/tv_border">
+                <ImageView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/collect"
+                    android:layout_gravity="center"/>
+                <TextView
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="收藏"   />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:orientation="vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/tv_border"
+                android:id="@+id/user_history">
+                <ImageView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/history_record"
+                    android:layout_gravity="center"/>
+                <TextView
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-        <TextView
-            style="@style/MineFunctionTvLeft"
-            android:text="清除缓存"
-            android:textColor="#000000" />
+                    android:gravity="center"
+                    android:text="历史记录"   />
+            </LinearLayout>
+        </LinearLayout>
 
-        <ImageView
-            style="@style/MineFunctionArrow"
-            android:background="@drawable/right_arrow" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="45dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    </RelativeLayout>
-    <RelativeLayout style="@style/MineFunctionRl"
-        android:id="@+id/setting">
+            <LinearLayout
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/tv_border"
+                android:id="@+id/user_setting"
+                android:orientation="vertical">
 
-        <TextView
-            style="@style/MineFunctionTvLeft"
-            android:text="设置"
-            android:textColor="#000000" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/setting" />
 
-        <ImageView
-            style="@style/MineFunctionArrow"
-            android:background="@drawable/right_arrow" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
 
-    </RelativeLayout>
-    <RelativeLayout style="@style/MineFunctionRl"
-        android:layout_marginTop="50dp"
-        android:id="@+id/logout">
+                    android:gravity="center"
+                    android:text="设置" />
+            </LinearLayout>
 
-        <TextView
-            style="@style/MineFunctionTvLeft"
-            android:text="退出登录"
-            android:textColor="#DC143C" />
+            <LinearLayout
+                android:id="@+id/user_logout"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/tv_border"
+                android:orientation="vertical">
 
-        <ImageView
-            style="@style/MineFunctionArrow"
-            android:background="@drawable/right_arrow" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/logout" />
 
-    </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+
+                    android:gravity="center"
+                    android:text="登出" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
 
 </LinearLayout>
