@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.adapters.category.CategoryItem;
-import com.java.cuiyikai.adapters.category.CategoryLayoutManagerSizeLookUp;
-import com.java.cuiyikai.adapters.category.CategoryObject;
-import com.java.cuiyikai.adapters.category.CategoryTitle;
+import com.java.cuiyikai.entities.CategoryItem;
+import com.java.cuiyikai.adapters.CategoryLayoutManagerSizeLookUp;
+import com.java.cuiyikai.entities.CategoryObject;
+import com.java.cuiyikai.entities.CategoryTitle;
 import com.java.cuiyikai.adapters.GridViewAdapter;
 import com.java.cuiyikai.adapters.GridViewItemTouchCallback;
 

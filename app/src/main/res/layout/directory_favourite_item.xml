@@ -30,7 +30,8 @@
             android:id="@+id/favouriteItemName"
             android:textSize="20sp"
             android:layout_marginStart="5dp"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"/>
     </LinearLayout>
 
     <ImageButton
@@ -39,7 +40,7 @@
         android:background="@drawable/drag_button"
         android:layout_marginEnd="5dp"
         android:id="@+id/itemDragButton"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"/>
 
