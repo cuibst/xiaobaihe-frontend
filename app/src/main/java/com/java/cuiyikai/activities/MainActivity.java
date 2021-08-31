@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import android.widget.SearchView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.chaychan.library.BottomBarItem;
 import com.chaychan.library.BottomBarLayout;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
@@ -45,8 +47,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private Button btnForLogIn;
 
+    private Button btnForLogIn;
+    private ImageView searchImageView;
+    private BottomBarLayout mBottonBarLayout;
+    private BottomBarItem userPage;
 
     private List<Fragment> fragmentList = new ArrayList<>();
 
@@ -90,12 +95,14 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(PointExtractFragment.newInstance()); //FIXME: this fragment is used to fill the places.
         fragmentList.add(new DialogFragment());
         fragmentList.add(new UserPageEntryFragment());
-
+        userPage = findViewById(R.id.btnBottomBarUser);
         ViewPager mainPager = findViewById(R.id.mainPager);
         mainPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
             public Fragment getItem(int position) {
+                Log.v("item", position + "");
+//                Log.v("item", String.valueOf(fragmentList.get(position).equals(userPage)));
                 return fragmentList.get(position);
             }
 
@@ -104,8 +111,15 @@ public class MainActivity extends AppCompatActivity {
                 return fragmentList.size();
             }
         });
+        mBottonBarLayout = findViewById(R.id.bottomBar);
+        mBottonBarLayout.setViewPager(mainPager);
 
-        ((BottomBarLayout)findViewById(R.id.bottomBar)).setViewPager(mainPager);
+//        if(userPage.isSelected()){
+//            searchImageView.setVisibility(View.INVISIBLE);
+//        }
+//        else {
+//            searchImageView.setVisibility(View.VISIBLE);
+//        }
     }
 
     public void init(){
