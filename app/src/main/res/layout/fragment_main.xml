@@ -4,7 +4,26 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <LinearLayout
+        android:id="@+id/searchline"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="#2894FF"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_height="50dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:id="@+id/searchImageView"
+                android:src="@drawable/searchbutton"
+                android:layout_margin="9dp"
+                android:layout_gravity="right"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
     <RelativeLayout
         android:id="@+id/relate_1"
         android:layout_width="wrap_content"

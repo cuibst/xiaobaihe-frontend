@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
+import com.java.cuiyikai.activities.VisitHistoryActivity;
 import com.java.cuiyikai.network.RequestBuilder;
 
 public class UserPageEntryFragment extends Fragment {
@@ -41,6 +41,13 @@ public class UserPageEntryFragment extends Fragment {
         clearCache = view.findViewById(R.id.clear_cache);
         tvCollect = view.findViewById(R.id.tv_collect);
         tvHistory = view.findViewById(R.id.tv_history);
+        tvHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), VisitHistoryActivity.class);
+                startActivity(intent);
+            }
+        });
         tvCollect.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
                 Toast.makeText(getContext(), "您尚未登录", 100).show();

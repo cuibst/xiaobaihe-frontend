@@ -45,8 +45,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnForLogIn;
-    private ImageView searchImageView;
+//    private Button btnForLogIn;
+
 
     private List<Fragment> fragmentList = new ArrayList<>();
 
@@ -66,42 +66,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        searchImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,SearchViewActivity.class);
-                startActivity(intent);
-            }
-        });
-//        hideText=findViewById(R.id.hidetext);
-//        hideText.setText("显示历史记录");
-//        hideText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(!RequestBuilder.checkedLogin())
-//                {
-//                    Toast.makeText(MainActivity.this, "请先登录！", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                if(hideText.getText().equals("显示历史记录"))
-//                {
-//                    GetHistory getHistory=new GetHistory();
-//                    Thread thread=new Thread(getHistory);
-//                    thread.start();
-//                    fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.show(historyFragment);
-//                    fragmentTransaction.commit();
-//                    hideText.setText("收起");
-//                }
-//                else if(hideText.getText().equals("收起"))
-//                {
-//                    fragmentTransaction = fragmentManager.beginTransaction();
-//                    fragmentTransaction.hide(historyFragment);
-//                    fragmentTransaction.commit();
-//                    hideText.setText("显示历史记录");
-//                }
-//            }
-//        });
         System.out.printf("Network available : %b%n", RequestBuilder.isNetworkNormal(MainActivity.this));
 
         if(!RequestBuilder.isNetworkNormal(MainActivity.this)) {
@@ -111,15 +75,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        btnForLogIn.setOnClickListener((View view) -> {
-            if(RequestBuilder.checkedLogin()) {
-                RequestBuilder.logOut();
-                Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Intent intent=new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        });
+//        btnForLogIn.setOnClickListener((View view) -> {
+//            if(RequestBuilder.checkedLogin()) {
+//                RequestBuilder.logOut();
+//                Toast.makeText(MainActivity.this, "Logged out!", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+//            startActivity(intent);
+//        });
 
         //FIXME: add all four fragments, current 3 of 4.
         fragmentList.add(new MainFragment());
@@ -146,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void init(){
 //        searchView=findViewById(R.id.searchViewInMain);
-        btnForLogIn=findViewById(R.id.btn_for_login);
-        searchImageView=findViewById(R.id.searchImageView);
+//        btnForLogIn=findViewById(R.id.btn_for_login);
+
 //        initSearchView(searchView);
     }
 
