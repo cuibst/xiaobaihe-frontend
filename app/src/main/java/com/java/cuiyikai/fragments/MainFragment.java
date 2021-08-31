@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.CategoryActivity;
 import com.java.cuiyikai.activities.MainActivity;
+import com.java.cuiyikai.activities.SearchViewActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ public class MainFragment extends Fragment {
     private ViewPager viewpgr;
     private ImageView tabAdd;
     private ItemFragment[] itemFragment;
+    private ImageView searchImageView;
     private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
     private List<String> all_subject_item=new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
     private TabLayout tabLayout;
@@ -44,7 +46,14 @@ public class MainFragment extends Fragment {
         tabLayout=view.findViewById(R.id.tablayout1);
         tabLayout.setupWithViewPager(viewpgr);
         tabAdd = view.findViewById(R.id.tab_add);
-
+        searchImageView=view.findViewById(R.id.searchImageView);
+        searchImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), SearchViewActivity.class);
+                startActivity(intent);
+            }
+        });
         tabAdd.setOnClickListener((View v) -> {
             Intent intent=new Intent(getActivity(), CategoryActivity.class);
             startActivityForResult(intent, 1);
