@@ -5,12 +5,17 @@ o
 ?app/src/main/java/com/java/cuiyikai/adapters/SearchAdapter.java,b\d\bdced547b1c843fbe1b38f7325f80db5b5b9c56f
 x
 Happ/src/main/java/com/java/cuiyikai/activities/PointExtractActivity.java,c\a\ca306bf15b13af3cb337efa6b0f57c169f1b1424
+<<<<<<< HEAD
 w
 Gapp/src/main/java/com/java/cuiyikai/fragments/PointExtractFragment.java,9\9\9924b8d3e86fb74cc6d349feda8cdd2d9be5372b
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> hotfix
 s
 Capp/src/main/java/com/java/cuiyikai/utilities/DensityUtilities.java,3\e\3eb83ebe4348a7c3d0fe26d80b57647e54ed91d9
 |
@@ -35,6 +40,10 @@ r
 Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
 s
 Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> hotfix
 x
 Happ/src/main/java/com/java/cuiyikai/fragments/UserPageEntryFragment.java,0\b\0b00c668283686f2d13868607914ebd7dfcd8729
 v
