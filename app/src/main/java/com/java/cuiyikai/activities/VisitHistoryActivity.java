@@ -175,7 +175,8 @@ public class VisitHistoryActivity extends AppCompatActivity {
             public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {
                 menuBridge.closeMenu();
                 visitHistoryAdapter.ReportRemove(adapterPosition);
-                visitHistoryAdapter.notifyDataSetChanged();
+                visitHistoryAdapter.notifyItemRemoved(adapterPosition);
+//                visitHistoryAdapter.notifyDataSetChanged();
             }
         });
         swipeRecyclerView.setAdapter(visitHistoryAdapter);

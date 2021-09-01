@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
+import com.java.cuiyikai.activities.QuestionsCollectionActivity;
 import com.java.cuiyikai.activities.VisitHistoryActivity;
 import com.java.cuiyikai.network.RequestBuilder;
 
@@ -27,6 +28,7 @@ public class UserPageEntryFragment extends Fragment {
         // Required empty public constructor
     }
     private LinearLayout mSettings;
+    private LinearLayout mQuestionsCollection;
     private LinearLayout mLogout;
     private LinearLayout mCollect;
     private LinearLayout mHistory;
@@ -37,10 +39,11 @@ public class UserPageEntryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_page_entry, container, false);
-        mSettings = view.findViewById(R.id.user_setting);
+//        mSettings = view.findViewById(R.id.user_setting);
         mLogout = view.findViewById(R.id.user_logout);
         mCollect = view.findViewById(R.id.user_collect);
         mHistory = view.findViewById(R.id.user_history);
+        mQuestionsCollection=view.findViewById(R.id.user_setting);
         mHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +63,15 @@ public class UserPageEntryFragment extends Fragment {
                 startActivity(intent);
             }
 
+        });
+        mQuestionsCollection.setOnClickListener((View v) -> {
+            if(!RequestBuilder.checkedLogin()){
+                Toast.makeText(getContext(), "您尚未登录", 100).show();
+            }
+            else {
+                Intent intent = new Intent(getActivity(), QuestionsCollectionActivity.class);
+                startActivity(intent);
+            }
         });
         return view;
     }

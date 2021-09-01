@@ -108,6 +108,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     }
     @Override
     public int getItemCount(){
+        if(subject==null)
+            return 0;
         return subject.size();
     }
 }

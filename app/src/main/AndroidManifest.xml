@@ -26,6 +26,9 @@
         android:theme="@style/Theme.Androidhomework"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.QuestionsCollectionActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.VisitHistoryActivity"
             android:exported="true" />
         <activity
