@@ -6,6 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ItemFragment">
 
+    <ProgressBar
+        android:id="@+id/waitingBar"
+        android:indeterminateDrawable="@drawable/progressor"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/fragment_xrecycleview"
         android:layout_width="match_parent"

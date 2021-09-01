@@ -65,6 +65,7 @@ public class HistoryFragment extends Fragment {
                 .withLastRow(true)
                 .build();
         recyclerViewForHistory.setLayoutManager(chipsLayoutManager);
+        historyListAdapter.historyListAdapter=historyListAdapter;
         recyclerViewForHistory.setAdapter(historyListAdapter);
         return view;
     }

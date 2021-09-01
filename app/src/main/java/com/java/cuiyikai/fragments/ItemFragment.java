@@ -35,6 +35,7 @@ public class ItemFragment extends Fragment {
     public  String TITLE = "tile";
     public  RecyclerView.LayoutManager layoutManager;
     public  ItemAdapter itemAdapter;
+    private ProgressBar progressBar;
     private String main_activity_backend_url="/api/uri/getname";
     public ItemFragment() {
     }
@@ -77,7 +78,9 @@ public class ItemFragment extends Fragment {
         else
             view =inflater.inflate(R.layout.fragment_item_recommend, container, false);
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
+        progressBar=view.findViewById(R.id.waitingBar);
         itemAdapter=new ItemAdapter(getActivity(),TITLE);
+        xRecyclerView.setAdapter(itemAdapter);
         sendMessage();
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
@@ -101,11 +104,6 @@ public class ItemFragment extends Fragment {
                     LoadMore runner=new LoadMore(TITLE);
                     Thread thread=new Thread(runner);
                     thread.start();
-//                    Map<String, String> map = new HashMap<>();
-//                    map.put("subject", itemAdapter.chooseSubject);
-//                    JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
-//                    itemAdapter.addMoreSubject(msg.getJSONArray("data"));
-//                    xRecyclerView.loadMoreComplete();
                 }
                 catch (Exception e)
                 {
@@ -201,9 +199,10 @@ public class ItemFragment extends Fragment {
             switch(msg.what)
             {
                 case 0:
+                    progressBar.setVisibility(View.INVISIBLE);
                     object=JSONObject.parseObject(msg.obj.toString());
                     itemAdapter.addSubject(object.getJSONArray("data"));
-                    xRecyclerView.setAdapter(itemAdapter);
+                    itemAdapter.notifyDataSetChanged();
                     break;
                 case 1:
                     object=JSONObject.parseObject(msg.obj.toString());
