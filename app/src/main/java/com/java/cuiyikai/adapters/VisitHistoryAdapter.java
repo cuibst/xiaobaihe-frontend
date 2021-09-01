@@ -34,6 +34,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private String removeHistoryUrl="/api/history/removeVisitHistory";
     private int cnt=0;
     private Date mDate;
+    private List<Integer> timeNumber;
     private Map<Integer,Object> allData;
     SimpleDateFormat setTimeFormatInADay = new SimpleDateFormat("HH:mm");
     SimpleDateFormat setTimeFormatInAYear = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,8 +70,12 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
     }
+    public List<Integer> getTimeNumber(){
+        return timeNumber;
+    }
     public void initDateList()
     {
+        timeNumber=new ArrayList<>();
         datelist=new ArrayList<>();
         allData=new HashMap<>();
         cnt=0;
@@ -82,6 +87,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             if(i==0)
             {
                 allData.put(i,date);
+                timeNumber.add(i);
                 cnt++;
                 mDate=date;
                 datelist.add(date);
@@ -90,6 +96,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             {
                 mDate=date;
                 allData.put(i,date);
+                timeNumber.add(i);
                 cnt++;
                 datelist.add(date);
             }

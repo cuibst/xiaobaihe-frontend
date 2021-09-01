@@ -120,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
 //        else {
 //            searchImageView.setVisibility(View.VISIBLE);
 //        }
+        ((BottomBarLayout)findViewById(R.id.bottomBar)).setViewPager(mainPager);
+        Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void init(){
