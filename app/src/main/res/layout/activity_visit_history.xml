@@ -23,6 +23,7 @@
             android:layout_width="wrap_content"
             android:textColor="#515151"
             android:layout_height="wrap_content"
+            android:id="@+id/historytext"
             android:layout_toRightOf="@id/backImg"
             android:text="历史记录"
             android:layout_margin="10dp"

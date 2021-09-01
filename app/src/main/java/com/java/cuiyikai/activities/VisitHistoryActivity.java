@@ -12,6 +12,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -28,15 +29,18 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class VisitHistoryActivity extends AppCompatActivity {
-    SimpleDateFormat setTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ImageView backupImg;
     private String getHistoryUrl="/api/history/getVisitHistory";
     private SearchView searchHistory;
     private SwipeRecyclerView swipeRecyclerView;
+    private List<Integer> timeNumber;
     private VisitHistoryAdapter visitHistoryAdapter;
+    private JSONArray historyArr;
+    private TextView historyText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,91 @@ public class VisitHistoryActivity extends AppCompatActivity {
         backupImg=findViewById(R.id.backImg);
         searchHistory=findViewById(R.id.searchHistory);
         swipeRecyclerView=findViewById(R.id.swipeRecyclerView);
+        historyText=findViewById(R.id.historytext);
+        searchHistory.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                historyText.setVisibility(View.INVISIBLE);
+            }
+        });
+        searchHistory.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                historyText.setVisibility(View.VISIBLE);
+                visitHistoryAdapter.addHistory(historyArr);
+                timeNumber=visitHistoryAdapter.getTimeNumber();
+                for(int i=0;i<timeNumber.size();i++) {
+                    swipeRecyclerView.setSwipeItemMenuEnabled(timeNumber.get(i),false);
+                }
+                visitHistoryAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+        searchHistory.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(query.equals(""))
+                {
+                    visitHistoryAdapter.addHistory(historyArr);
+                    timeNumber=visitHistoryAdapter.getTimeNumber();
+                    for(int i=0;i<timeNumber.size();i++) {
+                        swipeRecyclerView.setSwipeItemMenuEnabled(timeNumber.get(i),false);
+                    }
+                    visitHistoryAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    JSONArray arr=new JSONArray();
+                    for(int i=0;i<historyArr.size();i++)
+                    {
+                        String s=historyArr.get(i).toString();
+                        if(s.contains(query))
+                        {
+                            arr.add(historyArr.get(i));
+                        }
+                    }
+                    visitHistoryAdapter.addHistory(arr);
+                    timeNumber=visitHistoryAdapter.getTimeNumber();
+                    for(int i=0;i<timeNumber.size();i++) {
+                        swipeRecyclerView.setSwipeItemMenuEnabled(timeNumber.get(i),false);
+                    }
+                    visitHistoryAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText.equals(""))
+                {
+                    visitHistoryAdapter.addHistory(historyArr);
+                    timeNumber=visitHistoryAdapter.getTimeNumber();
+                    for(int i=0;i<timeNumber.size();i++) {
+                        swipeRecyclerView.setSwipeItemMenuEnabled(timeNumber.get(i),false);
+                    }
+                    visitHistoryAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    JSONArray arr=new JSONArray();
+                    for(int i=0;i<historyArr.size();i++)
+                    {
+                        String s=historyArr.get(i).toString();
+                        if(s.contains(newText))
+                        {
+                            arr.add(historyArr.get(i));
+                        }
+                    }
+                    visitHistoryAdapter.addHistory(arr);
+                    timeNumber=visitHistoryAdapter.getTimeNumber();
+                    for(int i=0;i<timeNumber.size();i++) {
+                        swipeRecyclerView.setSwipeItemMenuEnabled(timeNumber.get(i),false);
+                    }
+                    visitHistoryAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+        });
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(VisitHistoryActivity.this);
         swipeRecyclerView.setLayoutManager(linearLayoutManager);
         swipeRecyclerView.setSwipeMenuCreator(new SwipeMenuCreator() {
@@ -114,6 +203,11 @@ public class VisitHistoryActivity extends AppCompatActivity {
                 case 0:
                     JSONArray arr=JSONArray.parseArray(msg.obj.toString());
                     visitHistoryAdapter.addHistory(arr);
+                    historyArr=arr;
+                    timeNumber=visitHistoryAdapter.getTimeNumber();
+                    for(int i=0;i<timeNumber.size();i++) {
+                        swipeRecyclerView.setSwipeItemMenuEnabled(timeNumber.get(i),false);
+                    }
                     visitHistoryAdapter.notifyDataSetChanged();
                     break;
             }

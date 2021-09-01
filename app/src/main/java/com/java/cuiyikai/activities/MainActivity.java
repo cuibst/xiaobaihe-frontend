@@ -106,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ((BottomBarLayout)findViewById(R.id.bottomBar)).setViewPager(mainPager);
+        Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void init(){
