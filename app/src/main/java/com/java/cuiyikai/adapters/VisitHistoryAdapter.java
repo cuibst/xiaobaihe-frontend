@@ -33,9 +33,8 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<Date> datelist;
     private String removeHistoryUrl="/api/history/removeVisitHistory";
     private int cnt=0;
-    private Date mDate;
     private List<Integer> timeNumber;
-    private Map<Integer,Object> allData;
+    public Map<Integer,Object> allData;
     SimpleDateFormat setTimeFormatInADay = new SimpleDateFormat("HH:mm");
     SimpleDateFormat setTimeFormatInAYear = new SimpleDateFormat("yyyy-MM-dd");
     public VisitHistoryAdapter(Context context)
@@ -59,7 +58,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         System.out.println(allData.get(a).toString());
         if(!(allData.get(a) instanceof Date))
         {
-            RemoveHistory removeHistory=new RemoveHistory(a);
+            RemoveHistory removeHistory=new RemoveHistory((JSONObject) allData.get(a));
             Thread removethread=new Thread(removeHistory);
             removethread.start();
             for(int i=0;i<historyArr.size();i++)
@@ -68,9 +67,9 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 {
                     historyArr.remove(i);
                     addHistory(historyArr);
+                    break;
                 }
             }
-
         }
     }
     public List<Integer> getTimeNumber(){
@@ -207,13 +206,13 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public int getItemCount() {
         if(historyArr==null)
             return 0;
-        return historyArr.size()+datelist.size();
+        return allData.size();
     }
 
     private class RemoveHistory implements Runnable
     {
-        private int  num;
-        public RemoveHistory(int i)
+        private JSONObject  num;
+        public RemoveHistory(JSONObject i)
         {
             num=i;
         }
@@ -221,8 +220,8 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("name",((JSONObject)allData.get(num)).get("name").toString());
-                map.put("subject",((JSONObject)allData.get(num)).get("subject").toString());
+                map.put("name",(num.get("name").toString()));
+                map.put("subject",(num.get("subject").toString()));
                 RequestBuilder.sendBackendGetRequest(removeHistoryUrl, map, true);
             }
             catch (Exception e)

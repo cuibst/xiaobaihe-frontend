@@ -21,15 +21,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
-import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.activities.ProblemActivity;
+import com.java.cuiyikai.activities.QuestionsCollectionActivity;
 import com.java.cuiyikai.activities.VisitHistoryActivity;
-import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class UserPageEntryFragment extends Fragment {
 
@@ -38,7 +35,7 @@ public class UserPageEntryFragment extends Fragment {
         // Required empty public constructor
     }
     private LinearLayout mQuestion;
-    private LinearLayout mWrongQuestion;
+    private LinearLayout mQuestionsCollection;
     private LinearLayout mCollect;
     private LinearLayout mHistory;
     private LinearLayout mLogIn;
@@ -51,11 +48,11 @@ public class UserPageEntryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_page_entry, container, false);
         mQuestion = view.findViewById(R.id.user_question);
-        mWrongQuestion = view.findViewById(R.id.user_wrong_question);
         mCollect = view.findViewById(R.id.user_collect);
         mHistory = view.findViewById(R.id.user_history);
         mUserName = view.findViewById(R.id.user_name);
         mLogIn = view.findViewById(R.id.login_btn);
+        mQuestionsCollection=view.findViewById(R.id.user_wrong_question);
         if(RequestBuilder.checkedLogin()){
             mUserName.setText(((MainApplication) getActivity().getApplication()).getSaveUsername());
         }
@@ -85,11 +82,16 @@ public class UserPageEntryFragment extends Fragment {
             }
 
         });
-        mQuestion.setOnClickListener((View v) -> {
+        mQuestionsCollection.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
                 Toast.makeText(getContext(), "您尚未登录", 100).show();
             }
             else {
+                Intent intent = new Intent(getActivity(), QuestionsCollectionActivity.class);
+                startActivity(intent);
+            }
+        });
+        mQuestion.setOnClickListener((View v) -> {
                 Map<String, String> map = new HashMap<>();
                 Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
                 Log.v("mtag", "in");
@@ -125,9 +127,7 @@ public class UserPageEntryFragment extends Fragment {
                 Log.v("mtag", arr.get(0).toString() + "");
                 Log.v("mtag", arr.get(0).getClass().toString());
                 startActivity(mIntent);
-            }
-
-        });
+            });
         return view;
     }
 

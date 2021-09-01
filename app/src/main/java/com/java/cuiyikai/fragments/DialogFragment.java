@@ -230,7 +230,7 @@ public class DialogFragment extends Fragment {
                 System.out.println(list.get((list.size()-page)).text);
                 msg.add(list.get((list.size()-page)));
                 count++;
-                if(count>=4)
+                if(count>=1)
                     break;
             }
             for(Message i:msg)
