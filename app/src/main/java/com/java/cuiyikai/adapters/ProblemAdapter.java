@@ -22,6 +22,7 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemViewHolder> {
     private final List<JSONObject> fullList;
     private final List<JSONObject> curList;
     private final Context mContext;
+    private String subject;
 
     public void switchList() {
         if(curList.size() == fullList.size()) {
@@ -37,7 +38,8 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemViewHolder> {
         }
     }
 
-    public ProblemAdapter(Context context, List<JSONObject> fullList, List<JSONObject> curList) {
+    public ProblemAdapter(Context context, List<JSONObject> fullList, List<JSONObject> curList, String subject) {
+        this.subject = subject;
         this.fullList = fullList;
         this.curList = new ArrayList<>();
         this.curList.addAll(curList);
@@ -59,6 +61,8 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemViewHolder> {
             f.putExtra("answer 0", curList.get(position).getString("qAnswer"));
             f.putExtra("type", "single");
             f.putExtra("sum", 1 + "");
+            f.putExtra("subject 0", subject);
+
             mContext.startActivity(f);
         });
     }

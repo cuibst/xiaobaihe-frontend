@@ -18,8 +18,10 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
+import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.activities.VisitHistoryActivity;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
@@ -39,6 +41,8 @@ public class UserPageEntryFragment extends Fragment {
     private LinearLayout mWrongQuestion;
     private LinearLayout mCollect;
     private LinearLayout mHistory;
+    private LinearLayout mLogIn;
+    private TextView mUserName;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -50,6 +54,17 @@ public class UserPageEntryFragment extends Fragment {
         mWrongQuestion = view.findViewById(R.id.user_wrong_question);
         mCollect = view.findViewById(R.id.user_collect);
         mHistory = view.findViewById(R.id.user_history);
+        mUserName = view.findViewById(R.id.user_name);
+        mLogIn = view.findViewById(R.id.login_btn);
+        if(RequestBuilder.checkedLogin()){
+            mUserName.setText(((MainApplication) getActivity().getApplication()).getSaveUsername());
+        }
+        mLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         mHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +116,7 @@ public class UserPageEntryFragment extends Fragment {
                     Log.v("mtag", qBody);
                     mIntent.putExtra("body " + i, qBody);
                     mIntent.putExtra("answer " + i, qAnswer);
+                    mIntent.putExtra("subject " + i, "nope");
                 }
                 mIntent.putExtra("sum", arr.size() + "");
                 mIntent.putExtra("type", "list");

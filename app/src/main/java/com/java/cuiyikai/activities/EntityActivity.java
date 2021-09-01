@@ -90,6 +90,7 @@ public class EntityActivity extends AppCompatActivity {
 
     private String entityName;
     private String description;
+    private String subject;
 
     private String speech;
 
@@ -385,7 +386,7 @@ public class EntityActivity extends AppCompatActivity {
         Bundle prevBundle = prevIntent.getExtras();
 
         entityName = prevBundle.getString("name", "李白");
-        String subject = prevBundle.getString("subject", "chinese");
+        subject = prevBundle.getString("subject", "chinese");
 
         TextView titleView = (TextView) findViewById(R.id.entityTitle);
         titleView.setText(entityName);
@@ -459,7 +460,7 @@ public class EntityActivity extends AppCompatActivity {
                     ImageButton problemButton = (ImageButton) findViewById(R.id.problemButton);
                     if (questionFullList.size() > 5) {
                         questionPrevList = questionFullList.subList(0, 5);
-                        problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionPrevList);
+                        problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionPrevList, subject);
                         problemButton.setBackgroundResource(R.drawable.pulldown);
                         problemButton.setOnClickListener((View view) -> {
                             if(problemAdapter.getItemCount() <= 5) {
@@ -471,7 +472,7 @@ public class EntityActivity extends AppCompatActivity {
                         });
                     } else {
                         problemButton.setVisibility(View.GONE);
-                        problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionFullList);
+                        problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionFullList, subject);
                     }
                     problemsView.setAdapter(problemAdapter);
                 }
@@ -486,7 +487,7 @@ public class EntityActivity extends AppCompatActivity {
         ((RecyclerView) findViewById(R.id.propertiesView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
         ((RecyclerView) findViewById(R.id.propertiesView)).setAdapter(propertyAdapter);
 
-        problemAdapter = new ProblemAdapter(EntityActivity.this, new ArrayList<>(), new ArrayList<>());
+        problemAdapter = new ProblemAdapter(EntityActivity.this, new ArrayList<>(), new ArrayList<>(), subject);
         ((RecyclerView) findViewById(R.id.problemsView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
         ((RecyclerView) findViewById(R.id.problemsView)).setAdapter(problemAdapter);
 

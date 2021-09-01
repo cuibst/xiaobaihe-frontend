@@ -9,6 +9,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
+        android:id="@+id/login_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -26,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:text="请先登录"
+            android:id="@+id/user_name"
             android:layout_gravity="center"
             android:textSize="27dp"/>
     </LinearLayout>

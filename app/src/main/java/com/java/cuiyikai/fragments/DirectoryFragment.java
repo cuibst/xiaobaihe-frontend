@@ -292,8 +292,11 @@ public class DirectoryFragment extends Fragment {
             JSONArray jsArray = (JSONArray) js.get(directoryName);
             List<String> qBodyList = new ArrayList<>();
             List<String> qAnswerList = new ArrayList<>();
+            List<String> subjectList = new ArrayList<>();
             for(int i = 0; i < jsArray.size(); i ++){
                 JSONObject jsObject = (JSONObject) jsArray.get(i);
+                Log.v("lzgsm", jsObject.toJSONString());
+                subjectList.add((String) jsObject.get("subject"));
                 String uriname = (String) jsObject.get("name");
                 Map<String, String> request = new HashMap<String, String>();
                 request.put("uriName", uriname);
@@ -326,6 +329,7 @@ public class DirectoryFragment extends Fragment {
 //                    Log.v("mtag", qBodyList.get(j));
                 mIntent.putExtra("body" + " " + j, qBodyList.get(j));
                 mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
+                mIntent.putExtra("subject" + " " + j, subjectList.get(j));
             }
             mIntent.putExtra("type", "list");
             mIntent.putExtra("sum", cnt + "");
