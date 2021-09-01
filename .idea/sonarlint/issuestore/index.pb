@@ -7,6 +7,33 @@ o
 ?app/src/main/java/com/java/cuiyikai/adapters/SearchAdapter.java,b\d\bdced547b1c843fbe1b38f7325f80db5b5b9c56f
 x
 Happ/src/main/java/com/java/cuiyikai/activities/PointExtractActivity.java,c\a\ca306bf15b13af3cb337efa6b0f57c169f1b1424
+<<<<<<< Updated upstream
+=======
+s
+Capp/src/main/java/com/java/cuiyikai/utilities/DensityUtilities.java,3\e\3eb83ebe4348a7c3d0fe26d80b57647e54ed91d9
+|
+Lapp/src/main/java/com/java/cuiyikai/adapters/viewholders/ItemViewHolder.java,8\e\8ea4e214ef93a0092acaf01f5d57864dd77f1ef6
+€
+Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/RelationViewHolder.java,5\c\5c3f4c1bd788a80ead3d0ec5f647e1f0248ae560
+€
+Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/PropertyViewHolder.java,a\0\a0955e838fcb8cc28cb94e037388d1273e46e1ed
+m
+=app/src/main/java/com/java/cuiyikai/adapters/ItemAdapter.java,a\4\a4e2ca850f6337ed1bfced9052b6e6d81b94301d
+
+Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/ProblemViewHolder.java,c\e\cee46133ab1504a7b0b91a2cb9eb7626757729b3
+q
+Aapp/src/main/java/com/java/cuiyikai/adapters/PropertyAdapter.java,e\d\edd0ed110d292a7400f5d87505ccda3a4b29b550
+p
+@app/src/main/java/com/java/cuiyikai/entities/PropertyEntity.java,7\f\7f5723bbb8058cbac89f4fcbe30e5c22371141d7
+p
+@app/src/main/java/com/java/cuiyikai/adapters/ProblemAdapter.java,0\a\0a1e353cb43b49942b46b48d8c20aa75545f0b8c
+q
+Aapp/src/main/java/com/java/cuiyikai/adapters/RelationAdapter.java,f\7\f762971bdcdc186f3a7e9dccc5c7b616e379ae61
+r
+Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
+s
+Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
+>>>>>>> Stashed changes
 x
 Happ/src/main/java/com/java/cuiyikai/fragments/UserPageEntryFragment.java,0\b\0b00c668283686f2d13868607914ebd7dfcd8729
 w
