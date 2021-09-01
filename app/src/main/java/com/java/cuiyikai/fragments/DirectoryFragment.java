@@ -322,9 +322,10 @@ public class DirectoryFragment extends Fragment {
             Log.v("answer", qAnswerList.toString());
             Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
             for(int j = 0; j < cnt; j ++){
+//                if(j == 0)
+//                    Log.v("mtag", qBodyList.get(j));
                 mIntent.putExtra("body" + " " + j, qBodyList.get(j));
                 mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
-
             }
             mIntent.putExtra("type", "list");
             mIntent.putExtra("sum", cnt + "");

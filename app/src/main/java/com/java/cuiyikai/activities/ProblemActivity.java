@@ -1,8 +1,11 @@
 package com.java.cuiyikai.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProblemActivity extends AppCompatActivity {
+public class ProblemActivity extends Activity {
 
     List<String> []optionList;
 
@@ -30,7 +33,11 @@ public class ProblemActivity extends AppCompatActivity {
 
     private int sum;
 
+    private int cnt;
+
     private int cur;
+
+    private String type;
 
     private int[] optionNum;
 
@@ -153,11 +160,17 @@ public class ProblemActivity extends AppCompatActivity {
         tvMetaNum.setText(option);
         return view;
     }
+    private void setFinish(boolean flag){
+        for(int i = 0 ; i < optionGroup.getChildCount(); i ++){
+            optionGroup.getChildAt(i).setEnabled(flag);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problem);
         cur = 0;
+        cnt = 0;
         problemDescription = (TextView) findViewById(R.id.problem_description);
         explanationTv = findViewById(R.id.explanation);
         explanationTv.setVisibility(View.INVISIBLE);
@@ -176,17 +189,19 @@ public class ProblemActivity extends AppCompatActivity {
                         }
                     }
                     if(rec == -1){
-                        Toast.makeText(getBaseContext(), "您尚未作答", 100);
+                        Toast.makeText(getBaseContext(), "您尚未作答", 100).show();
                         return;
                     }
                     String choice = letter[rec];
                     String correctAnswer = letter[optionId[cur]];
                     if(choice.equals(correctAnswer)){
                         explanationTv.setText("恭喜您，回答正确");
+                        cnt ++;
                     }
                     else{
                         explanationTv.setText("对不起，回答错误。您的答案是"+choice+"，正确答案是" + correctAnswer);
                     }
+                    setFinish(false);
                     explanationTv.setVisibility(View.VISIBLE);
                     confirmButton.setText("下一题");
                     if(cur == sum - 1){
@@ -194,20 +209,38 @@ public class ProblemActivity extends AppCompatActivity {
                     }
                 }
                 else if(confirmButton.getText().equals("下一题")){
-
+                    setFinish(true);
                     confirmButton.setText("确认答案");
                     explanationTv.setVisibility(View.INVISIBLE);
+//                    optionGroup.setEnabled(true);
                     setView(cur + 1);
                     cur ++;
                 }
                 else if(confirmButton.getText().equals("完成测试")){
-                    finish();
+//                    if(type.equals("list")){
+//                        Log.v("mtype", "in");
+//                        finish();
+//                        AlertDialog mAlertDialog = new AlertDialog.Builder(getBaseContext())
+//                                .setTitle("")
+//                                .setMessage("共有" + sum + "道题目，您做对了" + cnt + "道，请继续努力")
+//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                        finish();
+//                                    }
+//                                }).create();
+//                        mAlertDialog.show();
+//                    }
+//                    else
+                        finish();
                 }
             }
         });
         optionGroup = findViewById(R.id.options);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+        type = bundle.getString("type");
+        Log.v("mtype", type);
         sum = Integer.parseInt(bundle.getString("sum"));
         questionList = new ArrayList<>();
         answerList = new ArrayList<>();

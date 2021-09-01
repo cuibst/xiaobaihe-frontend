@@ -99,7 +99,7 @@
                 android:layout_height="110dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/tv_border"
-                android:id="@+id/user_setting"
+                android:id="@+id/user_wrong_question"
                 android:orientation="vertical">
 
                 <ImageView
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="15dp"
-                    android:src="@drawable/setting" />
+                    android:src="@drawable/wrong_question" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -116,11 +116,11 @@
                     android:layout_marginTop="10dp"
 
                     android:gravity="center"
-                    android:text="设置" />
+                    android:text="错题本" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/user_logout"
+                android:id="@+id/user_question"
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:layout_marginLeft="30dp"
@@ -132,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="15dp"
-                    android:src="@drawable/logout" />
+                    android:src="@drawable/recommend_question" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -141,7 +141,7 @@
                     android:layout_marginTop="10dp"
 
                     android:gravity="center"
-                    android:text="登出" />
+                    android:text="推荐试题" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
