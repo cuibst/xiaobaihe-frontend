@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.adapters.HistoryListAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     public boolean flag;
     public boolean recommendflag=false;
     public SearchView searchView;
+    public HistoryListAdapter historyListAdapter;
     public  ImageView editImg;
     private String RemoveUrl="/api/history/removeHistory";
     private String addHistoryUrl="/api/history/addHistory";
@@ -25,6 +27,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         editImg=view.findViewById(R.id.iv_edit);
         historyRecord=view.findViewById(R.id.historyrecord);
         historyRecord.setLongClickable(true);
+        editImg.setVisibility(View.INVISIBLE);
         historyRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

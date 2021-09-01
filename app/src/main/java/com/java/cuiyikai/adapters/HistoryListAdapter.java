@@ -16,6 +16,7 @@ import com.java.cuiyikai.adapters.viewholders.HistoryViewHolder;
 
 public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     public  boolean recommendflag=false;
+    public HistoryListAdapter historyListAdapter;
     private Context mContext;
     private JSONArray data;
     public  boolean flag=false;
@@ -47,9 +48,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
             holder.recommendflag=recommendflag;
             return;
         }
-//        if(flag)
-//            holder.editImg.setVisibility(View.VISIBLE);
-//        else
+        holder.historyListAdapter=historyListAdapter;
         holder.editImg.setVisibility(View.INVISIBLE);
         holder.historyRecord.setText(data.get(position).toString());
         holder.flag=flag;
@@ -58,25 +57,6 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
         {
             data.remove(holder.historyRecord.getText());
         }
-//        holder.historyRecord.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(flag)
-//                {
-//                    System.out.println(holder.historyRecord.getText());
-//                    holder.historyRecord.setVisibility(View.INVISIBLE);
-//                    ClearOne clearOne=new ClearOne(holder.historyRecord.getText().toString());
-//                    Thread thread=new Thread(clearOne);
-//                    thread.start();
-//                    data.remove(holder.historyRecord.getText());
-//                    notifyDataSetChanged();
-//                }
-//                else
-//                {
-//                    searchView.setQuery(holder.historyRecord.getText(),true);
-//                }
-//            }
-//        });
     }
 
     @Override
