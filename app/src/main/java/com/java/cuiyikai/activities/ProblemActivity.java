@@ -17,11 +17,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
+import com.java.cuiyikai.network.RequestBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProblemActivity extends Activity {
 
@@ -44,6 +50,8 @@ public class ProblemActivity extends Activity {
     private final String[] letter = {"A", "B", "C", "D","E"};
 
     private List<String> questionList;
+
+    private List<String> subjectList;
 
     private List<String> answerList;
 
@@ -200,6 +208,19 @@ public class ProblemActivity extends Activity {
                     }
                     else{
                         explanationTv.setText("对不起，回答错误。您的答案是"+choice+"，正确答案是" + correctAnswer);
+                        Map<String, String> argument = new HashMap<>();
+                        argument.put("qBody",questionList.get(cur));
+                        argument.put("qAnswer", answerList.get(cur));
+                        if(!(subjectList.get(cur).equals("nope") || subjectList.get(cur).equals("ignorant"))){
+                            argument.put("subject", subjectList.get(cur));
+                        }
+                        JSONObject obj = JSONObject.parseObject(JSON.toJSONString(argument));
+                        Log.v("wrong", argument.toString());
+                        try {
+                            RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", (JSONObject) obj, true);
+                        } catch (BackendTokenExpiredException e) {
+                            e.printStackTrace();
+                        }
                     }
                     setFinish(false);
                     explanationTv.setVisibility(View.VISIBLE);
@@ -243,15 +264,19 @@ public class ProblemActivity extends Activity {
         sum = Integer.parseInt(bundle.getString("sum"));
         questionList = new ArrayList<>();
         answerList = new ArrayList<>();
+        subjectList = new ArrayList<>();
         for(int i = 0; i < sum; i ++){
             String bodyKey = "body " + i;
             String answerKey = "answer " + i;
+            String subjectKey = "subject " + i;
             String body = bundle.getString(bodyKey);
             String answer = bundle.getString(answerKey);
+            String subject = bundle.getString(subjectKey);
             if(!Character.isAlphabetic(answer.charAt(0)))
                 continue;
             questionList.add(body);
             answerList.add(answer);
+            subjectList.add(subject);
         }
         sum = questionList.size();
         optionId = new int[sum];

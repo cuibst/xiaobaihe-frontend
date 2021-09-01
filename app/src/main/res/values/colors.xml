@@ -20,4 +20,6 @@
     <color name="pressed_bg">#ffcdcdcd</color>
     <color name="pressed_stroke">#ff3e3e3e</color>
     <color name="line_green">#01AE66</color>
+    <color name="deep_blue">#4682B4</color>
+    <color name="common_blue">#1296db</color>
 </resources>

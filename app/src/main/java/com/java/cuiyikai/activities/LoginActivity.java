@@ -21,7 +21,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button logInPostBtn;
     private TextView usernameTextView;
     private TextView passwordTextView;
-    private Button jumpLoginBtn;
     private CheckBox checkBox;
     private TextView registerButton;
     String username, password;
@@ -31,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         logInPostBtn = findViewById(R.id.btn_login);
-        jumpLoginBtn = findViewById(R.id.btn_skip);
         checkBox = findViewById(R.id.remember_password);
         usernameTextView = (EditText) findViewById(R.id.edittext_username);
         passwordTextView = (EditText) findViewById(R.id.edittext_password);
@@ -70,11 +68,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-        });
-
-        jumpLoginBtn.setOnClickListener((View view) -> {
-            Intent intent=new Intent(LoginActivity.this ,MainActivity.class);
-            startActivity(intent);
         });
     }
 }

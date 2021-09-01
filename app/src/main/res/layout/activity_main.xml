@@ -37,7 +37,7 @@
                 app:itemText="首页"
                 app:itemTextSize="8sp"
                 app:textColorNormal="#515051"
-                app:textColorSelected="#D33D3C"
+                app:textColorSelected="@color/common_blue"
                 app:itemMarginTop="0dp"
                 app:openTouchBg="true"/>
 <!--            <com.chaychan.library.BottomBarItem-->
@@ -69,7 +69,7 @@
                 app:itemTextSize="8sp"
                 app:openTouchBg="true"
                 app:textColorNormal="#515051"
-                app:textColorSelected="#D33D3C"
+                app:textColorSelected="@color/common_blue"
                 app:touchDrawable="@drawable/selector_bottom_tab" />
 
             <com.chaychan.library.BottomBarItem
@@ -85,7 +85,7 @@
                 app:itemTextSize="8sp"
                 app:openTouchBg="true"
                 app:textColorNormal="#515051"
-                app:textColorSelected="#D33D3C"
+                app:textColorSelected="@color/common_blue"
                 app:touchDrawable="@drawable/selector_bottom_tab" />
 
             <com.chaychan.library.BottomBarItem
@@ -101,7 +101,7 @@
                 app:itemText="我的"
                 app:itemTextSize="8sp"
                 app:textColorNormal="#515051"
-                app:textColorSelected="#D33D3C"
+                app:textColorSelected="@color/common_blue"
                 app:openTouchBg="true"/>
 
 
