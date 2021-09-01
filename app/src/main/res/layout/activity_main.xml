@@ -11,42 +11,9 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         >
-        <LinearLayout
-            android:id="@+id/searchline"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/btn_for_login"
-                android:layout_width="match_parent"
-                android:background="#2894FF"
-                android:layout_weight="10"
-                android:layout_height="50dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:background="#2894FF"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_height="50dp">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:id="@+id/searchImageView"
-                android:src="@drawable/searchbutton"
-                android:layout_margin="9dp"
-                android:layout_gravity="right"
-                android:layout_height="wrap_content"/>
-<!--                <SearchView-->
-<!--                    android:layout_gravity="right"-->
-<!--                    android:id="@+id/searchViewInMain"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content">-->
-<!--                </SearchView>-->
-            </LinearLayout>
-        </LinearLayout>
         <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/searchline"
             android:id="@+id/mainPager"
             android:layout_above="@id/bottomBar"/>
 

@@ -7,7 +7,6 @@ import android.widget.TextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.network.RequestBuilder;
 
 import java.util.HashMap;
