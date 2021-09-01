@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.StartActivity"
-    android:background="#0F0E12">
+    android:background="#66b4ff">
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="250dp"
         android:src="@drawable/start_icon">
     </ImageView>
     <TextView
@@ -20,5 +20,6 @@
         android:text="小白盒"
         android:layout_gravity="center"
         android:textColor="#FFFFFF"
-        android:textSize="40dp"/>
+        android:layout_marginTop="20dp"
+        android:textSize="30sp"/>
 </LinearLayout>

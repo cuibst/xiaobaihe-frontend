@@ -1,5 +1,6 @@
 package com.java.cuiyikai.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -17,6 +18,8 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
@@ -60,28 +63,31 @@ public class SearchActivity extends AppCompatActivity {
         search_rcy.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                try {
-                    receivedMessage.clear();
-                    for(int i=0;i<all_subject_item.length;i++)
-                    {
-                        Map<String,String> map =new HashMap<String,String>();
-                        map.put("course",  CheckSubject(all_subject_item[i]));
-                        map.put("searchKey",searchContent);
-                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                        if(msg.getJSONArray("data").size()!=0) {
-                            receivedMessage.put(CheckSubject(all_subject_item[i]),msg);
-                        }
-                    }
-                    sadapter=null;
-                    sadapter=new SearchAdapter(SearchActivity.this);
-                    sadapter.addSubject(receivedMessage);
-                    search_rcy.setAdapter(sadapter);
-                }
-                catch (Exception e)
-                {
-                    System.out.println(e);
-                }
-                search_rcy.refreshComplete();
+                Refresh refresh=new Refresh();
+                Thread refreshThread=new Thread(refresh);
+                refreshThread.start();
+//                try {
+//                    receivedMessage.clear();
+//                    for(int i=0;i<all_subject_item.length;i++)
+//                    {
+//                        Map<String,String> map =new HashMap<String,String>();
+//                        map.put("course",  CheckSubject(all_subject_item[i]));
+//                        map.put("searchKey",searchContent);
+//                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+//                        if(msg.getJSONArray("data").size()!=0) {
+//                            receivedMessage.put(CheckSubject(all_subject_item[i]),msg);
+//                        }
+//                    }
+//                    sadapter=null;
+//                    sadapter=new SearchAdapter(SearchActivity.this);
+//                    sadapter.addSubject(receivedMessage);
+//                    search_rcy.setAdapter(sadapter);
+//                }
+//                catch (Exception e)
+//                {
+//                    System.out.println(e);
+//                }
+//                search_rcy.refreshComplete();
             }
 
             @Override
@@ -299,5 +305,39 @@ public class SearchActivity extends AppCompatActivity {
         selectFragment.getType(type);
 //        initSearchView(searchViewInSearch,SearchActivity.this);
         selectButton.setText("筛选");
+    }
+    private class Refresh implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                receivedMessage.clear();
+                for (int i = 0; i < all_subject_item.length; i++) {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("course", CheckSubject(all_subject_item[i]));
+                    map.put("searchKey", searchContent);
+                    JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+                    if (msg.getJSONArray("data").size() != 0) {
+                        receivedMessage.put(CheckSubject(all_subject_item[i]), msg);
+                    }
+                }
+                handler.sendEmptyMessage(0);
+            } catch (Exception e) {
+            }
+        }
+    }
+    private MyHandler handler=new MyHandler();
+    private class MyHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch(msg.what)
+            {
+                case 0:
+                    sadapter.addSubject(receivedMessage);
+                    sadapter.notifyDataSetChanged();
+                    search_rcy.refreshComplete();
+                    break;
+            }
+        }
     }
 }

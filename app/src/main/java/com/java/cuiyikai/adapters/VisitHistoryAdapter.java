@@ -54,6 +54,9 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
     public void ReportRemove(int a)
     {
+        System.out.println(a);
+        System.out.println(allData.get(a).getClass());
+        System.out.println(allData.get(a).toString());
         if(!(allData.get(a) instanceof Date))
         {
             RemoveHistory removeHistory=new RemoveHistory(a);

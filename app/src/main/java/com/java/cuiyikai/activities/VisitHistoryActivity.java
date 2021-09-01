@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.yanzhenjie.recyclerview.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -153,6 +155,21 @@ public class VisitHistoryActivity extends AppCompatActivity {
 
             }
         });
+//        swipeRecyclerView.setItemViewSwipeEnabled(true);
+//        swipeRecyclerView.setOnItemMoveListener(new OnItemMoveListener() {
+//            @Override
+//            public boolean onItemMove(RecyclerView.ViewHolder srcHolder, RecyclerView.ViewHolder targetHolder) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onItemDismiss(RecyclerView.ViewHolder srcHolder) {
+//                visitHistoryAdapter.ReportRemove(srcHolder.getAdapterPosition());
+//                visitHistoryAdapter.notifyDataSetChanged();
+////                System.out.println(srcHolder.getAdapterPosition());
+////                visitHistoryAdapter.notifyItemRemoved(srcHolder.getAdapterPosition());
+//            }
+//        });
         swipeRecyclerView.setOnItemMenuClickListener(new OnItemMenuClickListener() {
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {

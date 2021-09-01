@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 l
 <app/src/main/java/com/java/cuiyikai/adapters/RcyAdapter.java,1\0\10e874c40c4ef130755b5d5758e6753c1195a0bc
@@ -58,3 +59,5 @@ o
 Qapp/src/main/java/com/java/cuiyikai/adapters/CategoryLayoutManagerSizeLookUp.java,3\1\31c58bbfa7e3d5dacae5fd2550065acc2c6695a3
 o
 ?app/src/main/java/com/java/cuiyikai/fragments/MainFragment.java,f\a\fa1fcab14a94e61f102fa426f7440f6cc03d62c9
+=======
+>>>>>>> ui
