@@ -217,21 +217,20 @@ public class ProblemActivity extends Activity {
                     cur ++;
                 }
                 else if(confirmButton.getText().equals("完成测试")){
-//                    if(type.equals("list")){
-//                        Log.v("mtype", "in");
-//                        finish();
-//                        AlertDialog mAlertDialog = new AlertDialog.Builder(getBaseContext())
-//                                .setTitle("")
-//                                .setMessage("共有" + sum + "道题目，您做对了" + cnt + "道，请继续努力")
-//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
-//                                    @Override
-//                                    public void onClick(DialogInterface dialogInterface, int i) {
-//                                        finish();
-//                                    }
-//                                }).create();
-//                        mAlertDialog.show();
-//                    }
-//                    else
+                    if(type.equals("list")){
+                        Log.v("mtype", "in");
+                        AlertDialog mAlertDialog = new AlertDialog.Builder(ProblemActivity.this)
+                                .setTitle("")
+                                .setMessage("共有" + sum + "道题目，您做对了" + cnt + "道，请继续努力")
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        finish();
+                                    }
+                                }).create();
+                        mAlertDialog.show();
+                    }
+                    else
                         finish();
                 }
             }
