@@ -7,6 +7,7 @@
         <entry key="..\:/androidhomework/app/src/main/res/drawable/btn_not_choose.xml" value="0.26296296296296295" />
         <entry key="..\:/androidhomework/app/src/main/res/drawable/chinese_radius.xml" value="0.1" />
         <entry key="..\:/androidhomework/app/src/main/res/drawable/ic_launcher_background.xml" value="0.18333333333333332" />
+        <entry key="..\:/androidhomework/app/src/main/res/drawable/item_bg.xml" value="0.21574074074074073" />
         <entry key="..\:/androidhomework/app/src/main/res/drawable/littleblue.xml" value="0.21388888888888888" />
         <entry key="..\:/androidhomework/app/src/main/res/drawable/littlegray.xml" value="0.16041666666666668" />
         <entry key="..\:/androidhomework/app/src/main/res/drawable/orange_radius.xml" value="0.18333333333333332" />
@@ -18,6 +19,7 @@
         <entry key="..\:/androidhomework/app/src/main/res/drawable/white_radius.xml" value="0.18333333333333332" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/activity_category.xml" value="0.22826086956521738" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/activity_entity.xml" value="0.22826086956521738" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/activity_favourite_check.xml" value="0.1644021739130435" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/activity_problem.xml" value="0.1796875" />
@@ -69,7 +71,7 @@
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_pol.xml" value="0.1431159420289855" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/layout_rem.xml" value="0.1431159420289855" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/option_item.xml" value="0.2269021739130435" />
-        <entry key="..\:/androidhomework/app/src/main/res/layout/option_item_2.xml" value="0.14895833333333333" />
+        <entry key="..\:/androidhomework/app/src/main/res/layout/option_item_2.xml" value="0.536" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/problem_item.xml" value="0.25364583333333335" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/property_item.xml" value="0.25364583333333335" />
         <entry key="..\:/androidhomework/app/src/main/res/layout/questions_content.xml" value="0.25364583333333335" />
