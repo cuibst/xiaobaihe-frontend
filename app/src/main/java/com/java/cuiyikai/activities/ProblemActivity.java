@@ -211,13 +211,18 @@ public class ProblemActivity extends Activity {
                         Map<String, String> argument = new HashMap<>();
                         argument.put("qBody",questionList.get(cur));
                         argument.put("qAnswer", answerList.get(cur));
+                        String mSubject = null;
                         if(!(subjectList.get(cur).equals("nope") || subjectList.get(cur).equals("ignorant"))){
-                            argument.put("subject", subjectList.get(cur));
+                            mSubject = subjectList.get(cur);
                         }
                         JSONObject obj = JSONObject.parseObject(JSON.toJSONString(argument));
+                        JSONObject obj1 = new JSONObject();
+                        obj1.put("problem", obj);
+                        if(mSubject != null)
+                            obj1.put("subject", mSubject);
                         Log.v("wrong", argument.toString());
                         try {
-                            RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", (JSONObject) obj, true);
+                            RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", (JSONObject) obj1, true);
                         } catch (BackendTokenExpiredException e) {
                             e.printStackTrace();
                         }
