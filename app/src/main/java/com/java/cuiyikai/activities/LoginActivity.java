@@ -63,6 +63,8 @@ public class LoginActivity extends AppCompatActivity {
                     mainApplication.setSaveChecked(checkBox.isChecked());
                 }
                 mainApplication.dumpCacheData();
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
                 this.finish();
             } catch (Exception e) {
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
