@@ -32,9 +32,9 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 searchView.setQuery(historyRecord.getText(),true);
-                AddHistory addHistory=new AddHistory(historyRecord.getText().toString());
-                Thread thread=new Thread(addHistory);
-                thread.start();
+//                AddHistory addHistory=new AddHistory(historyRecord.getText().toString());
+//                Thread thread=new Thread(addHistory);
+//                thread.start();
             }
         });
         historyRecord.setOnLongClickListener(new View.OnLongClickListener() {

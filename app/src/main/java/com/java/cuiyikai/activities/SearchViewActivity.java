@@ -79,35 +79,12 @@ public class SearchViewActivity extends AppCompatActivity {
                 AddHistory addHistory=new AddHistory(s);
                 Thread thread=new Thread(addHistory);
                 thread.start();
+                historyFragment.historyListAdapter.data.add(s);
+                historyFragment.historyListAdapter.notifyDataSetChanged();
                 StartSearch startSearch=new StartSearch(s);
                 Thread startSearchthread=new Thread(startSearch);
                 startSearchthread.start();
-//                try {
-//                    receivedMessage.clear();
-//                    for(int i=0;i<all_subject_item.length;i++)
-//                    {
-//                        Map<String,String> map =new HashMap<String,String>();
-//                        map.put("course",  checkSubject(all_subject_item[i]));
-//                        map.put("searchKey",s);
-//                        JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-//                        if((String)msg.get("code")=="-1")
-//                        {
-//                            Toast.makeText(SearchViewActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
-//                        }
-//                        else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
-//                            receivedMessage.put(checkSubject(all_subject_item[i]),msg);
-//                        }
-//                    }
-//                    Intent intent=new Intent(SearchViewActivity.this,SearchActivity.class);
-//                    intent.putExtra("msg",receivedMessage.toString());
-//                    intent.putExtra("name",s);
-//                    startActivity(intent);
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-                return false;
+                return true;
             }
 
             @Override

@@ -8,15 +8,19 @@
         android:layout_width="wrap_content"
         android:gravity="center"
         android:textColor="#8E8E8E"
+        android:background="@drawable/item_bg"
         android:layout_margin="10dp"
         android:padding="5dp"
         android:layout_height="wrap_content"
         android:singleLine="true" />
     <ImageView
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="-18dp"
         android:id="@+id/iv_edit"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_alignTop="@id/historyrecord"
         android:layout_alignRight="@id/historyrecord"
-        android:src="@drawable/edit"/>
+        android:src="@drawable/x"
+        android:background="@drawable/channel_button_background"/>
 </LinearLayout>
