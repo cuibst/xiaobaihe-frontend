@@ -18,7 +18,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
     public  boolean recommendflag=false;
     public HistoryListAdapter historyListAdapter;
     private Context mContext;
-    private JSONArray data;
+    public JSONArray data;
     public  boolean flag=false;
     private SearchView searchView;
     private String RemoveUrl="/api/history/removeHistory";
