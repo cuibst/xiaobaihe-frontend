@@ -55,7 +55,9 @@ public class CategoryActivity extends AppCompatActivity {
         userView = (RecyclerView) findViewById(R.id.user_gv);
 
         objectList = new ArrayList<>();
-        objectList.add(new CategoryTitle("我的频道"));
+        CategoryTitle mTitle = new CategoryTitle("我的频道");
+
+        objectList.add(mTitle);
 
         for(String title : userList)
             objectList.add(new CategoryItem(title));
