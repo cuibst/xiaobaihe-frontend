@@ -27,9 +27,27 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
         mContext=c;
         searchView=s;
     }
+    public void addOneItem(String  m)
+    {
+        JSONArray arr=new JSONArray();
+        arr.add(m);
+        if(data==null)
+        {
+            data=arr;
+            return;
+        }
+        for(int i=0;i<data.size();i++)
+        {
+            if(m.equals(data.get(i)))
+                continue;
+            arr.add(data.get(i));
+        }
+        data=arr;
+    }
     public void addData(JSONArray data)
     {
         this.data=data;
+        System.out.println(this.data);
     }
     @NonNull
     @Override

@@ -79,7 +79,8 @@ public class SearchViewActivity extends AppCompatActivity {
                 AddHistory addHistory=new AddHistory(s);
                 Thread thread=new Thread(addHistory);
                 thread.start();
-                historyFragment.historyListAdapter.data.add(s);
+                historyFragment.historyListAdapter.addOneItem(s);
+                System.out.println(historyFragment.historyListAdapter.data);
                 historyFragment.historyListAdapter.notifyDataSetChanged();
                 StartSearch startSearch=new StartSearch(s);
                 Thread startSearchthread=new Thread(startSearch);
@@ -157,7 +158,15 @@ public class SearchViewActivity extends AppCompatActivity {
                     break;
                 case 3:
                     JSONObject object=JSONObject.parseObject(msg.obj.toString());
-                    historyListAdapter.addData(object.getJSONArray("data"));
+                    int maxx=object.getJSONArray("data").size();
+                    if(maxx>=8)
+                        maxx=8;
+                    JSONArray array=new JSONArray();
+                    for(int i=0;i<maxx;i++)
+                    {
+                        array.add(object.getJSONArray("data").get(i));
+                    }
+                    historyListAdapter.addData(array);
                     historyListAdapter.notifyDataSetChanged();
                     break;
             }
