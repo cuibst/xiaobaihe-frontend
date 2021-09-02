@@ -182,7 +182,7 @@ public class DirectoryFragment extends Fragment {
                         args.put("directory", targetName);
                         args.put("json", moveArray);
                         try {
-                            RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                            RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -200,7 +200,7 @@ public class DirectoryFragment extends Fragment {
                         args.put("directory", targetName);
                         args.put("json", moveArray);
                         try {
-                            RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                            RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -224,6 +224,10 @@ public class DirectoryFragment extends Fragment {
                 int toPosition = targetHolder.getAdapterPosition();
 
                 Collections.swap(favouriteAdapter.getFavouriteArray(), fromPosition, toPosition);
+                boolean flag1 = favouriteAdapter.getSelected()[fromPosition];
+                boolean flag2 = favouriteAdapter.getSelected()[toPosition];
+                favouriteAdapter.getSelected()[fromPosition] = flag2;
+                favouriteAdapter.getSelected()[toPosition] = flag1;
                 favouriteAdapter.notifyItemMoved(fromPosition, toPosition);
                 updateDirectoryBackend(favouriteAdapter.getFavouriteArray());
                 return true;
@@ -273,7 +277,7 @@ public class DirectoryFragment extends Fragment {
                     args.put("directory", targetName);
                     args.put("json", moveArray);
                     try {
-                        RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                        RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -352,7 +356,7 @@ public class DirectoryFragment extends Fragment {
                     args.put("directory", targetName);
                     args.put("json", moveArray);
                     try {
-                        RequestBuilder.asyncSendBackendPostRequest("/api/favourite/moveDirectory", args, true);
+                        RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -390,7 +394,7 @@ public class DirectoryFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ((FavouriteCheckActivity)getActivity()).updateDirectories(false);
+            ((FavouriteCheckActivity)getActivity()).updateDirectories();
 
         });
 
