@@ -132,7 +132,10 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 favouriteItemHolder.getCheckBox().setChecked(true);
             else
                 favouriteItemHolder.getCheckBox().setChecked(false);
-            favouriteItemHolder.getCheckBox().setOnCheckedChangeListener((CompoundButton compoundButton, boolean b) -> selected[position] = b);
+            favouriteItemHolder.getCheckBox().setOnCheckedChangeListener((CompoundButton compoundButton, boolean b) -> {
+                if(position < selected.length)
+                    selected[position] = b;
+            });
         } else {
             favouriteItemHolder.getCheckBox().setVisibility(View.GONE);
             favouriteItemHolder.getDragButton().setVisibility(View.INVISIBLE);

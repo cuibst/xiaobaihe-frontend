@@ -5,6 +5,7 @@ import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CU
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.PagerAdapter;
@@ -39,7 +40,45 @@ public class FavouriteCheckActivity extends AppCompatActivity {
     private ArrayList<DirectoryFragment> directoryFragments;
     private ArrayList<String> directoryNames;
 
-    private FragmentStatePagerAdapter adapter;
+    public class DirectoryStatePagerAdapter extends FragmentStatePagerAdapter {
+
+        public DirectoryStatePagerAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return directoryFragments.get(position);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_NONE;
+        }
+
+        @Override
+        public int getCount() {
+            return directoryFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if(directoryNames.get(position).equals("default"))
+                return "默认收藏夹";
+            return directoryNames.get(position);
+        }
+
+        public void clear() {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            for (DirectoryFragment fragment : directoryFragments)
+                if (fragment != null)
+                    transaction.remove(fragment);
+            transaction.commit();
+        }
+    }
+
+    private DirectoryStatePagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,31 +99,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
             directoryFragments.add(fragment);
         }
 
-        adapter = new FragmentStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-            @NonNull
-            @Override
-            public Fragment getItem(int position) {
-                return directoryFragments.get(position);
-            }
-
-            @Override
-            public int getItemPosition(Object object) {
-                return PagerAdapter.POSITION_NONE;
-            }
-
-            @Override
-            public int getCount() {
-                return directoryFragments.size();
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                if(directoryNames.get(position).equals("default"))
-                    return "默认收藏夹";
-                return directoryNames.get(position);
-            }
-
-        };
+        adapter = new DirectoryStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         findViewById(R.id.btnAddNewDirectory).setOnClickListener((View v) -> {
             Dialog addNewDirectoryDialog = new Dialog(FavouriteCheckActivity.this, R.style.BottomDialog);
@@ -117,7 +132,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
                     Thread.currentThread().interrupt();
                     e.printStackTrace();
                 }
-                updateDirectories(false);
+                updateDirectories();
                 addNewDirectoryDialog.dismiss();
             });
 
@@ -129,12 +144,12 @@ public class FavouriteCheckActivity extends AppCompatActivity {
 
     }
 
-    public void updateDirectories(boolean initialize) {
+    public void updateDirectories() {
         directoryPager.setCurrentItem(0);
         directoryPager.removeAllViewsInLayout();
         ((MainApplication)getApplication()).updateFavourite();
-        JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
         recreate();
+        adapter.clear();
         adapter.notifyDataSetChanged();
     }
 }
