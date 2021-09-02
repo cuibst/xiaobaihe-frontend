@@ -1,9 +1,12 @@
 package com.java.cuiyikai.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
+import com.java.cuiyikai.activities.LoginActivity;
 import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.activities.QuestionsCollectionActivity;
 import com.java.cuiyikai.activities.VisitHistoryActivity;
@@ -41,6 +45,23 @@ public class UserPageEntryFragment extends Fragment {
     private LinearLayout mLogIn;
     private TextView mUserName;
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == 1) {
+            mUserName.setText(((MainApplication) getActivity().getApplication()).getSaveUsername());
+            mLogIn.setOnClickListener((View v) -> {
+                RequestBuilder.logOut();
+                Toast.makeText(getActivity(),"Logged out！", Toast.LENGTH_SHORT).show();
+                mUserName.setText("请先登录");
+                mLogIn.setOnClickListener((View vi) -> {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivityForResult(intent, 1);
+                });
+            });
+        }
+    }
+
     @SuppressLint("WrongConstant")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,13 +76,21 @@ public class UserPageEntryFragment extends Fragment {
         mQuestionsCollection=view.findViewById(R.id.user_wrong_question);
         if(RequestBuilder.checkedLogin()){
             mUserName.setText(((MainApplication) getActivity().getApplication()).getSaveUsername());
+            mLogIn.setOnClickListener((View v) -> {
+                RequestBuilder.logOut();
+                Toast.makeText(getActivity(),"Logged out！", Toast.LENGTH_SHORT).show();
+                mUserName.setText("请先登录");
+                mLogIn.setOnClickListener((View vi) -> {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivityForResult(intent, 1);
+                });
+            });
         }
-        mLogIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        else
+            mLogIn.setOnClickListener((View v) -> {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivityForResult(intent, 1);
+            });
         mHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
