@@ -123,16 +123,6 @@ public class UserPageEntryFragment extends Fragment {
         mQuestion.setOnClickListener((View v) -> {
                 Map<String, String> map = new HashMap<>();
                 Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-                Log.v("mtag", "in");
-//                try {
-//                    JSONObject msg = RequestBuilder.sendBackendGetRequest("/api/problem/", map, true);
-//                    JSONArray arr=msg.getJSONArray("data");
-//                    Log.v("mtag",arr.toString());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//                startActivity(intent);
-
                 JSONObject msg = null;
                 try {
                     msg = RequestBuilder.sendBackendGetRequest("/api/problem/", map, true);
@@ -142,22 +132,13 @@ public class UserPageEntryFragment extends Fragment {
                 JSONArray arr=msg.getJSONArray("data");
                 for(int i = 0; i < arr.size(); i ++){
                     Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
-//                    Log.v("mtag", map1.toString());
                     JSONObject problem = map1.get("problem");
-//                    Log.v("mtag", ((Map<?, ?>) arr.get(i)).get("subject").toString());
-//                    Log.v("mtag", map1.get("subject").toJSONString());
-//                    String subject = map1.get("subject").toString();
-//                    Log.v("mtag", subject);
-//                    Log.v("mtag", problem.toJSONString());
                     String qBody = (String) problem.get("qBody");
-//                    Log.v("mtag", qBody);
                     String qAnswer = (String) problem.get("qAnswer");
                     String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
-//                    Log.v("mtag", qBody);
                     mIntent.putExtra("body " + i, qBody);
                     mIntent.putExtra("answer " + i, qAnswer);
                     mIntent.putExtra("subject " + i, subject);
-//                    Log.v("mtag", subject);
                 }
                 mIntent.putExtra("sum", arr.size() + "");
                 mIntent.putExtra("type", "list");

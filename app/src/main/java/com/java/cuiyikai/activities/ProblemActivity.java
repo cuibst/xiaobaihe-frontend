@@ -232,10 +232,12 @@ public class ProblemActivity extends Activity {
                         if(mSubject != null)
                             obj1.put("subject", mSubject);
                         Log.v("wrong", argument.toString());
-                        try {
-                            RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", (JSONObject) obj1, true);
-                        } catch (BackendTokenExpiredException e) {
-                            e.printStackTrace();
+                        if(mSubject != null){
+                            try {
+                                RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", (JSONObject) obj1, true);
+                            } catch (BackendTokenExpiredException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     setFinish(false);
