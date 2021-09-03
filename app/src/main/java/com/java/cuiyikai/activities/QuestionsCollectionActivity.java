@@ -190,7 +190,8 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                     for(int i=0;i<arr.size();i++)
                     {
                         System.out.println(arr.get(i).toString());
-                        JSONObject object=fixQuestions(JSONObject.parseObject(arr.get(i).toString()));
+                        JSONObject object=fixQuestions(JSONObject.parseObject(((JSONObject)arr.get(i)).get("problem").toString()));
+                        object.put("subject",((JSONObject)arr.get(i)).get("subject"));
                         array.add(object);
                     }
                     questionAdapter.addQuestions(array);
@@ -203,7 +204,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
     public JSONObject fixQuestions(JSONObject questions)
     {
         String ans="";
-        String sub=questions.get("subject").toString();
+//        String sub=questions.get("subject").toString();
         if(questions.get("qAnswer").toString().contains("A"))
             ans+="A";
         if(questions.get("qAnswer").toString().contains("B"))
@@ -248,7 +249,6 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         map.put("chooses",chooses);
         map.put("question",question);
         map.put("ans",ans);
-        map.put("subject",sub);
         return new JSONObject(map);
     }
     private class RemoveQuestion implements Runnable{

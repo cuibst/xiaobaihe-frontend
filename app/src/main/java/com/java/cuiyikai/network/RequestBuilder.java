@@ -37,10 +37,10 @@ import java.util.concurrent.Future;
  * This is an utility class.
  */
 public class RequestBuilder {
-    private static final String PHONE = "18211517925";
-    private static final String PASSWORD = "ldx0881110103";
-//    private static final String PHONE = "16688092093";
-//    private static final String PASSWORD = "0730llhh";
+//    private static final String PHONE = "18211517925";
+//    private static final String PASSWORD = "ldx0881110103";
+    private static final String PHONE = "16688092093";
+    private static final String PASSWORD = "0730llhh";
 //    private static final String PHONE = "15910826331";
 //    private static final String PASSWORD = "cbst20001117";
     private static String token = null;

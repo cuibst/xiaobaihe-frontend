@@ -41,7 +41,7 @@ public class SearchViewActivity extends AppCompatActivity {
     private RecyclerView recommendXRecyclerView;
     private String getHistoryUrl="/api/history/getHistory";
     private HistoryListAdapter historyListAdapter;
-    private TextView subjectText;
+    public TextView subjectText;
     private String search_url="typeOpen/open/instanceList";
     private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
     private SearchView searchView;

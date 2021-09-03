@@ -4,14 +4,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/searchline"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="#2894FF"
+            android:layout_weight="1"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/subjectText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp" />
+            <ImageView
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:id="@+id/searchImageView"
+                android:src="@drawable/searchbutton"
+                android:layout_margin="9dp"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </LinearLayout>
+
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messageListInDialog"
-        app:textAutoLink="all"
-        android:background="@drawable/littleblue"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/dialogLinearLayout"/>
+        android:layout_height="wrap_content"
+        android:layout_above="@id/dialogLinearLayout"
+        android:layout_below="@id/searchline"
+        android:background="@drawable/littleblue"
+        app:textAutoLink="all" />
 
     <LinearLayout
             android:id="@+id/dialogLinearLayout"

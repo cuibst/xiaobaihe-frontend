@@ -1,15 +1,19 @@
 package com.java.cuiyikai.fragments;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Trace;
 import android.text.SpannableString;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -35,7 +39,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.MainActivity;
+import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.DensityUtilities;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
@@ -48,6 +54,8 @@ import com.stfalcon.chatkit.utils.DateFormatter;
 public class DialogFragment extends Fragment {
     SimpleDateFormat setTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private boolean jud[]=new boolean[100000];
+    private TextView subjectText;
+    private String subject="chinese";
     private boolean flag=false;
     private int count=0;
     private List<Message> list;
@@ -60,6 +68,7 @@ public class DialogFragment extends Fragment {
     public  Author pc;
     private Message pcmessage;
     private Message orignmessage;
+    private ImageView searchbtn;
     private final String pathname="questions&answers.txt";
     private MessagesListAdapter<Message> dialogAdapter;
     private Button clearbtn;
@@ -69,6 +78,14 @@ public class DialogFragment extends Fragment {
         messageInput=(MessageInput)view.findViewById(R.id.messageInputInDialog);
         messagesList=(MessagesList) view.findViewById(R.id.messageListInDialog);
         clearbtn=view.findViewById(R.id.clearbtn);
+        searchbtn=view.findViewById(R.id.searchImageView);
+        searchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(),SearchViewActivity.class);
+                startActivity(intent);
+            }
+        });
         clearbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +104,104 @@ public class DialogFragment extends Fragment {
         });
 
 
+
+
+        Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_subject_select, null);
+        bottomDialog.setContentView(contentView);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+        params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
+        params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
+        contentView.setLayoutParams(params);
+        Button chinese = (Button) contentView.findViewById(R.id.chinese);
+        Button math = (Button) contentView.findViewById(R.id.math);
+        Button english = (Button) contentView.findViewById(R.id.english);
+        Button physics = (Button) contentView.findViewById(R.id.physics);
+        Button chemistry = (Button) contentView.findViewById(R.id.chemistry);
+        Button biology = (Button) contentView.findViewById(R.id.biology);
+        Button geo = (Button) contentView.findViewById(R.id.geo);
+        Button history = (Button) contentView.findViewById(R.id.history);
+        Button politics = (Button) contentView.findViewById(R.id.politics);
+        chinese.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="chinese";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        math.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="math";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        english.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="english";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        physics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="physics";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        chemistry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="chemistry";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        biology.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="biology";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        geo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="geo";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        politics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="politics";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subject="history";
+                subjectText.setText(reverseCheckSubject(subject));
+                bottomDialog.dismiss();
+            }
+        });
+
+
+
+        subjectText=view.findViewById(R.id.subjectText);
+        subjectText.setText(reverseCheckSubject(subject));
+        subjectText.setOnClickListener((View v) -> bottomDialog.show());
 
         ImageLoader imageLoader = new ImageLoader() {
             @Override
@@ -132,14 +247,13 @@ public class DialogFragment extends Fragment {
             for(int cnt=0;cnt<set.size();cnt++)
             {
                 JSONObject ansObject=(JSONObject) ((JSONArray) map.get(set.toArray()[cnt])).get(0);
-                ans+=cnt+"."+((MainActivity)getActivity()).reverseCheckSubject((String) set.toArray()[cnt])+":\n";
                 ans+="\t答案： "+ansObject.get("value")+"\n";
                 SpannableString  span=new SpannableString("\t相关词条: "+(String)ansObject.get("subject")+"\n");
                 ans+=span.toString();
             }
         }
         else
-            ans="并没有找到相关结果:(";
+            ans="并没有找到相关结果:( ,试试换个学科再搜索吧( •̀ ω •́ )y";
         pcmessage = new Message("1", ans, pc);
         storageInfo(ans,"pc");
         list.add(pcmessage);
@@ -249,29 +363,25 @@ public class DialogFragment extends Fragment {
         @Override
         public void run() {
             Map<String,Object> totalTree=new HashMap<>();
-            for (String str:all_subject_item)
+            try {
+                Map<String, String> map = new HashMap<>();
+                map.put("course", subject);
+                map.put("inputQuestion", input);
+                JSONObject msg = RequestBuilder.sendPostRequest(getAnswerUrl, map);
+                if(msg==null||!(msg.get("code").equals("0")))
+                {
+                    handler.sendEmptyMessage(1);
+                }
+                else if(!((JSONArray)msg.get("data")).isEmpty()&&!((JSONObject)((JSONArray)msg.get("data")).get(0)).get("value").equals(""))
+                    totalTree.put(subject,msg.get("data"));
+            }
+            catch (ExecutionException e)
             {
-                try {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("course", str);
-                    map.put("inputQuestion", input);
-                    JSONObject msg = RequestBuilder.sendPostRequest(getAnswerUrl, map);
-                    if(msg==null||!(msg.get("code").equals("0")))
-                    {
-                        handler.sendEmptyMessage(1);
-                        break;
-                    }
-                    else if(!((JSONArray)msg.get("data")).isEmpty()&&!((JSONObject)((JSONArray)msg.get("data")).get(0)).get("value").equals(""))
-                        totalTree.put(str,msg.get("data"));
-                }
-                catch (ExecutionException e)
-                {
-                    e.printStackTrace();
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
             }
             android.os.Message message=new android.os.Message();
             message.what=0;
@@ -374,5 +484,47 @@ public class DialogFragment extends Fragment {
         public String format(Date date) {
             return setTimeFormat.format(date);
         }
+    }
+
+    public String reverseCheckSubject(String TITLE)
+    {
+        String chooseSubject="";
+        if(TITLE.equals("chinese"))
+        {
+            chooseSubject="语文";
+        }
+        else if(TITLE.equals("math"))
+        {
+            chooseSubject="数学";
+        }
+        else if(TITLE.equals("english"))
+        {
+            chooseSubject="英语";
+        }
+        else if(TITLE.equals("physics"))
+        {
+            chooseSubject="物理";
+        }
+        else if(TITLE.equals("chemistry"))
+        {
+            chooseSubject="化学";
+        }
+        else if(TITLE.equals("history"))
+        {
+            chooseSubject="历史";
+        }
+        else if(TITLE.equals("geo"))
+        {
+            chooseSubject="地理";
+        }
+        else if(TITLE.equals("politics"))
+        {
+            chooseSubject="政治";
+        }
+        else if(TITLE.equals("biology"))
+        {
+            chooseSubject="生物";
+        }
+        return chooseSubject;
     }
 }

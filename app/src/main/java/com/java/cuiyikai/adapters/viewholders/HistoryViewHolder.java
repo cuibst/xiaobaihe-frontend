@@ -36,6 +36,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 ((SearchViewActivity)mContext).subject=subject;
+                ((SearchViewActivity)mContext).subjectText.setText(((SearchViewActivity)mContext).reverseCheckSubject(subject));
                 searchView.setQuery(historyRecord.getText(),true);
             }
         });
