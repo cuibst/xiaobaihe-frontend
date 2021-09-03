@@ -88,6 +88,15 @@ public class ProblemActivity extends Activity {
                     placeE = questionList.get(i).indexOf("E．");
                 }
 
+                if(placeA == -1)
+                {
+                    placeA = questionList.get(i).indexOf("A、");
+                    placeB = questionList.get(i).indexOf("B、");
+                    placeC = questionList.get(i).indexOf("C、");
+                    placeD = questionList.get(i).indexOf("D、");
+                    placeE = questionList.get(i).indexOf("E、");
+                }
+
                 System.out.printf("%d %d %d %d%n", placeA, placeB, placeC, placeD);
 //                problemDescription.setText(questionList.get(i).substring(0, placeA));
 
@@ -124,6 +133,8 @@ public class ProblemActivity extends Activity {
         int placeA = questionList.get(rank).indexOf("A.");
         if(placeA == -1)
             placeA = questionList.get(rank).indexOf("A．");
+        if(placeA == -1)
+            placeA = questionList.get(rank).indexOf("A、");
         problemDescription.setText(questionList.get(rank).substring(0, placeA));
         Log.v("rank", optionNum[rank] + "");
         for(int i = 0; i < optionNum[rank]; i ++){
