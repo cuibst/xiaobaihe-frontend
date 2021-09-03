@@ -1,81 +1,73 @@
 package com.java.cuiyikai.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
-import com.beloo.widget.chipslayoutmanager.gravity.IChildGravityResolver;
-import com.beloo.widget.chipslayoutmanager.layouter.breaker.IRowBreaker;
 import com.java.cuiyikai.adapters.SelectAdapter;
 
 import com.java.cuiyikai.R;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SelectFragment extends Fragment {
-    public  SelectFragment(){super();}
-    public  RecyclerView RecyclerViewForSelect;
-    private SelectAdapter selectAdapter;
-    @SuppressLint("ValidFragment")
+
+    private final SelectAdapter selectAdapter;
+
     public SelectFragment(SelectAdapter a)
     {
         super();
         selectAdapter=a;
     }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View view = View.inflate(getActivity(), R.layout.fragment_select, null);
-        RecyclerViewForSelect=view.findViewById(R.id.recyclerviewForSelect);
+        RecyclerView recyclerViewForSelect = view.findViewById(R.id.recyclerviewForSelect);
         ChipsLayoutManager chipsLayoutManager = ChipsLayoutManager.newBuilder(getActivity())
                 .setChildGravity(Gravity.TOP)
                 .setScrollingEnabled(true)
-                .setGravityResolver(new IChildGravityResolver() {
-                    @Override
-                    public int getItemGravity(int position) {
-                        return Gravity.CENTER;
-                    }
-                })
+                .setGravityResolver(position -> Gravity.CENTER)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_VIEW)
                 .withLastRow(true)
                 .build();
-        RecyclerViewForSelect.setLayoutManager(chipsLayoutManager);
-        RecyclerViewForSelect.setAdapter(selectAdapter);
+        recyclerViewForSelect.setLayoutManager(chipsLayoutManager);
+        recyclerViewForSelect.setAdapter(selectAdapter);
         return view;
     }
-    public void getSubjectType(Vector<String> v)
+    public void getSubjectType(List<String> v)
     {
-        selectAdapter.checkSubject.clear();
+        selectAdapter.getCheckSubject().clear();
         if(selectAdapter.getItemCount()!=0)
             selectAdapter.notifyItemRangeRemoved(0,selectAdapter.getItemCount());
-        selectAdapter.subjectType=v;
+        selectAdapter.setSubjectType(v);
     }
-    public void getType(Vector<String> v)
+    public void getType(ArrayList<String> v)
     {
-        selectAdapter.checkMarked.clear();
+        selectAdapter.getCheckMarked().clear();
         System.out.println(v.toString());
-        selectAdapter.type=v;
+        selectAdapter.setType(v);
         selectAdapter.notifyDataSetChanged();
     }
-    public Vector<String> returnCheckMarked()
+    public List<String> returnCheckMarked()
     {
-        System.out.println(selectAdapter.checkMarked.toString());
-        return selectAdapter.checkMarked;
+        System.out.println(selectAdapter.getCheckMarked().toString());
+        return selectAdapter.getCheckMarked();
     }
-    public Vector<String> returnCheckSubject()
+    public List<String> returnCheckSubject()
     {
-        return selectAdapter.checkSubject;
+        return selectAdapter.getCheckSubject();
     }
 }
 

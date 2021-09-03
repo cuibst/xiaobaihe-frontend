@@ -5,47 +5,50 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
+
     public ItemAdapter(Context context, String s) {
         mContext=context;
         chooseSubject=s;
     }
-    public  String chooseSubject;
-    public JSONArray subject=new JSONArray();
-    private Context mContext;
+
+    private final String chooseSubject;
+    private JSONArray subject=new JSONArray();
+    private final Context mContext;
+    private static final Logger logger = LoggerFactory.getLogger(ItemAdapter.class);
+
+    public String getChooseSubject() {
+        return chooseSubject;
+    }
+
     public void addSubject(JSONArray arr) {
         subject=arr;
     }
     public void addMoreSubject(JSONArray arr) {
         JSONArray newSubject=new JSONArray();
-        for(int i=0;i<subject.size();i++)
-            newSubject.add(subject.get(i));
-        for(int i=0;i<arr.size();i++)
-            newSubject.add(arr.get(i));
+        newSubject.addAll(subject);
+        newSubject.addAll(arr);
         subject=newSubject;
-        System.out.println(arr.size());
-        System.out.println(newSubject.size());
-        System.out.println(subject.size());
-    }
-    public void clearSubject()
-    {
-        subject.clear();
+        logger.info("Array size: {}", arr.size());
+        logger.info("New subject size: {}", newSubject.size());
+        logger.info("subject size: {}", subject.size());
     }
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType) {
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent , int viewType) {
         return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
     }
 

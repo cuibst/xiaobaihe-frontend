@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutionException;
 public class FavouriteCheckActivity extends AppCompatActivity {
 
     private ViewPager directoryPager;
-    private TabLayout directoryNameTab;
 
     private ArrayList<DirectoryFragment> directoryFragments;
     private ArrayList<String> directoryNames;
@@ -53,7 +52,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             return PagerAdapter.POSITION_NONE;
         }
 
@@ -86,7 +85,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         setContentView(R.layout.activity_favourite_check);
 
         directoryPager = findViewById(R.id.directoryPager);
-        directoryNameTab = findViewById(R.id.directoryTabLayout);
+        TabLayout directoryNameTab = findViewById(R.id.directoryTabLayout);
         directoryNameTab.setupWithViewPager(directoryPager);
 
         JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
@@ -112,14 +111,14 @@ public class FavouriteCheckActivity extends AppCompatActivity {
             params.bottomMargin = DensityUtilities.dp2px(this, 8f);
             directoryContentView.setLayoutParams(params);
 
-            Button confirm = (Button) directoryContentView.findViewById(R.id.addDirectoryConfirm);
-            Button cancel = (Button) directoryContentView.findViewById(R.id.addDirectoryCancel);
+            Button confirm = directoryContentView.findViewById(R.id.addDirectoryConfirm);
+            Button cancel = directoryContentView.findViewById(R.id.addDirectoryCancel);
 
             cancel.setOnClickListener((View view) -> addNewDirectoryDialog.dismiss());
 
             confirm.setOnClickListener((View view) -> {
                 EditText editText = directoryContentView.findViewById(R.id.newDirectoryName);
-                if(editText.getText().equals(""))
+                if(editText.getText().toString().equals(""))
                     return;
                 JSONObject args = new JSONObject();
                 args.put("directory", editText.getText().toString());

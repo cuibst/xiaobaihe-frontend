@@ -1,5 +1,6 @@
 package com.java.cuiyikai.entities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class PropertyEntity implements Comparable<PropertyEntity> {
@@ -22,6 +23,7 @@ public class PropertyEntity implements Comparable<PropertyEntity> {
         this.object = object;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Label: " + label + ", object: " + object;

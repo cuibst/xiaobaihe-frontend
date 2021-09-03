@@ -9,99 +9,96 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.SearchViewActivity;
-import com.java.cuiyikai.adapters.HistoryListAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
-    public TextView historyRecord;
-    public boolean flag;
-    public String subject;
-    public Context mContext;
-    public boolean recommendflag=false;
-    public SearchView searchView;
-    public HistoryListAdapter historyListAdapter;
-    public  ImageView editImg;
-    private String RemoveUrl="/api/history/removeHistory";
-    private String addHistoryUrl="/api/history/addHistory";
+
+    private static final Logger logger = LoggerFactory.getLogger(HistoryViewHolder.class);
+
+    private final TextView historyRecord;
+    private String subject;
+    private Context mContext;
+    private boolean recommendFlag =false;
+    private SearchView searchView;
+    private final ImageView editImg;
+
+    public TextView getHistoryRecord() {
+        return historyRecord;
+    }
+
+    public ImageView getEditImg() {
+        return editImg;
+    }
+
+    public void setContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setRecommendFlag(boolean recommendFlag) {
+        this.recommendFlag = recommendFlag;
+    }
+
+    public void setSearchView(SearchView searchView) {
+        this.searchView = searchView;
+    }
+
     public HistoryViewHolder(View view) {
         super(view);
         editImg=view.findViewById(R.id.iv_edit);
         historyRecord=view.findViewById(R.id.historyrecord);
         historyRecord.setLongClickable(true);
         editImg.setVisibility(View.INVISIBLE);
-        historyRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((SearchViewActivity)mContext).subject=subject;
-                ((SearchViewActivity)mContext).subjectText.setText(((SearchViewActivity)mContext).reverseCheckSubject(subject));
-                searchView.setQuery(historyRecord.getText(),true);
-            }
+        historyRecord.setOnClickListener(v -> {
+            ((SearchViewActivity)mContext).setSubject(subject);
+            ((SearchViewActivity)mContext).getSubjectText().setText(((SearchViewActivity)mContext).reverseCheckSubject(subject));
+            searchView.setQuery(historyRecord.getText(),true);
         });
-        historyRecord.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if(recommendflag)
-                    return false;
-                editImg.setVisibility(View.VISIBLE);
-                return true;
-            }
+        historyRecord.setOnLongClickListener(v -> {
+            if(recommendFlag)
+                return false;
+            editImg.setVisibility(View.VISIBLE);
+            return true;
         });
-        editImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                historyRecord.setVisibility(View.INVISIBLE);
-                editImg.setVisibility(View.INVISIBLE);
-                ClearOne clearOne=new ClearOne(historyRecord.getText().toString());
-                System.out.println("clear: "+historyRecord.getText().toString());
-                Thread thread=new Thread(clearOne);
-                thread.start();
-            }
+        editImg.setOnClickListener(v -> {
+            historyRecord.setVisibility(View.INVISIBLE);
+            editImg.setVisibility(View.INVISIBLE);
+            ClearOne clearOne=new ClearOne(historyRecord.getText().toString());
+            logger.info("clear: {}", historyRecord.getText());
+            Thread thread=new Thread(clearOne);
+            thread.start();
         });
     }
-    private class ClearOne implements Runnable
-    {
-        private String s;
-        ClearOne(String ss)
-        {
-            s=ss;
-        }
-        @Override
-        public void run() {
-            try{
-                Map<String,String> map=new HashMap<>();
-                map.put("content",s);
-                map.put("all","false");
-                RequestBuilder.sendBackendGetRequest(RemoveUrl,map,true);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
+}
 
-    private class AddHistory implements Runnable{
-        private String s;
-        public AddHistory(String ss)
-        {
-            s=ss;
-        }
-        @Override
-        public void run() {
-            if(!RequestBuilder.checkedLogin())
-                return;
+class ClearOne implements Runnable
+{
+    private final String s;
+    ClearOne(String ss)
+    {
+        s=ss;
+    }
+    @Override
+    public void run() {
+        try{
             Map<String,String> map=new HashMap<>();
             map.put("content",s);
-            try {
-                RequestBuilder.sendBackendGetRequest(addHistoryUrl, map, true);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            map.put("all","false");
+            String removeUrl = "/api/history/removeHistory";
+            RequestBuilder.sendBackendGetRequest(removeUrl,map,true);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

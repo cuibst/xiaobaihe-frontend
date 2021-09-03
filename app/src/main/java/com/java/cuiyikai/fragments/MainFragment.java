@@ -1,5 +1,7 @@
 package com.java.cuiyikai.fragments;
 
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,32 +29,26 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainFragment extends Fragment {
-    private ViewPager viewpgr;
-    private ImageView tabAdd;
+    private ViewPager viewPager;
     private ItemFragment[] itemFragment;
-    private ImageView searchImageView;
     private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
-    private List<String> all_subject_item=new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
-    private TabLayout tabLayout;
+    private List<String> allSubjectItem = new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = View.inflate(getActivity(), R.layout.fragment_main, null);
         initViewPager(view);
-        itemFragment=new ItemFragment[all_subject_item.size()];
+        itemFragment=new ItemFragment[allSubjectItem.size()];
 
 
-        tabLayout=view.findViewById(R.id.tablayout1);
-        tabLayout.setupWithViewPager(viewpgr);
-        tabAdd = view.findViewById(R.id.tab_add);
-        searchImageView=view.findViewById(R.id.searchImageView);
-        searchImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), SearchViewActivity.class);
-                startActivity(intent);
-            }
+        TabLayout tabLayout = view.findViewById(R.id.tablayout1);
+        tabLayout.setupWithViewPager(viewPager);
+        ImageView tabAdd = view.findViewById(R.id.tab_add);
+        ImageView searchImageView = view.findViewById(R.id.searchImageView);
+        searchImageView.setOnClickListener(v -> {
+            Intent intent=new Intent(getActivity(), SearchViewActivity.class);
+            startActivity(intent);
         });
         tabAdd.setOnClickListener((View v) -> {
             Intent intent=new Intent(getActivity(), CategoryActivity.class);
@@ -65,8 +61,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 1) {
-            viewPagerFragmentAdapter.clear(viewpgr);
-            itemFragment=new ItemFragment[all_subject_item.size()];
+            viewPagerFragmentAdapter.clear();
+            itemFragment=new ItemFragment[allSubjectItem.size()];
             initViewPager(getView());
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -74,34 +70,36 @@ public class MainFragment extends Fragment {
     }
 
     private void initViewPager(View view) {
-        viewpgr = view.findViewById(R.id.viewpgr1);
-        viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager());
-        all_subject_item = ((MainApplication)getActivity().getApplication()).getSubjects();
-        viewpgr.setAdapter(viewPagerFragmentAdapter);
+        viewPager = view.findViewById(R.id.viewpgr1);
+        viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        allSubjectItem = ((MainApplication)getActivity().getApplication()).getSubjects();
+        viewPager.setAdapter(viewPagerFragmentAdapter);
     }
 
     public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
-        ViewPagerFragmentAdapter(@NonNull FragmentManager fm) {
-            super(fm);
+
+        public ViewPagerFragmentAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
         }
+
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            initfragment(position);
+            initFragment(position);
             return itemFragment[position];
         }
 
         @Override
         public int getCount() {
-            return all_subject_item.size();
+            return allSubjectItem.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return all_subject_item.get(position);
+            return allSubjectItem.get(position);
         }
 
-        public void clear(ViewGroup container) {
+        public void clear() {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             for (ItemFragment fragment : itemFragment)
                 if (fragment != null)
@@ -110,12 +108,9 @@ public class MainFragment extends Fragment {
         }
     }
 
-
-    public void initfragment(int position)
+    public void initFragment(int position)
     {
-        System.out.println("position: "+position);
-        String TITLE=all_subject_item.get(position);
-        String chooseSubject = ((MainActivity)getActivity()).checkSubject(TITLE);
+        String chooseSubject = ((MainActivity)getActivity()).checkSubject(allSubjectItem.get(position));
         ItemFragment fragment=new ItemFragment(chooseSubject,getActivity());
         itemFragment[position]=fragment;
     }

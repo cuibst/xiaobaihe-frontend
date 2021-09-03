@@ -38,7 +38,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
-import com.java.cuiyikai.activities.PointExtractActivity;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.utilities.PermissionUtilities;
@@ -113,7 +112,7 @@ public class PointExtractFragment extends Fragment {
                 File file = new File(tessdata, "chi_sim.traineddata");
                 try (FileOutputStream outputStream = new FileOutputStream(file)) {
                     byte[] buffer = new byte[1024];
-                    int len = 0;
+                    int len;
                     while ((len = inputStream.read(buffer)) != -1)
                         outputStream.write(buffer, 0, len);
                     inputStream.close();
@@ -127,14 +126,14 @@ public class PointExtractFragment extends Fragment {
             String result = baseAPI.getUTF8Text();
             baseAPI.end();
             System.out.printf("result:%s%n",result);
-            EditText editText = (EditText) getView().findViewById(R.id.extract_text_input);
+            EditText editText = getView().findViewById(R.id.extract_text_input);
             editText.setText(result);
             onTextReceived(result);
         }
     }
 
     private void onTextReceived(String text) {
-        TextView result = (TextView) getView().findViewById(R.id.extract_result);
+        TextView result = getView().findViewById(R.id.extract_result);
         Map<String,String> args = new HashMap<>();
         args.put("context", text);
         args.put("course", "");
@@ -152,8 +151,8 @@ public class PointExtractFragment extends Fragment {
         System.out.println(data.toString());
         for(Object keyword: data) {
             JSONObject obj = JSON.parseObject(keyword.toString());
-            int L = obj.getInteger("start_index");
-            int R = obj.getInteger("end_index");
+            int startIndex = obj.getInteger("start_index");
+            int endIndex = obj.getInteger("end_index");
             String name = obj.getString("entity");
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
@@ -171,14 +170,14 @@ public class PointExtractFragment extends Fragment {
                     ds.setColor(Color.rgb(0x66,0xcc,0xff));
                 }
             };
-            ssBuilder.setSpan(clickableSpan, L, R+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssBuilder.setSpan(clickableSpan, startIndex, endIndex+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         result.setMovementMethod(LinkMovementMethod.getInstance());
         result.setText(ssBuilder);
         result.setVisibility(View.VISIBLE);
-        TextView resultTag = (TextView) getView().findViewById(R.id.result_tag);
+        TextView resultTag = getView().findViewById(R.id.result_tag);
         resultTag.setVisibility(View.VISIBLE);
-        Button uploadButton = (Button) getView().findViewById(R.id.btn_upload);
+        Button uploadButton = getView().findViewById(R.id.btn_upload);
         uploadButton.setText("再搜一次");
     }
 
@@ -188,7 +187,6 @@ public class PointExtractFragment extends Fragment {
      *
      * @return A new instance of fragment PointExtractFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PointExtractFragment newInstance() {
         PointExtractFragment fragment = new PointExtractFragment();
         Bundle args = new Bundle();
@@ -197,20 +195,15 @@ public class PointExtractFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_point_extract, container, false);
 
-        Button uploadButton = (Button) view.findViewById(R.id.btn_upload);
-        photoView = (ImageView) view.findViewById(R.id.submit_photo);
+        Button uploadButton = view.findViewById(R.id.btn_upload);
+        photoView = view.findViewById(R.id.submit_photo);
         uploadButton.setOnClickListener((View v) -> {
-            EditText editText = (EditText) view.findViewById(R.id.extract_text_input);
+            EditText editText = view.findViewById(R.id.extract_text_input);
             onTextReceived(editText.getText().toString());
         });
         Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
@@ -222,9 +215,9 @@ public class PointExtractFragment extends Fragment {
         params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
         params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
         contentView.setLayoutParams(params);
-        Button takePhoto = (Button) contentView.findViewById(R.id.take_photo);
-        Button fromAlbum = (Button) contentView.findViewById(R.id.from_album);
-        Button camera = (Button)view.findViewById(R.id.camera);
+        Button takePhoto = contentView.findViewById(R.id.take_photo);
+        Button fromAlbum = contentView.findViewById(R.id.from_album);
+        Button camera = view.findViewById(R.id.camera);
         camera.setOnClickListener((View v) -> bottomDialog.show());
         takePhoto.setOnClickListener((View v) -> {
             if(PermissionUtilities.verifyPermissions(getActivity(), Manifest.permission.CAMERA) == 0) {

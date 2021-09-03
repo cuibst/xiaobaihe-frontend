@@ -2,27 +2,42 @@ package com.java.cuiyikai.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.SearchActivity;
+import com.java.cuiyikai.adapters.viewholders.SelectViewHolder;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectViewHolder>
+public class SelectAdapter extends RecyclerView.Adapter<SelectViewHolder>
 {
-    public Vector<String> checkMarked=new Vector<>();
-    public Vector<String> checkSubject=new Vector<>();
-    private Context mContext;
-    public Vector<String> subjectType;
-    public Vector<String> type;
+    private final List<String> checkMarked=new ArrayList<>();
+    private final List<String> checkSubject=new ArrayList<>();
+    private final Context mContext;
+    private List<String> subjectType;
+    private List<String> type;
+
+    public List<String> getCheckSubject() {
+        return checkSubject;
+    }
+
+    public List<String> getCheckMarked() {
+        return checkMarked;
+    }
+
+    public void setSubjectType(List<String> subjectType) {
+        this.subjectType = subjectType;
+    }
+
+    public void setType(List<String> type) {
+        this.type = type;
+    }
+
     public SelectAdapter(Context context)
     {
         checkMarked.clear();
@@ -31,21 +46,21 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
     }
     @NonNull
     @Override
-    public SelectAdapter.SelectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SelectAdapter.SelectViewHolder(LayoutInflater.from(mContext).inflate(R.layout.select_content,parent,false));
+    public SelectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SelectViewHolder(LayoutInflater.from(mContext).inflate(R.layout.select_content,parent,false), checkMarked, checkSubject);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SelectAdapter.SelectViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SelectViewHolder holder, int position) {
         if(position<subjectType.size()) {
-            holder.ChooseBtn.setChecked(true);
-            holder.ChooseBtn.setText(((SearchActivity) mContext).reverseCheckSubject(subjectType.get(position)));
+            holder.getChooseBtn().setChecked(true);
+            holder.getChooseBtn().setText(((SearchActivity) mContext).reverseCheckSubject(subjectType.get(position)));
             checkSubject.add(((SearchActivity) mContext).reverseCheckSubject(subjectType.get(position)));
         }
         else {
-            holder.ChooseBtn.setChecked(true);
+            holder.getChooseBtn().setChecked(true);
             position-=subjectType.size();
-            holder.ChooseBtn.setText(type.get(position));
+            holder.getChooseBtn().setText(type.get(position));
             checkMarked.add(type.get(position));
         }
     }
@@ -60,43 +75,5 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.SelectView
             return subjectType.size();
         else
             return subjectType.size()+type.size();
-    }
-    class SelectViewHolder extends RecyclerView.ViewHolder{
-        private RadioButton ChooseBtn;
-        private boolean flag=true;
-        public SelectViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ChooseBtn=itemView.findViewById(R.id.ButtonForChoose);
-            ChooseBtn.setChecked(true);
-            ChooseBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(flag) {
-                        String name=(String) ChooseBtn.getText();
-                        ChooseBtn.setChecked(false);
-                        if((name=="语文")||(name=="数学")||(name=="英语")||(name=="物理")||(name=="地理")||(name=="政治")||(name=="化学")||(name=="生物")||(name=="历史")) {
-                            if (checkSubject.contains(name))
-                                checkSubject.remove(name);
-                        }
-                        else
-                            if(checkMarked.contains(name))
-                                checkMarked.remove((String)ChooseBtn.getText());
-                        flag=!flag;
-                    }
-                    else if(!flag){
-                        String name=(String) ChooseBtn.getText();
-                        ChooseBtn.setChecked(true);
-                        if((name=="语文")||(name=="数学")||(name=="英语")||(name=="物理")||(name=="地理")||(name=="政治")||(name=="化学")||(name=="生物")||(name=="历史")) {
-                            if (!checkSubject.contains(name))
-                                checkSubject.add(name);
-                        }
-                        else
-                            if(!checkMarked.contains(name))
-                                checkMarked.add((String)ChooseBtn.getText());
-                        flag=!flag;
-                    }
-                }
-            });
-        }
     }
 }

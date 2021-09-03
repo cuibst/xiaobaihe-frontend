@@ -2,7 +2,6 @@ package com.java.cuiyikai.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         DatabaseEntity entity = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        ImageView imageView = (ImageView) view.findViewById(R.id.itemSubjectPicture);
+        ImageView imageView = view.findViewById(R.id.itemSubjectPicture);
         View itemView = view.findViewById(R.id.directoryFavouriteItem);
         switch(entity.getSubject()) {
             case "chinese" :
@@ -74,7 +73,7 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
                 imageView.setImageResource(R.drawable.politics);
                 break;
         }
-        TextView textView = (TextView) view.findViewById(R.id.favouriteItemName);
+        TextView textView = view.findViewById(R.id.favouriteItemName);
         textView.setText(entity.getName());
         view.setOnClickListener((View v) -> {
             Intent intent = new Intent(getContext(), EntityActivity.class);

@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.os.Trace;
 import android.text.SpannableString;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,7 +36,6 @@ import androidx.fragment.app.Fragment;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
@@ -50,57 +47,49 @@ import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class DialogFragment extends Fragment {
-    SimpleDateFormat setTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private boolean jud[]=new boolean[100000];
+
+    private static final Logger logger = LoggerFactory.getLogger(DialogFragment.class);
+
+    private final SimpleDateFormat setTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final boolean[] jud=new boolean[100000];
     private TextView subjectText;
     private String subject="chinese";
     private boolean flag=false;
-    private int count=0;
     private List<Message> list;
-    private final String all_subject_item[]={"chinese","math","english","physics","chemistry","biology","history","politics","geo"};
-    private final String getAnswerUrl="typeOpen/open/inputQuestion";
     private MessagesList messagesList;
-    private MessageInput messageInput;
-    private String UserID="0";
-    public  Author author;
-    public  Author pc;
-    private Message pcmessage;
-    private Message orignmessage;
-    private ImageView searchbtn;
-    private final String pathname="questions&answers.txt";
+    private static final String USER_ID ="0";
+    private Author author;
+    private Author pc;
+    private Message pcMessage;
+    private Message originMessage;
+    private static final String PATHNAME ="questions&answers.txt";
     private MessagesListAdapter<Message> dialogAdapter;
-    private Button clearbtn;
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View view = View.inflate(getActivity(), R.layout.fragment_dialog, null);
-        messageInput=(MessageInput)view.findViewById(R.id.messageInputInDialog);
-        messagesList=(MessagesList) view.findViewById(R.id.messageListInDialog);
-        clearbtn=view.findViewById(R.id.clearbtn);
-        searchbtn=view.findViewById(R.id.searchImageView);
-        searchbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),SearchViewActivity.class);
-                startActivity(intent);
-            }
+        MessageInput messageInput = view.findViewById(R.id.messageInputInDialog);
+        messagesList= view.findViewById(R.id.messageListInDialog);
+        Button clearButton = view.findViewById(R.id.clearbtn);
+        ImageView searchButton = view.findViewById(R.id.searchImageView);
+        searchButton.setOnClickListener(v -> {
+            Intent intent=new Intent(getActivity(),SearchViewActivity.class);
+            startActivity(intent);
         });
-        clearbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            File oldFile =new  File(getActivity().getFilesDir(),pathname);
-            oldFile.delete();
-            if(oldFile.exists())
-                System.out.println("yes");
-            else
-                System.out.println("no");
-            dialogAdapter.clear();
-            list.clear();
-            orignmessage=new Message("1","请输入查询内容:)",pc);
-            dialogAdapter.addToStart(orignmessage,true);
-            messagesList.setAdapter(dialogAdapter);
-            }
+        clearButton.setOnClickListener(view1 -> {
+        File oldFile =new  File(getActivity().getFilesDir(), PATHNAME);
+        oldFile.delete();
+        dialogAdapter.clear();
+        list.clear();
+        originMessage = new Message("1", "请输入查询内容:)", pc);
+        dialogAdapter.addToStart(originMessage,true);
+        messagesList.setAdapter(dialogAdapter);
         });
 
 
@@ -115,86 +104,59 @@ public class DialogFragment extends Fragment {
         params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
         params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
         contentView.setLayoutParams(params);
-        Button chinese = (Button) contentView.findViewById(R.id.chinese);
-        Button math = (Button) contentView.findViewById(R.id.math);
-        Button english = (Button) contentView.findViewById(R.id.english);
-        Button physics = (Button) contentView.findViewById(R.id.physics);
-        Button chemistry = (Button) contentView.findViewById(R.id.chemistry);
-        Button biology = (Button) contentView.findViewById(R.id.biology);
-        Button geo = (Button) contentView.findViewById(R.id.geo);
-        Button history = (Button) contentView.findViewById(R.id.history);
-        Button politics = (Button) contentView.findViewById(R.id.politics);
-        chinese.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="chinese";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        Button chinese = contentView.findViewById(R.id.chinese);
+        Button math = contentView.findViewById(R.id.math);
+        Button english = contentView.findViewById(R.id.english);
+        Button physics = contentView.findViewById(R.id.physics);
+        Button chemistry = contentView.findViewById(R.id.chemistry);
+        Button biology = contentView.findViewById(R.id.biology);
+        Button geo = contentView.findViewById(R.id.geo);
+        Button history = contentView.findViewById(R.id.history);
+        Button politics = contentView.findViewById(R.id.politics);
+        chinese.setOnClickListener(v -> {
+            subject="chinese";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        math.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="math";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        math.setOnClickListener(v -> {
+            subject="math";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        english.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="english";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        english.setOnClickListener(v -> {
+            subject="english";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        physics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="physics";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        physics.setOnClickListener(v -> {
+            subject="physics";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        chemistry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="chemistry";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        chemistry.setOnClickListener(v -> {
+            subject="chemistry";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        biology.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="biology";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        biology.setOnClickListener(v -> {
+            subject="biology";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        geo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="geo";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        geo.setOnClickListener(v -> {
+            subject="geo";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        politics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="politics";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        politics.setOnClickListener(v -> {
+            subject="politics";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="history";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        history.setOnClickListener(v -> {
+            subject="history";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
 
 
@@ -203,37 +165,31 @@ public class DialogFragment extends Fragment {
         subjectText.setText(reverseCheckSubject(subject));
         subjectText.setOnClickListener((View v) -> bottomDialog.show());
 
-        ImageLoader imageLoader = new ImageLoader() {
-            @Override
-            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
-            }
+        ImageLoader imageLoader = (imageView, url, payload) -> {
         };
         if((list=historyList())==null)
             list=new ArrayList<>();
         System.out.println("size: "+list.size());
-        pc=new Author("pc","1");
-        author=new Author("author","0");
-        dialogAdapter=new MessagesListAdapter<>(UserID,imageLoader);
+        pc= new Author("pc", "1");
+        author= new Author("author", "0");
+        dialogAdapter=new MessagesListAdapter<>(USER_ID,imageLoader);
         if(!flag) {
-            pcmessage = new Message("1", "请输入查询内容:)", pc);
-            dialogAdapter.addToStart(pcmessage, true);
+            pcMessage = new Message("1", "请输入查询内容:)", pc);
+            dialogAdapter.addToStart(pcMessage, true);
             flag=true;
         }
         dialogAdapter.setDateHeadersFormatter(new DateFormat());
         dialogAdapter.setLoadMoreListener(new LoadMoreListener());
-        messageInput.setInputListener(new MessageInput.InputListener() {
-            @Override
-            public boolean onSubmit(CharSequence input) {
-                Message userSendMessage=new Message(UserID,input.toString(),author);
-                list.add(userSendMessage);
-                jud[list.size()-1]=true;
-                dialogAdapter.addToStart(userSendMessage,true);
-                storageInfo(input.toString(),"user");
-                askQuestions questions=new askQuestions(input.toString());
-                Thread thread=new Thread(questions);
-                thread.start();
-                return true;
-            }
+        messageInput.setInputListener(input -> {
+            Message userSendMessage= new Message(USER_ID, input.toString(), author);
+            list.add(userSendMessage);
+            jud[list.size()-1]=true;
+            dialogAdapter.addToStart(userSendMessage,true);
+            storageInfo(input.toString(),"user");
+            AskQuestions questions=new AskQuestions(input.toString());
+            Thread thread=new Thread(questions);
+            thread.start();
+            return true;
         });
         messagesList.setAdapter(dialogAdapter);
         return view;
@@ -241,28 +197,28 @@ public class DialogFragment extends Fragment {
     public void fixQuestion(Map<String,Object> map)
     {
         Set<String> set=map.keySet();
-        String ans="为您找到以下相关学科的结果：\n";
+        StringBuilder ans= new StringBuilder("为您找到以下相关学科的结果：\n");
         if(!set.isEmpty())
         {
             for(int cnt=0;cnt<set.size();cnt++)
             {
                 JSONObject ansObject=(JSONObject) ((JSONArray) map.get(set.toArray()[cnt])).get(0);
-                ans+="\t答案： "+ansObject.get("value")+"\n";
-                SpannableString  span=new SpannableString("\t相关词条: "+(String)ansObject.get("subject")+"\n");
-                ans+=span.toString();
+                ans.append("\t答案： ").append(ansObject.get("value")).append("\n");
+                SpannableString  span=new SpannableString("\t相关词条: "+ ansObject.get("subject") +"\n");
+                ans.append(span.toString());
             }
         }
         else
-            ans="并没有找到相关结果:( ,试试换个学科再搜索吧( •̀ ω •́ )y";
-        pcmessage = new Message("1", ans, pc);
-        storageInfo(ans,"pc");
-        list.add(pcmessage);
+            ans = new StringBuilder("并没有找到相关结果:( ,试试换个学科再搜索吧( •̀ ω •́ )y");
+        pcMessage = new Message("1", ans.toString(), pc);
+        storageInfo(ans.toString(),"pc");
+        list.add(pcMessage);
         jud[list.size()-1]=true;
-        dialogAdapter.addToStart(pcmessage,true);
+        dialogAdapter.addToStart(pcMessage,true);
     }
     public void storageInfo(String s,String id)
     {
-        File loadFile = new File(getActivity().getFilesDir(), pathname);
+        File loadFile = new File(getActivity().getFilesDir(), PATHNAME);
         if(!loadFile.exists())
             try {
                 loadFile.createNewFile();
@@ -280,86 +236,85 @@ public class DialogFragment extends Fragment {
     }
     public List<Message> historyList()
     {
-        File loadFile = new File(getActivity().getFilesDir(), pathname);
-        List<Message> list=new ArrayList<>();
-        Author user=new Author("author","0");
-        Author pc=new Author("pc","1");
+        File loadFile = new File(getActivity().getFilesDir(), PATHNAME);
+        List<Message> messageList=new ArrayList<>();
+        Author user= new Author("author", "0");
+        Author localPc= new Author("pc", "1");
         if(!loadFile.exists())
-            return null;
+            return new ArrayList<>();
         else{
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(loadFile)));
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(loadFile)))){
                 String id;
                 String date;
                 while((id=reader.readLine())!=null)
                 {
                     date=reader.readLine();
                     String info;
-                    String ans="";
+                    StringBuilder ansBuilder = new StringBuilder();
                     while(((info=reader.readLine())!=null)) {
-                        System.out.println("info : "+info);
+                        logger.info("info : {}", info);
                         if((info.charAt(info.length()-1)==';')) {
-                            ans += info.substring(0,info.length()-1)+"\n";
+                            ansBuilder.append(info.substring(0, info.length() - 1)).append("\n");
                             break;
                         }
-                        ans += info+"\n";
+                        ansBuilder.append(info).append("\n");
                     }
-                    System.out.println("ans: "+ans);
+                    String ans = ansBuilder.toString();
+                    logger.info("ans: {}", ans);
                     Message msg;
                     if(id.equals("user"))
-                        msg=new Message(id,ans,user,date);
+                        msg= new Message(id, ans, user, date);
                     else
-                        msg=new Message(id,ans,pc,date);
-                    list.add(msg);
+                        msg= new Message(id, ans, localPc, date);
+                    messageList.add(msg);
                 }
-                reader.close();
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
         }
-        return list;
+        return messageList;
     }
     public class LoadMoreListener implements MessagesListAdapter.OnLoadMoreListener
     {
 
         @Override
         public void onLoadMore(int page, int totalItemsCount) {
-            System.out.println("page "+page);
-            System.out.println("total "+totalItemsCount);
+            logger.info("page {} ", page);
+            logger.info("total {}", totalItemsCount);
             List<Message> msg=new ArrayList<>();
             if(list==null||list.isEmpty())
                 return ;
             if(page>list.size())
                 return ;
-            System.out.println(list.size());
+            logger.info("list.size() = {}", list.size());
             int count=0;
             for(;(list.size()-page)>=0;page++)
             {
                 if(jud[list.size()-page])
                     continue;
                 jud[list.size()-page]=true;
-                System.out.println("num "+(list.size()-page));
-                System.out.println(list.get((list.size()-page)).text);
+                logger.info("num {}", (list.size()-page));
+                logger.info(list.get((list.size()-page)).text);
                 msg.add(list.get((list.size()-page)));
                 count++;
                 if(count>=1)
                     break;
             }
             for(Message i:msg)
-                System.out.println("text "+i.text);
+                logger.info("text {}", i.text);
             dialogAdapter.addToEnd(msg,false);
         }
     }
-    MyHandler handler =new MyHandler();
-    public class askQuestions implements  Runnable
+    private final MyHandler handler =new MyHandler();
+    public class AskQuestions implements  Runnable
     {
-        askQuestions(String s)
+        AskQuestions(String s)
         {
             input=s;
         }
-        private String input;
+        private final String input;
         @Override
         public void run() {
             Map<String,Object> totalTree=new HashMap<>();
@@ -367,6 +322,7 @@ public class DialogFragment extends Fragment {
                 Map<String, String> map = new HashMap<>();
                 map.put("course", subject);
                 map.put("inputQuestion", input);
+                String getAnswerUrl = "typeOpen/open/inputQuestion";
                 JSONObject msg = RequestBuilder.sendPostRequest(getAnswerUrl, map);
                 if(msg==null||!(msg.get("code").equals("0")))
                 {
@@ -381,6 +337,7 @@ public class DialogFragment extends Fragment {
             }
             catch (InterruptedException e)
             {
+                Thread.currentThread().interrupt();
                 e.printStackTrace();
             }
             android.os.Message message=new android.os.Message();
@@ -390,25 +347,23 @@ public class DialogFragment extends Fragment {
         }
     }
     private class MyHandler extends Handler {
+
         @Override
         public void handleMessage(@NonNull android.os.Message msg) {
-            switch(msg.what)
-            {
-                case 0:
-                    Map<String, Object> object =(Map<String,Object>) msg.obj;
-                    fixQuestion(object);
-                    break;
-                case 1:
-                    Toast.makeText(getActivity(), "网络异常，请重试", Toast.LENGTH_SHORT).show();
-                    break;
+            if (msg.what == 0) {
+                Map<String, Object> object = (Map<String, Object>) msg.obj;
+                fixQuestion(object);
+            } else if (msg.what == 1) {
+                Toast.makeText(getActivity(), "网络异常，请重试", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
 
 
-    public class Author implements IUser{
-        private String name,id;
+    public static class Author implements IUser{
+        private final String name;
+        private final String id;
         Author(String name,String id)
         {
             this.name=name;
@@ -429,12 +384,11 @@ public class DialogFragment extends Fragment {
             return null;
         }
     }
-    public class Message implements IMessage
+    public static class Message implements IMessage
     {
-        Message(){}
-        private String id="msgid";
+        private final String id;
         private String text;
-        private Author author;
+        private final Author author;
         private String date="";
         Message(String id,String text,Author a)
         {
@@ -472,10 +426,8 @@ public class DialogFragment extends Fragment {
         public Date getCreatedAt() {
             if(date.equals("")) {
                 this.date=new Date().toString();
-                return new Date(this.date);
             }
-            else
-                return new Date(this.date);
+            return new Date(this.date);
         }
     }
     public class DateFormat implements DateFormatter.Formatter
@@ -486,44 +438,38 @@ public class DialogFragment extends Fragment {
         }
     }
 
-    public String reverseCheckSubject(String TITLE)
+    public String reverseCheckSubject(String title)
     {
-        String chooseSubject="";
-        if(TITLE.equals("chinese"))
-        {
-            chooseSubject="语文";
-        }
-        else if(TITLE.equals("math"))
-        {
-            chooseSubject="数学";
-        }
-        else if(TITLE.equals("english"))
-        {
-            chooseSubject="英语";
-        }
-        else if(TITLE.equals("physics"))
-        {
-            chooseSubject="物理";
-        }
-        else if(TITLE.equals("chemistry"))
-        {
-            chooseSubject="化学";
-        }
-        else if(TITLE.equals("history"))
-        {
-            chooseSubject="历史";
-        }
-        else if(TITLE.equals("geo"))
-        {
-            chooseSubject="地理";
-        }
-        else if(TITLE.equals("politics"))
-        {
-            chooseSubject="政治";
-        }
-        else if(TITLE.equals("biology"))
-        {
-            chooseSubject="生物";
+        String chooseSubject;
+        switch (title) {
+            case "chinese":
+                chooseSubject = "语文";
+                break;
+            case "math":
+                chooseSubject = "数学";
+                break;
+            case "english":
+                chooseSubject = "英语";
+                break;
+            case "physics":
+                chooseSubject = "物理";
+                break;
+            case "chemistry":
+                chooseSubject = "化学";
+                break;
+            case "history":
+                chooseSubject = "历史";
+                break;
+            case "geo":
+                chooseSubject = "地理";
+                break;
+            case "politics":
+                chooseSubject = "政治";
+                break;
+            case "biology":
+            default:
+                chooseSubject = "生物";
+                break;
         }
         return chooseSubject;
     }

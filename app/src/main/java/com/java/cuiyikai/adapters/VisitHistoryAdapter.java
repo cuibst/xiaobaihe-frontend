@@ -2,8 +2,6 @@ package com.java.cuiyikai.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,9 @@ import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.VisitHistoryTimeViewHolder;
 import com.java.cuiyikai.adapters.viewholders.VisitHistoryViewHolder;
 import com.java.cuiyikai.network.RequestBuilder;
-import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,13 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context mContext;
+
+    private static final Logger logger = LoggerFactory.getLogger(VisitHistoryAdapter.class);
+
+    private final Context mContext;
     private JSONArray historyArr;
-    private List<Date> datelist;
-    private String removeHistoryUrl="/api/history/removeVisitHistory";
-    private int cnt=0;
+    private int cnt;
     private List<Integer> timeNumber;
-    public Map<Integer,Object> allData;
+    private Map<Integer,Object> allData;
     SimpleDateFormat setTimeFormatInADay = new SimpleDateFormat("HH:mm");
     SimpleDateFormat setTimeFormatInAYear = new SimpleDateFormat("yyyy-MM-dd");
     public VisitHistoryAdapter(Context context)
@@ -47,20 +48,16 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         historyArr=arr;
         initDateList();
     }
-    public void SomeContentChanged()
+    public void reportRemove(int a)
     {
-        initDateList();
-    }
-    public void ReportRemove(int a)
-    {
-        System.out.println(a);
-        System.out.println(allData.get(a).getClass());
-        System.out.println(allData.get(a).toString());
+        logger.info("a={}", a);
+        logger.info("class is: {}", allData.get(a).getClass());
+        logger.info("a to String is : {}", allData.get(a));
         if(!(allData.get(a) instanceof Date))
         {
             RemoveHistory removeHistory=new RemoveHistory((JSONObject) allData.get(a));
-            Thread removethread=new Thread(removeHistory);
-            removethread.start();
+            Thread removeThread=new Thread(removeHistory);
+            removeThread.start();
             for(int i=0;i<historyArr.size();i++)
             {
                 if(historyArr.get(i).equals(allData.get(a)))
@@ -78,7 +75,6 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void initDateList()
     {
         timeNumber=new ArrayList<>();
-        datelist=new ArrayList<>();
         allData=new HashMap<>();
         cnt=0;
         Date mDate=new Date();
@@ -92,7 +88,6 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 timeNumber.add(i);
                 cnt++;
                 mDate=date;
-                datelist.add(date);
             }
             else if(mDate.getYear()!=date.getYear()||mDate.getMonth()!=date.getMonth()||date.getDate()!=mDate.getDate())
             {
@@ -100,7 +95,6 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 allData.put(i,date);
                 timeNumber.add(i);
                 cnt++;
-                datelist.add(date);
             }
             else
                 allData.put(i,historyArr.getJSONObject(i-cnt));
@@ -128,13 +122,13 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         {
             VisitHistoryTimeViewHolder holder=(VisitHistoryTimeViewHolder) holder1;
             Date date=new Date();
-            Date adate=(Date)allData.get(position);
-            String s="";
-            if(((adate.getYear()==date.getYear())&&(adate.getMonth()==date.getMonth())&&(date.getDate()==adate.getDate())))
+            Date allDataDate=(Date)allData.get(position);
+            String s;
+            if(((allDataDate.getYear()==date.getYear())&&(allDataDate.getMonth()==date.getMonth())&&(date.getDate()==allDataDate.getDate())))
                 s="今天";
             else
-                s=setTimeFormatInAYear.format(adate);
-            holder.timetext.setText(s);
+                s=setTimeFormatInAYear.format(allDataDate);
+            holder.getTimeText().setText(s);
         }
         if(holder1 instanceof VisitHistoryViewHolder)
         {
@@ -142,7 +136,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             JSONObject m=(JSONObject) allData.get(position);
             String name = m.getString("name");
             String sub = m.getString("subject");
-            long time=Long.parseLong(m.get("time").toString());
+            long time=Long.parseLong(m.getString("time"));
             Date date=new Date(time);
             holder.category.setText(setTimeFormatInADay.format(date));
             holder.view.setOnClickListener((View view) -> {
@@ -208,26 +202,27 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return 0;
         return allData.size();
     }
+}
 
-    private class RemoveHistory implements Runnable
+class RemoveHistory implements Runnable
+{
+    private final JSONObject num;
+    public RemoveHistory(JSONObject i)
     {
-        private JSONObject  num;
-        public RemoveHistory(JSONObject i)
-        {
-            num=i;
+        num=i;
+    }
+    @Override
+    public void run() {
+        try {
+            Map<String, String> map = new HashMap<>();
+            map.put("name",(num.getString("name")));
+            map.put("subject",(num.getString("subject")));
+            String removeHistoryUrl = "/api/history/removeVisitHistory";
+            RequestBuilder.sendBackendGetRequest(removeHistoryUrl, map, true);
         }
-        @Override
-        public void run() {
-            try {
-                Map<String, String> map = new HashMap<>();
-                map.put("name",(num.get("name").toString()));
-                map.put("subject",(num.get("subject").toString()));
-                RequestBuilder.sendBackendGetRequest(removeHistoryUrl, map, true);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

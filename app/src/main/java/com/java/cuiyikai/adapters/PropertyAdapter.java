@@ -18,6 +18,9 @@ import com.java.cuiyikai.entities.PropertyEntity;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.widgets.RoundCornerBackgroundColorSpan;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
     private final List<PropertyEntity> fullList;
     private final List<PropertyEntity> curList;
     private final Context mContext;
+    private static final Logger logger = LoggerFactory.getLogger(PropertyAdapter.class);
 
     public void switchList() {
         if(curList.size() == fullList.size()) {
@@ -62,7 +66,7 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
         SpannableStringBuilder builder = new SpannableStringBuilder(name + object);
         builder.setSpan(new RoundCornerBackgroundColorSpan(DensityUtilities.dp2px(mContext, 5), Color.rgb(0x99, 0xaa, 0xff), Color.rgb(0xff, 0xff, 0xff)), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setSpan(new StyleSpan(Typeface.BOLD), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        System.out.println(builder);
+        logger.info("Spanned result: {}", builder);
         holder.getPropertyText().setText(builder);
     }
 

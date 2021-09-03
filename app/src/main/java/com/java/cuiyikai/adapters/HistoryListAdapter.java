@@ -61,26 +61,21 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
-        holder.mContext=mContext;
-        holder.subject=((JSONObject)data.get(position)).get("subject").toString();
+        holder.setContext(mContext);
+        holder.setSubject(((JSONObject)data.get(position)).getString("subject"));
         if(recommendflag)
         {
-            holder.historyRecord.setText(((JSONObject)data.get(position)).get("name").toString());
-            holder.flag=flag;
-            holder.searchView=searchView;
-            holder.editImg.setVisibility(View.INVISIBLE);
-            holder.recommendflag=recommendflag;
+            holder.getHistoryRecord().setText(((JSONObject)data.get(position)).getString("name"));
+            holder.setSearchView(searchView);
+            holder.getEditImg().setVisibility(View.INVISIBLE);
+            holder.setRecommendFlag(recommendflag);
             return;
         }
-        holder.historyListAdapter=historyListAdapter;
-        holder.editImg.setVisibility(View.INVISIBLE);
-        holder.historyRecord.setText(((JSONObject)data.get(position)).get("content").toString());
-        holder.flag=flag;
-        holder.searchView=searchView;
-        if(flag&&!holder.historyRecord.isCursorVisible())
-        {
-            data.remove(holder.historyRecord.getText());
-        }
+        holder.getEditImg().setVisibility(View.INVISIBLE);
+        holder.getHistoryRecord().setText(((JSONObject)data.get(position)).getString("content"));
+        holder.setSearchView(searchView);
+        if(flag&&!holder.getHistoryRecord().isCursorVisible())
+            data.remove(holder.getHistoryRecord().getText());
     }
 
     @Override

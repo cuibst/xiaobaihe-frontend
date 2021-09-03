@@ -13,7 +13,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.SpannableStringBuilder;
@@ -39,6 +38,9 @@ import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.utilities.PermissionUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,6 +50,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PointExtractActivity extends AppCompatActivity {
+
+    private static final Logger logger = LoggerFactory.getLogger(PointExtractActivity.class);
 
     private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
 
@@ -100,7 +104,7 @@ public class PointExtractActivity extends AppCompatActivity {
                 File file = new File(tessdata, "chi_sim.traineddata");
                 try (FileOutputStream outputStream = new FileOutputStream(file)) {
                     byte[] buffer = new byte[1024];
-                    int len = 0;
+                    int len;
                     while ((len = inputStream.read(buffer)) != -1)
                         outputStream.write(buffer, 0, len);
                     inputStream.close();
@@ -113,15 +117,15 @@ public class PointExtractActivity extends AppCompatActivity {
             baseAPI.setImage(bitmap);
             String result = baseAPI.getUTF8Text();
             baseAPI.end();
-            System.out.printf("result:%s%n",result);
-            EditText editText = (EditText) findViewById(R.id.extract_text_input);
+            logger.info("result: {}",result);
+            EditText editText = findViewById(R.id.extract_text_input);
             editText.setText(result);
             onTextReceived(result);
         }
     }
 
     private void onTextReceived(String text) {
-        TextView result = (TextView) findViewById(R.id.extract_result);
+        TextView result = findViewById(R.id.extract_result);
         Map<String,String> args = new HashMap<>();
         args.put("context", text);
         args.put("course", "");
@@ -133,22 +137,22 @@ public class PointExtractActivity extends AppCompatActivity {
             Thread.currentThread().interrupt();
             return;
         }
-        System.out.println("requesting!!");
+        logger.info("requesting!!");
         SpannableStringBuilder ssBuilder = new SpannableStringBuilder(text);
         JSONArray data = res.getJSONObject("data").getJSONArray("results");
-        System.out.println(data.toString());
+        logger.info(data.toString());
         for(Object keyword: data) {
             JSONObject obj = JSON.parseObject(keyword.toString());
-            int L = obj.getInteger("start_index");
-            int R = obj.getInteger("end_index");
+            int startIndex = obj.getInteger("start_index");
+            int endIndex = obj.getInteger("end_index");
             String name = obj.getString("entity");
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View view) {
-                    System.out.println("clicked!!!");
+                    logger.info("clicked!!!");
                     Intent f=new Intent(PointExtractActivity.this,EntityActivity.class);
                     f.putExtra("name",name);
-                    System.out.println(name);
+                    logger.info(name);
                     f.putExtra("subject","");
                     startActivity(f);
                 }
@@ -158,14 +162,14 @@ public class PointExtractActivity extends AppCompatActivity {
                     ds.setColor(Color.rgb(0x66,0xcc,0xff));
                 }
             };
-            ssBuilder.setSpan(clickableSpan, L, R+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssBuilder.setSpan(clickableSpan, startIndex, endIndex+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         result.setMovementMethod(LinkMovementMethod.getInstance());
         result.setText(ssBuilder);
         result.setVisibility(View.VISIBLE);
-        TextView resultTag = (TextView) findViewById(R.id.result_tag);
+        TextView resultTag = findViewById(R.id.result_tag);
         resultTag.setVisibility(View.VISIBLE);
-        Button uploadButton = (Button) findViewById(R.id.btn_upload);
+        Button uploadButton = findViewById(R.id.btn_upload);
         uploadButton.setText("再搜一次");
     }
 
@@ -173,10 +177,10 @@ public class PointExtractActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_point_extract);
-        Button uploadButton = (Button) findViewById(R.id.btn_upload);
-        photoView = (ImageView) findViewById(R.id.submit_photo);
+        Button uploadButton = findViewById(R.id.btn_upload);
+        photoView = findViewById(R.id.submit_photo);
         uploadButton.setOnClickListener((View view) -> {
-            EditText editText = (EditText) findViewById(R.id.extract_text_input);
+            EditText editText = findViewById(R.id.extract_text_input);
             PointExtractActivity.this.onTextReceived(editText.getText().toString());
         });
         Dialog bottomDialog = new Dialog(PointExtractActivity.this, R.style.BottomDialog);
@@ -188,9 +192,9 @@ public class PointExtractActivity extends AppCompatActivity {
         params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(this, 16f);
         params.bottomMargin = DensityUtilities.dp2px(this, 8f);
         contentView.setLayoutParams(params);
-        Button takePhoto = (Button) contentView.findViewById(R.id.take_photo);
-        Button fromAlbum = (Button) contentView.findViewById(R.id.from_album);
-        Button camera = (Button) findViewById(R.id.camera);
+        Button takePhoto = contentView.findViewById(R.id.take_photo);
+        Button fromAlbum = contentView.findViewById(R.id.from_album);
+        Button camera = findViewById(R.id.camera);
         camera.setOnClickListener((View view) -> bottomDialog.show());
         takePhoto.setOnClickListener((View view) -> {
             if(PermissionUtilities.verifyPermissions(PointExtractActivity.this, Manifest.permission.CAMERA) == 0) {

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
+import android.os.Looper;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -14,15 +14,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.network.RequestBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText userName,passWord,email,phone;
-    private String registerUrl="/api/register/";
-    private String checkemail="/api/register/check/username";
-    private Button register_btn;
+    private static final Logger logger = LoggerFactory.getLogger(RegisterActivity.class);
+
+    private TextInputEditText userName;
+    private TextInputEditText passWord;
+    private TextInputEditText email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,18 +35,14 @@ public class RegisterActivity extends AppCompatActivity {
         userName=findViewById(R.id.register_username);
         passWord=findViewById(R.id.register_password);
         email=findViewById(R.id.register_email);
-        phone=findViewById(R.id.register_phone);
-        register_btn=findViewById(R.id.btn_register);
-        register_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CheckName checkName=new CheckName();
-                Thread checkThread=new Thread(checkName);
-                checkThread.start();
-            }
+        Button registerButton = findViewById(R.id.btn_register);
+        registerButton.setOnClickListener(v -> {
+            CheckName checkName=new CheckName();
+            Thread checkThread=new Thread(checkName);
+            checkThread.start();
         });
     }
-    MyHandler handler=new MyHandler();
+    private final MyHandler handler=new MyHandler();
     private class CheckName implements Runnable {
 
         @Override
@@ -49,7 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
             Map<String,String > map=new HashMap<>();
             map.put("username",userName.getText().toString());
             try {
-                JSONObject msg=RequestBuilder.sendBackendGetRequest(checkemail, map, false);
+                String checkEmail = "/api/register/check/username";
+                JSONObject msg=RequestBuilder.sendBackendGetRequest(checkEmail, map, false);
                 if(msg.get("status").toString().equals("ok"))
                     handler.sendEmptyMessage(0);
                 else
@@ -62,23 +64,18 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
     private class MyHandler extends Handler {
+
         @Override
         public void handleMessage(@NonNull android.os.Message msg) {
-            switch(msg.what)
-            {
-                case 0:
-                    System.out.println(msg.what);
-                    Register register=new Register();
-                    Thread registerThread=new Thread(register);
-                    registerThread.start();
-                    break;
-                case 1:
-                    System.out.println(msg.what);
-                    Toast.makeText(RegisterActivity.this, "用户名已被注册", Toast.LENGTH_LONG).show();
-                    break;
-                case 2:
-                    Toast.makeText(RegisterActivity.this, "邮件已发送，请激活后使用", Toast.LENGTH_LONG).show();
-                    break;
+            logger.info("message {}", msg.what);
+            if (msg.what == 0) {
+                Register register = new Register();
+                Thread registerThread = new Thread(register);
+                registerThread.start();
+            } else if (msg.what == 1) {
+                Toast.makeText(RegisterActivity.this, "用户名已被注册", Toast.LENGTH_LONG).show();
+            } else if (msg.what == 2) {
+                Toast.makeText(RegisterActivity.this, "邮件已发送，请激活后使用", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -91,7 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
             map.put("email",email.getText().toString());
             map.put("username",userName.getText().toString());
             try {
-                JSONObject msg=RequestBuilder.sendBackendPostRequest(registerUrl, new JSONObject(map), false);
+                String registerUrl = "/api/register/";
+                RequestBuilder.asyncSendBackendPostRequest(registerUrl, new JSONObject(map), false);
                 handler.sendEmptyMessage(2);
             }
             catch (Exception e)

@@ -18,22 +18,15 @@ import com.java.cuiyikai.network.RequestBuilder;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button logInPostBtn;
-    private TextView usernameTextView;
-    private TextView passwordTextView;
-    private CheckBox checkBox;
-    private TextView registerButton;
-    String username, password;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        logInPostBtn = findViewById(R.id.btn_login);
-        checkBox = findViewById(R.id.remember_password);
-        usernameTextView = (EditText) findViewById(R.id.edittext_username);
-        passwordTextView = (EditText) findViewById(R.id.edittext_password);
-        registerButton = findViewById(R.id.tv_register);
+        Button logInPostBtn = findViewById(R.id.btn_login);
+        CheckBox checkBox = findViewById(R.id.remember_password);
+        EditText usernameTextView = findViewById(R.id.edittext_username);
+        EditText passwordTextView = findViewById(R.id.edittext_password);
+        TextView registerButton = findViewById(R.id.tv_register);
 
         registerButton.setOnClickListener((View view) -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -46,8 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         checkBox.setChecked(mainApplication.isSaveChecked());
 
         logInPostBtn.setOnClickListener((View view) -> {
-            username = usernameTextView.getText().toString();
-            password = passwordTextView.getText().toString();
+            String username = usernameTextView.getText().toString();
+            String password = passwordTextView.getText().toString();
             try {
                 String token = RequestBuilder.getBackendToken(username, password).get();
                 if (token == null)
@@ -56,12 +49,11 @@ public class LoginActivity extends AppCompatActivity {
                 if(checkBox.isChecked()) {
                     mainApplication.setSaveUsername(username);
                     mainApplication.setSavePassword(password);
-                    mainApplication.setSaveChecked(checkBox.isChecked());
                 } else {
                     mainApplication.setSavePassword("");
                     mainApplication.setSaveUsername(username);
-                    mainApplication.setSaveChecked(checkBox.isChecked());
                 }
+                mainApplication.setSaveChecked(checkBox.isChecked());
                 mainApplication.dumpCacheData();
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);

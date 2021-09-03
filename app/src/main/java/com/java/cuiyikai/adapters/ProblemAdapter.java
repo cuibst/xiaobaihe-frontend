@@ -22,7 +22,7 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemViewHolder> {
     private final List<JSONObject> fullList;
     private final List<JSONObject> curList;
     private final Context mContext;
-    private String subject;
+    private final String subject;
 
     public void switchList() {
         if(curList.size() == fullList.size()) {

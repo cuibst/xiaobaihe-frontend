@@ -13,9 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +36,7 @@ public class UserPageEntryFragment extends Fragment {
     public UserPageEntryFragment() {
         // Required empty public constructor
     }
-    private LinearLayout mQuestion;
-    private LinearLayout mQuestionsCollection;
-    private LinearLayout mCollect;
-    private LinearLayout mHistory;
+
     private LinearLayout mLogIn;
     private TextView mUserName;
 
@@ -68,12 +63,12 @@ public class UserPageEntryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_page_entry, container, false);
-        mQuestion = view.findViewById(R.id.user_question);
-        mCollect = view.findViewById(R.id.user_collect);
-        mHistory = view.findViewById(R.id.user_history);
+        LinearLayout mQuestion = view.findViewById(R.id.user_question);
+        LinearLayout mCollect = view.findViewById(R.id.user_collect);
+        LinearLayout mHistory = view.findViewById(R.id.user_history);
         mUserName = view.findViewById(R.id.user_name);
         mLogIn = view.findViewById(R.id.login_btn);
-        mQuestionsCollection=view.findViewById(R.id.user_wrong_question);
+        LinearLayout mQuestionsCollection = view.findViewById(R.id.user_wrong_question);
         if(RequestBuilder.checkedLogin()){
             mUserName.setText(((MainApplication) getActivity().getApplication()).getSaveUsername());
             mLogIn.setOnClickListener((View v) -> {
@@ -91,19 +86,16 @@ public class UserPageEntryFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivityForResult(intent, 1);
             });
-        mHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!RequestBuilder.checkedLogin()){
-                    Toast.makeText(getContext(), "您尚未登录", 100).show();
-                }
-                Intent intent=new Intent(getActivity(), VisitHistoryActivity.class);
-                startActivity(intent);
+        mHistory.setOnClickListener(v -> {
+            if(!RequestBuilder.checkedLogin()){
+                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
             }
+            Intent intent=new Intent(getActivity(), VisitHistoryActivity.class);
+            startActivity(intent);
         });
         mCollect.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
-                Toast.makeText(getContext(), "您尚未登录", 100).show();
+                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
             }
             else {
                 Intent intent = new Intent(getActivity(), FavouriteCheckActivity.class);
@@ -113,7 +105,7 @@ public class UserPageEntryFragment extends Fragment {
         });
         mQuestionsCollection.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
-                Toast.makeText(getContext(), "您尚未登录", 100).show();
+                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
             }
             else {
                 Intent intent = new Intent(getActivity(), QuestionsCollectionActivity.class);
@@ -129,6 +121,9 @@ public class UserPageEntryFragment extends Fragment {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
+
+                //FIXME: backend api updated, please change the logic!!
+
                 JSONArray arr=msg.getJSONArray("data");
                 for(int i = 0; i < arr.size(); i ++){
                     Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
@@ -142,17 +137,12 @@ public class UserPageEntryFragment extends Fragment {
                 }
                 mIntent.putExtra("sum", arr.size() + "");
                 mIntent.putExtra("type", "list");
-                Log.v("mtag",arr.toString());
-                Log.v("mtag", arr.size() + "");
-                Log.v("mtag", arr.get(0).toString() + "");
-                Log.v("mtag", arr.get(0).getClass().toString());
+                Log.v("mTag",arr.toString());
+                Log.v("mTag", arr.size() + "");
+                Log.v("mTag", arr.get(0).toString() + "");
+                Log.v("mTag", arr.get(0).getClass().toString());
                 startActivity(mIntent);
             });
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

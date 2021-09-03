@@ -3,14 +3,14 @@ package com.java.cuiyikai.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.alibaba.fastjson.JSON;
 import com.java.cuiyikai.adapters.ItemAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,63 +30,66 @@ import java.util.Map;
 
 
 public class ItemFragment extends Fragment {
-    public  XRecyclerView xRecyclerView;
-    public  Context context;
-    public  String TITLE = "tile";
-    public  RecyclerView.LayoutManager layoutManager;
-    public  ItemAdapter itemAdapter;
+    private XRecyclerView xRecyclerView;
+    private Context context;
+    private String title = "title";
+    private ItemAdapter itemAdapter;
     private ProgressBar progressBar;
-    private String main_activity_backend_url="/api/uri/getname";
-    public ItemFragment() {
-    }
+    private static final String MAIN_ACTIVITY_BACKEND_URL ="/api/uri/getname";
+    public ItemFragment() {}
     public ItemFragment(String s, Context c)
     {
         super();
-        TITLE=s;
+        title =s;
         context=c;
-    }
-    public static ItemFragment newInstance(String item) {
-        return new ItemFragment();
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
-        if(TITLE.equals("chinese"))
-            view = inflater.inflate(R.layout.fragment_item_chinese, container, false);
-        else if (TITLE.equals("math"))
-            view = inflater.inflate(R.layout.fragment_item_math, container, false);
-        else if (TITLE.equals("english"))
-            view = inflater.inflate(R.layout.fragment_item_english, container, false);
-        else if (TITLE.equals("physics"))
-            view = inflater.inflate(R.layout.fragment_item_physics, container, false);
-        else if (TITLE.equals("chemistry"))
-            view = inflater.inflate(R.layout.fragment_item_chemistry, container, false);
-        else if (TITLE.equals("geo"))
-            view = inflater.inflate(R.layout.fragment_item_geo, container, false);
-        else if (TITLE.equals("politics"))
-            view = inflater.inflate(R.layout.fragment_item_politics, container, false);
-        else if (TITLE.equals("history"))
-            view = inflater.inflate(R.layout.fragment_item_history, container, false);
-        else if (TITLE.equals("biology"))
-            view = inflater.inflate(R.layout.fragment_item_biology, container, false);
-        else
-            view =inflater.inflate(R.layout.fragment_item_recommend, container, false);
+        switch (title) {
+            case "chinese":
+                view = inflater.inflate(R.layout.fragment_item_chinese, container, false);
+                break;
+            case "math":
+                view = inflater.inflate(R.layout.fragment_item_math, container, false);
+                break;
+            case "english":
+                view = inflater.inflate(R.layout.fragment_item_english, container, false);
+                break;
+            case "physics":
+                view = inflater.inflate(R.layout.fragment_item_physics, container, false);
+                break;
+            case "chemistry":
+                view = inflater.inflate(R.layout.fragment_item_chemistry, container, false);
+                break;
+            case "geo":
+                view = inflater.inflate(R.layout.fragment_item_geo, container, false);
+                break;
+            case "politics":
+                view = inflater.inflate(R.layout.fragment_item_politics, container, false);
+                break;
+            case "history":
+                view = inflater.inflate(R.layout.fragment_item_history, container, false);
+                break;
+            case "biology":
+                view = inflater.inflate(R.layout.fragment_item_biology, container, false);
+                break;
+            default:
+                view = inflater.inflate(R.layout.fragment_item_recommend, container, false);
+                break;
+        }
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
         progressBar=view.findViewById(R.id.waitingBar);
-        itemAdapter=new ItemAdapter(getActivity(),TITLE);
+        itemAdapter=new ItemAdapter(getActivity(), title);
         xRecyclerView.setAdapter(itemAdapter);
         sendMessage();
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 try {
-                    Refresh runner=new Refresh(TITLE);
+                    Refresh runner=new Refresh(title);
                     Thread thread=new Thread(runner);
                     thread.start();
                 }
@@ -101,7 +104,7 @@ public class ItemFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 try {
-                    LoadMore runner=new LoadMore(TITLE);
+                    LoadMore runner=new LoadMore();
                     Thread thread=new Thread(runner);
                     thread.start();
                 }
@@ -117,14 +120,14 @@ public class ItemFragment extends Fragment {
     }
     public void sendMessage()
     {
-        ConnectToWeb runner=new ConnectToWeb(TITLE);
+        ConnectToWeb runner=new ConnectToWeb(title);
         Thread thread=new Thread(runner);
         thread.start();
     }
 
-    MyHandler handler=new MyHandler();
+    private final MyHandler handler=new MyHandler();
     private class ConnectToWeb implements Runnable{
-        private String chooseSubject;
+        private final String chooseSubject;
         ConnectToWeb(String s)
         {
             chooseSubject=s;
@@ -134,7 +137,7 @@ public class ItemFragment extends Fragment {
             try {
                 Map<String, String> map = new HashMap<>();
                 map.put("subject", chooseSubject);
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=0;
@@ -147,7 +150,7 @@ public class ItemFragment extends Fragment {
         }
     }
     private class Refresh implements Runnable{
-        private String chooseSubject;
+        private final String chooseSubject;
         Refresh(String s)
         {
             chooseSubject=s;
@@ -157,7 +160,7 @@ public class ItemFragment extends Fragment {
             try {
                 Map<String, String> map = new HashMap<>();
                 map.put("subject", chooseSubject);
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=1;
@@ -170,17 +173,12 @@ public class ItemFragment extends Fragment {
         }
     }
     private class LoadMore implements Runnable{
-        private String chooseSubject;
-        LoadMore(String s)
-        {
-            chooseSubject=s;
-        }
         @Override
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("subject", itemAdapter.chooseSubject);
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                map.put("subject", itemAdapter.getChooseSubject());
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=2;
@@ -193,28 +191,25 @@ public class ItemFragment extends Fragment {
         }
     }
     private class MyHandler extends Handler {
+
         @Override
         public void handleMessage(@NonNull Message msg) {
             JSONObject object;
-            switch(msg.what)
-            {
-                case 0:
-                    progressBar.setVisibility(View.INVISIBLE);
-                    object=JSONObject.parseObject(msg.obj.toString());
-                    itemAdapter.addSubject(object.getJSONArray("data"));
-                    itemAdapter.notifyDataSetChanged();
-                    break;
-                case 1:
-                    object=JSONObject.parseObject(msg.obj.toString());
-                    itemAdapter.addSubject(object.getJSONArray("data"));
-                    itemAdapter.notifyDataSetChanged();
-                    xRecyclerView.refreshComplete();
-                    break;
-                case 2:
-                    object=JSONObject.parseObject(msg.obj.toString());
-                    itemAdapter.addMoreSubject(object.getJSONArray("data"));
-                    itemAdapter.notifyDataSetChanged();
-                    xRecyclerView.loadMoreComplete();
+            if (msg.what == 0) {
+                progressBar.setVisibility(View.INVISIBLE);
+                object = JSON.parseObject(msg.obj.toString());
+                itemAdapter.addSubject(object.getJSONArray("data"));
+                itemAdapter.notifyDataSetChanged();
+            } else if (msg.what == 1) {
+                object = JSON.parseObject(msg.obj.toString());
+                itemAdapter.addSubject(object.getJSONArray("data"));
+                itemAdapter.notifyDataSetChanged();
+                xRecyclerView.refreshComplete();
+            } else if (msg.what == 2) {
+                object = JSON.parseObject(msg.obj.toString());
+                itemAdapter.addMoreSubject(object.getJSONArray("data"));
+                itemAdapter.notifyDataSetChanged();
+                xRecyclerView.loadMoreComplete();
             }
         }
     }

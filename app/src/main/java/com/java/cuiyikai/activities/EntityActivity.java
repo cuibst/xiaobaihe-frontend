@@ -55,6 +55,9 @@ import com.sina.weibo.sdk.openapi.IWBAPI;
 import com.sina.weibo.sdk.openapi.WBAPIFactory;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -71,6 +74,8 @@ import java.util.concurrent.Executors;
 
 
 public class EntityActivity extends AppCompatActivity {
+
+    private static final Logger logger = LoggerFactory.getLogger(EntityActivity.class);
 
     private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
 
@@ -117,7 +122,7 @@ public class EntityActivity extends AppCompatActivity {
                 problems = JSON.parseObject(entityList.get(0).getProblemsJson());
             } else {
 
-                System.out.println("No matches in database!!");
+                logger.info("No matches in database!!");
 
                 Map<String, String> arguments = new HashMap<>();
                 arguments.put("name", entityName);
@@ -173,13 +178,13 @@ public class EntityActivity extends AppCompatActivity {
         public String call() {
             Date start = new Date();
 
-            System.out.println("Loading start!!");
+            logger.info("Loading start!!");
 
             Intent prevIntent = getIntent();
 
             Bundle prevBundle = prevIntent.getExtras();
 
-            String subject = prevBundle.getString("subject", "chinese");
+            subject = prevBundle.getString("subject", "chinese");
 
             try {
                 initJsonObjects(entityName, subject);
@@ -193,10 +198,7 @@ public class EntityActivity extends AppCompatActivity {
             speechBuilder.append(entityName).append("。");
             speechBuilder.append("关系").append("：");
 
-
-            System.out.printf("load finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
-
-            System.out.printf("Handling relations: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("Handling relations: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             List<JSONObject> objectList = entityJson.getJSONArray("content").toJavaList(JSONObject.class);
 
@@ -217,7 +219,7 @@ public class EntityActivity extends AppCompatActivity {
                     relationSet.add(entity);
                 }
             }
-            System.out.printf("Sorting relations: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("Sorting relations: {}", (new Date().getTime() - start.getTime()) / 1000.0);
             Collections.sort(relationFullList);
 
             Map<String, List<String>> objectRelationMap = new HashMap<>();
@@ -259,7 +261,7 @@ public class EntityActivity extends AppCompatActivity {
             message.what = 3;
             handler.sendMessage(message);
 
-            System.out.printf("Handling properties: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("Handling properties: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             objectList = entityJson.getJSONArray("property").toJavaList(JSONObject.class);
 
@@ -304,23 +306,23 @@ public class EntityActivity extends AppCompatActivity {
             else
                 description = description + "。";
 
-            System.out.printf("Adapting properties: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("Adapting properties: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             message = handler.obtainMessage();
             message.what = 4;
             handler.sendMessage(message);
 
-            System.out.printf("Handling problems: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("Handling problems: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             questionFullList = problems.getJSONArray("data").toJavaList(JSONObject.class);
 
-            System.out.printf("request finished: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("request finished: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             message = handler.obtainMessage();
             message.what = 5;
             handler.sendMessage(message);
 
-            System.out.printf("Done: %f%n", (new Date().getTime() - start.getTime()) / 1000.0);
+            logger.info("Done: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             message = handler.obtainMessage();
             message.what = 1;
@@ -349,7 +351,7 @@ public class EntityActivity extends AppCompatActivity {
     private static final String REDIRECT_URL = "http://open.weibo.com/apps/1760115939/privilege/oauth";
     private static final String SCOPE = "";
 
-    private IWBAPI mWBAPI = null;
+    private IWBAPI mWeiboAPI = null;
 
     private void initSdk() {
         if(PermissionUtilities.verifyPermissions(EntityActivity.this, Manifest.permission.CHANGE_WIFI_STATE) == 0) {
@@ -357,8 +359,8 @@ public class EntityActivity extends AppCompatActivity {
             return;
         }
         AuthInfo authInfo = new AuthInfo(this, APP_KEY, REDIRECT_URL, SCOPE);
-        mWBAPI = WBAPIFactory.createWBAPI(this);
-        mWBAPI.registerApp(this, authInfo);
+        mWeiboAPI = WBAPIFactory.createWBAPI(this);
+        mWeiboAPI.registerApp(this, authInfo);
     }
 
     @Override
@@ -388,7 +390,7 @@ public class EntityActivity extends AppCompatActivity {
         entityName = prevBundle.getString("name", "李白");
         subject = prevBundle.getString("subject", "chinese");
 
-        TextView titleView = (TextView) findViewById(R.id.entityTitle);
+        TextView titleView = findViewById(R.id.entityTitle);
         titleView.setText(entityName);
 
         LoadingDialog loadingDialog = new LoadingDialog(EntityActivity.this);
@@ -416,8 +418,8 @@ public class EntityActivity extends AppCompatActivity {
                 } else if (message.what == 2) {
                     loadingDialog.loadFailed();
                 } else if (message.what == 3) {
-                    RecyclerView relationsView = (RecyclerView) findViewById(R.id.relationsView);
-                    ImageButton relationButton = (ImageButton) findViewById(R.id.relationButton);
+                    RecyclerView relationsView = findViewById(R.id.relationsView);
+                    ImageButton relationButton = findViewById(R.id.relationButton);
                     if (relationFullList.size() > 5) {
                         relationPrevList = relationFullList.subList(0, 5);
                         relationAdapter = new RelationAdapter(EntityActivity.this, relationFullList, relationPrevList, subject);
@@ -436,8 +438,8 @@ public class EntityActivity extends AppCompatActivity {
                     }
                     relationsView.setAdapter(relationAdapter);
                 } else if (message.what == 4) {
-                    RecyclerView propertiesView = (RecyclerView) findViewById(R.id.propertiesView);
-                    ImageButton propertyButton = (ImageButton) findViewById(R.id.propertyButton);
+                    RecyclerView propertiesView = findViewById(R.id.propertiesView);
+                    ImageButton propertyButton = findViewById(R.id.propertyButton);
                     if (propertyFullList.size() > 5) {
                         propertyPrevList = propertyFullList.subList(0, 5);
                         propertyButton.setBackgroundResource(R.drawable.pulldown);
@@ -456,8 +458,8 @@ public class EntityActivity extends AppCompatActivity {
                     }
                     propertiesView.setAdapter(propertyAdapter);
                 } else if (message.what == 5) {
-                    RecyclerView problemsView = (RecyclerView) findViewById(R.id.problemsView);
-                    ImageButton problemButton = (ImageButton) findViewById(R.id.problemButton);
+                    RecyclerView problemsView = findViewById(R.id.problemsView);
+                    ImageButton problemButton = findViewById(R.id.problemButton);
                     if (questionFullList.size() > 5) {
                         questionPrevList = questionFullList.subList(0, 5);
                         problemAdapter = new ProblemAdapter(EntityActivity.this, questionFullList, questionPrevList, subject);
@@ -493,15 +495,15 @@ public class EntityActivity extends AppCompatActivity {
 
         executorService.submit(new EntityActivityLoadCallable(handler));
 
-        FloatingActionButton shareButton = (FloatingActionButton) findViewById(R.id.shareButton);
+        FloatingActionButton shareButton = findViewById(R.id.shareButton);
         shareButton.setOnClickListener((View vi) -> doWeiboShare());
 
-        System.out.println("Finish submitting!!");
+        logger.info("Finish submitting!!");
 
         findViewById(R.id.playButton).setOnClickListener((View v) -> onTextToSpeech(textToSpeech == null || !textToSpeech.isSpeaking()));
 
         if(((MainApplication)getApplication()).getFavourite() != null) {
-            System.out.println("Into favourite!!");
+            logger.info("Into favourite!!");
 
             Dialog bottomDialog = new Dialog(EntityActivity.this, R.style.BottomDialog);
             View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_favourite, null);
@@ -513,18 +515,18 @@ public class EntityActivity extends AppCompatActivity {
             params.bottomMargin = DensityUtilities.dp2px(this, 8f);
             contentView.setLayoutParams(params);
 
-            bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
+            bottomFavouriteView = contentView.findViewById(R.id.bottomFavouriteListView);
 
             updateFavourite(((MainApplication)getApplication()).getFavourite());
-            FloatingActionButton button = (FloatingActionButton) findViewById(R.id.favouriteButton);
+            FloatingActionButton button = findViewById(R.id.favouriteButton);
             button.setVisibility(View.VISIBLE);
 
             bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
-            System.out.println("Dialog finish initialization!!");
+            logger.info("Dialog finish initialization!!");
 
             button.setOnClickListener((View view) -> bottomDialog.show());
 
-            Button finishButton = (Button) contentView.findViewById(R.id.buttonBottomFinish);
+            Button finishButton = contentView.findViewById(R.id.buttonBottomFinish);
             finishButton.setOnClickListener((View view) -> {
                 Set<String> checked = bottomFavouriteAdapter.getCheckedSet();
                 JSONObject args = new JSONObject();
@@ -554,8 +556,8 @@ public class EntityActivity extends AppCompatActivity {
             params.bottomMargin = DensityUtilities.dp2px(this, 8f);
             directoryContentView.setLayoutParams(params);
 
-            Button confirm = (Button) directoryContentView.findViewById(R.id.addDirectoryConfirm);
-            Button cancel = (Button) directoryContentView.findViewById(R.id.addDirectoryCancel);
+            Button confirm = directoryContentView.findViewById(R.id.addDirectoryConfirm);
+            Button cancel = directoryContentView.findViewById(R.id.addDirectoryCancel);
 
             cancel.setOnClickListener((View view) -> addNewDirectoryDialog.dismiss());
 
@@ -577,9 +579,9 @@ public class EntityActivity extends AppCompatActivity {
                 addNewDirectoryDialog.dismiss();
             });
 
-            Button addNewDirectoryButton = (Button) contentView.findViewById(R.id.bottomAddNewFavourite);
+            Button addNewDirectoryButton = contentView.findViewById(R.id.bottomAddNewFavourite);
             addNewDirectoryButton.setOnClickListener((View view) -> addNewDirectoryDialog.show());
-            System.out.println("Done!!");
+            logger.info("Done!!");
         }
     }
 
@@ -609,12 +611,12 @@ public class EntityActivity extends AppCompatActivity {
         bottomFavouriteAdapter = new BottomFavouriteAdapter(EntityActivity.this, R.layout.bottom_dialog_favourite_item, favouriteEntities);
         bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
 
-        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.favouriteButton);
+        FloatingActionButton button = findViewById(R.id.favouriteButton);
         for(Map.Entry<String, Object> entry : favourite.entrySet()) {
             JSONArray array = JSON.parseArray(entry.getValue().toString());
             for(Object obj : array) {
                 JSONObject object = JSON.parseObject(obj.toString());
-                System.out.printf("Receive object in favourite %s%n", object.getString("name"));
+                logger.info("Receive object in favourite {}", object.getString("name"));
                 if(object.getString("name").equals(entityName)) {
                     button.setImageResource(R.drawable.star_yellow_16);
                     return;
@@ -626,7 +628,7 @@ public class EntityActivity extends AppCompatActivity {
 
     private void doWeiboShare() {
 
-        System.out.println("Doing weibo share!!!");
+        logger.info("Doing weibo share!!!");
 
         WeiboMultiMessage message = new WeiboMultiMessage();
 
@@ -634,14 +636,14 @@ public class EntityActivity extends AppCompatActivity {
         textObject.text = "我正在 #小白盒# 中看：" + entityName + "。\n" + description;
 
         message.textObject = textObject;
-        mWBAPI.shareMessage(message, true);
+        mWeiboAPI.shareMessage(message, true);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(mWBAPI != null)
-            mWBAPI.doResultIntent(data, new WeiboShareCallback(EntityActivity.this));
+        if(mWeiboAPI != null)
+            mWeiboAPI.doResultIntent(data, new WeiboShareCallback(EntityActivity.this));
     }
 
     private TextToSpeech textToSpeech = null;
@@ -651,10 +653,10 @@ public class EntityActivity extends AppCompatActivity {
             textToSpeech.stop();
             textToSpeech = null;
         } else if (flag) {
-            System.out.println("Enter speech!");
+            logger.info("Enter speech!");
             textToSpeech = new TextToSpeech(EntityActivity.this, (int i) -> {
                 int result = textToSpeech.setLanguage(Locale.CHINA);
-                System.out.printf("Result %d%n%n", result);
+                logger.info("Result {}", result);
                 if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA) {
                     Toast.makeText(EntityActivity.this, "您的手机目前不支持中文tts，请下载语音包", Toast.LENGTH_LONG).show();
                 } else {

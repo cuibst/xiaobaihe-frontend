@@ -15,6 +15,9 @@ import com.java.cuiyikai.entities.CategoryObject;
 import com.java.cuiyikai.adapters.viewholders.CategoryTitleHolder;
 import com.java.cuiyikai.adapters.viewholders.CategoryViewHolder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int TYPE_ITEM = 1;
     public static final int TYPE_TITLE = 2;
+    private static final Logger logger = LoggerFactory.getLogger(GridViewAdapter.class);
 
     private int userSectionSize;
 
@@ -54,13 +58,8 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onItemMove(int fromPosition, int toPosition) {
         if(toPosition == 0)
             return;
-        System.out.printf("Move from %d to %d%n", fromPosition, toPosition);
-        if(inUserSection(fromPosition) && inUserSection(toPosition)) {
-            CategoryObject object = itemList.get(fromPosition);
-            itemList.remove(fromPosition);
-            itemList.add(toPosition, object);
-            notifyItemMoved(fromPosition, toPosition);
-        } else if(fromPosition > userSectionSize + 1 && toPosition > userSectionSize + 1) {
+        logger.info("Move from {} to {}", fromPosition, toPosition);
+        if((inUserSection(fromPosition) && inUserSection(toPosition)) || (fromPosition > userSectionSize + 1 && toPosition > userSectionSize + 1)) {
             CategoryObject object = itemList.get(fromPosition);
             itemList.remove(fromPosition);
             itemList.add(toPosition, object);
@@ -83,7 +82,7 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for(CategoryObject object : itemList.subList(1, userSectionSize + 1))
             subjectList.add(object.getName());
 
-        ((MainApplication)((CategoryActivity)context).getApplication()).setSubjects(subjectList);
+        ((MainApplication) context.getApplication()).setSubjects(subjectList);
     }
 
     @NonNull

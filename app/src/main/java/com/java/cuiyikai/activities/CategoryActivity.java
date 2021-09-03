@@ -27,9 +27,6 @@ public class CategoryActivity extends AppCompatActivity {
     private List<String> userList = new ArrayList<>();
     private List<String> otherList = new ArrayList<>();
 
-    private List<CategoryObject> objectList;
-
-    private RecyclerView userView;
     private GridViewAdapter adapter;
 
     @Override
@@ -52,9 +49,9 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        userView = (RecyclerView) findViewById(R.id.user_gv);
+        RecyclerView userView = findViewById(R.id.user_gv);
 
-        objectList = new ArrayList<>();
+        List<CategoryObject> objectList = new ArrayList<>();
         CategoryTitle mTitle = new CategoryTitle("我的频道");
 
         objectList.add(mTitle);

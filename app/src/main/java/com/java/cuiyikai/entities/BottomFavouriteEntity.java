@@ -2,9 +2,9 @@ package com.java.cuiyikai.entities;
 
 public class BottomFavouriteEntity {
 
-    private boolean favoured;
+    private final boolean favoured;
 
-    private String directoryName;
+    private final String directoryName;
 
     public BottomFavouriteEntity(boolean favoured, String directoryName) {
         this.favoured = favoured;
@@ -15,15 +15,8 @@ public class BottomFavouriteEntity {
         return favoured;
     }
 
-    public void setFavoured(boolean favoured) {
-        this.favoured = favoured;
-    }
-
     public String getDirectoryName() {
         return directoryName;
     }
 
-    public void setDirectoryName(String directoryName) {
-        this.directoryName = directoryName;
-    }
 }

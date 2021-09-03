@@ -1,16 +1,14 @@
 package com.java.cuiyikai.activities;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -23,6 +21,9 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ProblemActivity extends Activity {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProblemActivity.class);
 
     List<String> []optionList;
 
@@ -67,7 +70,7 @@ public class ProblemActivity extends Activity {
                 Log.v("getNum", i + "");
                 for(int j=0;j<answerList.get(0).length();j++)
                     if(Character.isLowerCase(answerList.get(i).charAt(j)) || Character.isUpperCase(answerList.get(i).charAt(j))) {
-                        System.out.printf("%d %c%n", j, answerList.get(i).charAt(j));
+                        logger.info("Answer: {} {}", j, answerList.get(i).charAt(j));
                         optionId[i] = Character.toUpperCase(answerList.get(i).charAt(j)) - 'A';
                         break;
                     }
@@ -97,8 +100,7 @@ public class ProblemActivity extends Activity {
                     placeE = questionList.get(i).indexOf("E、");
                 }
 
-                System.out.printf("%d %d %d %d%n", placeA, placeB, placeC, placeD);
-//                problemDescription.setText(questionList.get(i).substring(0, placeA));
+                logger.info("Answer places: {} {} {} {}", placeA, placeB, placeC, placeD);
 
                 String aText = questionList.get(i).substring(placeA + 2, placeB);
                 String bText = questionList.get(i).substring(placeB + 2, placeC);
@@ -139,35 +141,32 @@ public class ProblemActivity extends Activity {
         Log.v("rank", optionNum[rank] + "");
         for(int i = 0; i < optionNum[rank]; i ++){
             View view = setButton(optionList[rank].get(i), letter[i]);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for (int i = 0; i < optionGroup.getChildCount(); i++) {
-                        View child = optionGroup.getChildAt(i);
-                        TextView tvMetaNum = child.findViewById(R.id.tv_meta_num);
-                        TextView tvContent = child.findViewById(R.id.tv_content);
-                        child.setSelected(false);
-                        tvMetaNum.setSelected(false);
-                        tvContent.setSelected(false);
-                    }
+            view.setOnClickListener((View v) -> {
+                for (int j = 0; j < optionGroup.getChildCount(); j++) {
+                    View child = optionGroup.getChildAt(j);
+                    TextView tvMetaNum = child.findViewById(R.id.tv_meta_num);
+                    TextView tvContent = child.findViewById(R.id.tv_content);
+                    child.setSelected(false);
+                    tvMetaNum.setSelected(false);
+                    tvContent.setSelected(false);
+                }
 
-                    TextView tvMetaNum = view.findViewById(R.id.tv_meta_num);
-                    TextView tvContent = view.findViewById(R.id.tv_content);
-                    if (view.isSelected()) {
-                        view.setSelected(false);
-                        tvMetaNum.setSelected(false);
-                        tvContent.setSelected(false);
-                    } else {
-                        view.setSelected(true);
-                        tvMetaNum.setSelected(true);
-                        tvContent.setSelected(true);
-                    }
+                TextView tvMetaNum = view.findViewById(R.id.tv_meta_num);
+                TextView tvContent = view.findViewById(R.id.tv_content);
+                if (view.isSelected()) {
+                    view.setSelected(false);
+                    tvMetaNum.setSelected(false);
+                    tvContent.setSelected(false);
+                } else {
+                    view.setSelected(true);
+                    tvMetaNum.setSelected(true);
+                    tvContent.setSelected(true);
                 }
             });
             TextView tv = view.findViewById(R.id.tv_content);
             Log.v("rank", i + " " + tv.getText() + letter[i]);
             LinearLayout.LayoutParams paramsRb = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             optionGroup.addView(view, paramsRb);
         }
     }
@@ -190,95 +189,87 @@ public class ProblemActivity extends Activity {
         setContentView(R.layout.activity_problem);
         cur = 0;
         cnt = 0;
-        problemDescription = (TextView) findViewById(R.id.problem_description);
+        problemDescription = findViewById(R.id.problem_description);
         explanationTv = findViewById(R.id.explanation);
         explanationTv.setVisibility(View.INVISIBLE);
         confirmButton = findViewById(R.id.confirm_answer);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("WrongConstant")
-            @Override
-            public void onClick(View v) {
-                if(confirmButton.getText().equals("确认答案")){
-                    int rec = -1;
-                    for(int i = 0; i < optionGroup.getChildCount(); i ++){
-                        View child = optionGroup.getChildAt(i);
-                        if(child.isSelected()){
-                            rec = i;
-                            break;
-                        }
-                    }
-                    if(rec == -1){
-                        Toast.makeText(getBaseContext(), "您尚未作答", 100).show();
-                        return;
-                    }
-                    String choice = letter[rec];
-                    String correctAnswer = letter[optionId[cur]];
-                    if(choice.equals(correctAnswer)){
-                        explanationTv.setText("恭喜您，回答正确");
-                        cnt ++;
-                    }
-                    else{
-                        explanationTv.setText("对不起，回答错误。您的答案是"+choice+"，正确答案是" + correctAnswer);
-                        Map<String, String> argument = new HashMap<>();
-                        argument.put("qBody",questionList.get(cur));
-                        argument.put("qAnswer", answerList.get(cur));
-                        String mSubject = null;
-                        if(!(subjectList.get(cur).equals("nope") || subjectList.get(cur).equals("ignorant"))){
-                            mSubject = subjectList.get(cur);
-                        }
-                        JSONObject obj = JSONObject.parseObject(JSON.toJSONString(argument));
-                        JSONObject obj1 = new JSONObject();
-                        obj1.put("problem", obj);
-                        if(mSubject != null)
-                            obj1.put("subject", mSubject);
-                        Log.v("wrong", argument.toString());
-                        if(mSubject != null){
-                            try {
-                                RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", (JSONObject) obj1, true);
-                            } catch (BackendTokenExpiredException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    setFinish(false);
-                    explanationTv.setVisibility(View.VISIBLE);
-                    confirmButton.setText("下一题");
-                    if(cur == sum - 1){
-                        confirmButton.setText("完成测试");
+        confirmButton.setOnClickListener(v -> {
+            if(confirmButton.getText().equals("确认答案")){
+                int rec = -1;
+                for(int i = 0; i < optionGroup.getChildCount(); i ++){
+                    View child = optionGroup.getChildAt(i);
+                    if(child.isSelected()){
+                        rec = i;
+                        break;
                     }
                 }
-                else if(confirmButton.getText().equals("下一题")){
-                    setFinish(true);
-                    confirmButton.setText("确认答案");
-                    explanationTv.setVisibility(View.INVISIBLE);
-//                    optionGroup.setEnabled(true);
-                    setView(cur + 1);
-                    cur ++;
+                if(rec == -1){
+                    Toast.makeText(getBaseContext(), "您尚未作答", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                else if(confirmButton.getText().equals("完成测试")){
-                    if(type.equals("list")){
-                        Log.v("mtype", "in");
-                        AlertDialog mAlertDialog = new AlertDialog.Builder(ProblemActivity.this)
-                                .setTitle("")
-                                .setMessage("共有" + sum + "道题目，您做对了" + cnt + "道，请继续努力")
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        finish();
-                                    }
-                                }).create();
-                        mAlertDialog.show();
+                String choice = letter[rec];
+                String correctAnswer = letter[optionId[cur]];
+                if(choice.equals(correctAnswer)){
+                    explanationTv.setText("恭喜您，回答正确");
+                    cnt ++;
+                }
+                else{
+                    String text = "对不起，回答错误。您的答案是"+choice+"，正确答案是" + correctAnswer;
+                    explanationTv.setText(text);
+                    Map<String, String> argument = new HashMap<>();
+                    argument.put("qBody",questionList.get(cur));
+                    argument.put("qAnswer", answerList.get(cur));
+                    String mSubject = null;
+                    if(!(subjectList.get(cur).equals("nope") || subjectList.get(cur).equals("ignorant"))){
+                        mSubject = subjectList.get(cur);
                     }
-                    else
-                        finish();
+                    JSONObject obj = JSON.parseObject(JSON.toJSONString(argument));
+                    JSONObject obj1 = new JSONObject();
+                    obj1.put("problem", obj);
+                    if(mSubject != null)
+                        obj1.put("subject", mSubject);
+                    Log.v("wrong", argument.toString());
+                    if(mSubject != null){
+                        try {
+                            RequestBuilder.asyncSendBackendPostRequest("/api/problem/addNewSave", obj1, true);
+                        } catch (BackendTokenExpiredException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+                setFinish(false);
+                explanationTv.setVisibility(View.VISIBLE);
+                confirmButton.setText("下一题");
+                if(cur == sum - 1){
+                    confirmButton.setText("完成测试");
+                }
+            }
+            else if(confirmButton.getText().equals("下一题")){
+                setFinish(true);
+                confirmButton.setText("确认答案");
+                explanationTv.setVisibility(View.INVISIBLE);
+                setView(cur + 1);
+                cur ++;
+            }
+            else if(confirmButton.getText().equals("完成测试")){
+                if(type.equals("list")){
+                    Log.v("mType", "in");
+                    //添加"Yes"按钮
+                    AlertDialog mAlertDialog = new AlertDialog.Builder(ProblemActivity.this)
+                            .setTitle("")
+                            .setMessage("共有" + sum + "道题目，您做对了" + cnt + "道，请继续努力")
+                            .setPositiveButton("确定", (dialogInterface, i) -> finish()).create();
+                    mAlertDialog.show();
+                }
+                else
+                    finish();
             }
         });
         optionGroup = findViewById(R.id.options);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         type = bundle.getString("type");
-        Log.v("mtype", type);
+        Log.v("mType", type);
         sum = Integer.parseInt(bundle.getString("sum"));
         questionList = new ArrayList<>();
         answerList = new ArrayList<>();

@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
-import com.java.cuiyikai.activities.SearchActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +23,9 @@ import java.util.Set;
 
 
 public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
+
+    private static final Logger logger = LoggerFactory.getLogger(SearchAdapter.class);
+
     public SearchAdapter(Context context)
     {
         mContext=context;
@@ -38,20 +41,27 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                 continue;
             sum+=subject.getJSONObject(str).getJSONArray("data").size();
         }
-        if(sum<=10)
-            size=sum;
-        else
-            size=10;
+        size = Math.min(sum, 10);
     }
     public  int getRealLength()
     {
         return sum;
     }
-    public  int size=0;
+    private int size=0;
     private int sum=0;
     private JSONObject subject=new JSONObject();
-    private Context mContext;
-    public  ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType)
+    private final Context mContext;
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    @NonNull
+    public  ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent , int viewType)
     {
         return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
     }
@@ -65,8 +75,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             f.putExtra("subject",(String) map.get("name"));
             mContext.startActivity(f);
         });
-//        System.out.println(((JSONObject)map.get("item")).toString());
-        holder.getLabelTextView().setText(((JSONObject)map.get("item")).get("label").toString());
+        holder.getLabelTextView().setText(((JSONObject)map.get("item")).getString("label"));
         switch ((String) map.get("name"))
         {
             case "chinese" :
@@ -107,10 +116,10 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                 holder.getImg().setImageResource(R.drawable.politics);
                 break;
         }
-        if(((JSONObject)map.get("item")).get("category").toString().length()==0)
+        if(((JSONObject)map.get("item")).getString("category").length()==0)
             holder.getCategoryTextView().setText("无");
         else
-            holder.getCategoryTextView().setText(((JSONObject)map.get("item")).get("category").toString());
+            holder.getCategoryTextView().setText(((JSONObject)map.get("item")).getString("category"));
     }
     @Override
     public int getItemCount(){
@@ -122,9 +131,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         Map<String,Object> map=new HashMap<>();
         for(String str:set)
         {
-//            System.out.println(subject.getJSONObject(str).getJSONArray("data"));
             if((subject.getJSONObject(str).getJSONArray("data").size())>position) {
-//                System.out.printf("Enter: %s %s%n", subject.getJSONObject(str).getJSONArray("data").get(position), str);
                 map.put("item", subject.getJSONObject(str).getJSONArray("data").get(position));
                 map.put("name",str);
                 break;
@@ -132,7 +139,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                 position = position - (subject.getJSONObject(str).getJSONArray("data").size());
             }
         }
-        System.out.println("map: "+map.toString());
+        logger.info("map: {}", map);
         return  map;
     }
 }

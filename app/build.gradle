@@ -47,4 +47,5 @@ dependencies {
     implementation 'io.github.sinaweibosdk:core:11.6.0@aar'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.github.stfalcon-studio:Chatkit:[0.4.1]'
+    implementation 'org.slf4j:slf4j-android:1.7.32'
 }

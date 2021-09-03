@@ -10,9 +10,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
 
 public class QuestionViewHolder extends RecyclerView.ViewHolder {
-    public ImageView img;
-    public TextView label,category;
-    public View view;
+    private final ImageView img;
+    private final TextView label;
+    private final TextView category;
+    private final View view;
+
+    public ImageView getImg() {
+        return img;
+    }
+
+    public TextView getLabel() {
+        return label;
+    }
+
+    public TextView getCategory() {
+        return category;
+    }
+
+    public View getView() {
+        return view;
+    }
+
     public QuestionViewHolder(@NonNull View itemView) {
         super(itemView);
         img=itemView.findViewById(R.id.img);

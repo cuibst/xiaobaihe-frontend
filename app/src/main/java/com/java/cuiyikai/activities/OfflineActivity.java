@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,7 +32,7 @@ public class OfflineActivity extends AppCompatActivity {
 
         findViewById(R.id.btnReturnToOnlineMode).setOnClickListener((View v) -> {
             if(!RequestBuilder.isNetworkNormal(OfflineActivity.this))
-                Toast.makeText(OfflineActivity.this, "网络链接异常", Toast.LENGTH_LONG);
+                Toast.makeText(OfflineActivity.this, "网络链接异常", Toast.LENGTH_LONG).show();
             else
             {
                 Intent intent = new Intent(OfflineActivity.this, MainActivity.class);

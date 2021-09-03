@@ -12,17 +12,17 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
@@ -35,37 +35,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SearchViewActivity extends AppCompatActivity {
-    public String subject="chinese";
-    private FragmentTransaction fragmentTransaction;
+    private String subject="chinese";
     private HistoryFragment historyFragment;
-    private RecyclerView recommendXRecyclerView;
-    private String getHistoryUrl="/api/history/getHistory";
     private HistoryListAdapter historyListAdapter;
-    public TextView subjectText;
-    private String search_url="typeOpen/open/instanceList";
-    private  final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
+    private TextView subjectText;
     private SearchView searchView;
-    public  JSONObject receivedMessage=new JSONObject();
-    private FragmentManager fragmentManager=getSupportFragmentManager();
-    private String addHistoryUrl="/api/history/addHistory";
-    private TextView quitText;
-    private String main_activity_backend_url="/api/uri/getname";
+    private final JSONObject receivedMessage=new JSONObject();
+    private final FragmentManager fragmentManager=getSupportFragmentManager();
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public TextView getSubjectText() {
+        return subjectText;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
         searchView=findViewById(R.id.searchView);
-        recommendXRecyclerView=findViewById(R.id.recommendXRecylcerView);
+        RecyclerView recommendXRecyclerView = findViewById(R.id.recommendXRecylcerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recommendXRecyclerView.setLayoutManager(gridLayoutManager);
         initSearchView();
-        quitText=findViewById(R.id.quit);
-        quitText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        TextView quitText = findViewById(R.id.quit);
+        quitText.setOnClickListener(v -> onBackPressed());
         subjectText=findViewById(R.id.subject);
         Dialog bottomDialog = new Dialog(SearchViewActivity.this, R.style.BottomDialog);
         View contentView = LayoutInflater.from(SearchViewActivity.this).inflate(R.layout.layout_subject_select, null);
@@ -76,90 +72,63 @@ public class SearchViewActivity extends AppCompatActivity {
         params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(SearchViewActivity.this, 16f);
         params.bottomMargin = DensityUtilities.dp2px(SearchViewActivity.this, 8f);
         contentView.setLayoutParams(params);
-        Button chinese = (Button) contentView.findViewById(R.id.chinese);
-        Button math = (Button) contentView.findViewById(R.id.math);
-        Button english = (Button) contentView.findViewById(R.id.english);
-        Button physics = (Button) contentView.findViewById(R.id.physics);
-        Button chemistry = (Button) contentView.findViewById(R.id.chemistry);
-        Button biology = (Button) contentView.findViewById(R.id.biology);
-        Button geo = (Button) contentView.findViewById(R.id.geo);
-        Button history = (Button) contentView.findViewById(R.id.history);
-        Button politics = (Button) contentView.findViewById(R.id.politics);
-        chinese.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="chinese";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        Button chinese = contentView.findViewById(R.id.chinese);
+        Button math = contentView.findViewById(R.id.math);
+        Button english = contentView.findViewById(R.id.english);
+        Button physics = contentView.findViewById(R.id.physics);
+        Button chemistry = contentView.findViewById(R.id.chemistry);
+        Button biology = contentView.findViewById(R.id.biology);
+        Button geo = contentView.findViewById(R.id.geo);
+        Button history = contentView.findViewById(R.id.history);
+        Button politics = contentView.findViewById(R.id.politics);
+        chinese.setOnClickListener(v -> {
+            subject="chinese";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        math.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="math";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        math.setOnClickListener(v -> {
+            subject="math";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        english.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="english";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        english.setOnClickListener(v -> {
+            subject="english";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        physics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="physics";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        physics.setOnClickListener(v -> {
+            subject="physics";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        chemistry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="chemistry";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        chemistry.setOnClickListener(v -> {
+            subject="chemistry";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        biology.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="biology";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        biology.setOnClickListener(v -> {
+            subject="biology";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        geo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="geo";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        geo.setOnClickListener(v -> {
+            subject="geo";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        politics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="politics";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        politics.setOnClickListener(v -> {
+            subject="politics";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
-        history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject="history";
-                subjectText.setText(reverseCheckSubject(subject));
-                bottomDialog.dismiss();
-            }
+        history.setOnClickListener(v -> {
+            subject="history";
+            subjectText.setText(reverseCheckSubject(subject));
+            bottomDialog.dismiss();
         });
         subjectText.setOnClickListener((View v) -> bottomDialog.show());
         historyFragment=new HistoryFragment(searchView);
-        fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.historyFragment,historyFragment);
         fragmentTransaction.hide(historyFragment);
         fragmentTransaction.commit();
@@ -168,8 +137,8 @@ public class SearchViewActivity extends AppCompatActivity {
         recommendXRecyclerView.setAdapter(historyListAdapter);
 
         GetRecommend getRecommend=new GetRecommend();
-        Thread recommendthread=new Thread(getRecommend);
-        recommendthread.start();
+        Thread recommendThread=new Thread(getRecommend);
+        recommendThread.start();
         if(RequestBuilder.checkedLogin())
         {
             GetHistory getHistory=new GetHistory();
@@ -194,11 +163,11 @@ public class SearchViewActivity extends AppCompatActivity {
                 JSONObject m=new JSONObject();
                 m.put("subject",subject);
                 m.put("content",s);
-                historyFragment.historyListAdapter.addOneItem(m);
-                historyFragment.historyListAdapter.notifyDataSetChanged();
+                historyFragment.getHistoryListAdapter().addOneItem(m);
+                historyFragment.getHistoryListAdapter().notifyDataSetChanged();
                 StartSearch startSearch=new StartSearch(s);
-                Thread startSearchthread=new Thread(startSearch);
-                startSearchthread.start();
+                Thread startSearchThread=new Thread(startSearch);
+                startSearchThread.start();
                 return true;
             }
 
@@ -211,88 +180,46 @@ public class SearchViewActivity extends AppCompatActivity {
 
 
 
-    public String reverseCheckSubject(String TITLE)
-    {
-        String chooseSubject="";
-        if(TITLE.equals("chinese"))
-        {
-            chooseSubject="语文";
-        }
-        else if(TITLE.equals("math"))
-        {
-            chooseSubject="数学";
-        }
-        else if(TITLE.equals("english"))
-        {
-            chooseSubject="英语";
-        }
-        else if(TITLE.equals("physics"))
-        {
-            chooseSubject="物理";
-        }
-        else if(TITLE.equals("chemistry"))
-        {
-            chooseSubject="化学";
-        }
-        else if(TITLE.equals("history"))
-        {
-            chooseSubject="历史";
-        }
-        else if(TITLE.equals("geo"))
-        {
-            chooseSubject="地理";
-        }
-        else if(TITLE.equals("politics"))
-        {
-            chooseSubject="政治";
-        }
-        else if(TITLE.equals("biology"))
-        {
-            chooseSubject="生物";
-        }
-        return chooseSubject;
-    }
-    public String checkSubject(String title)
+    public String reverseCheckSubject(String title)
     {
         String chooseSubject;
         switch (title) {
-            case "语文":
-                chooseSubject = "chinese";
+            case "chinese":
+                chooseSubject = "语文";
                 break;
-            case "数学":
-                chooseSubject = "math";
+            case "math":
+                chooseSubject = "数学";
                 break;
-            case "英语":
-                chooseSubject = "english";
+            case "english":
+                chooseSubject = "英语";
                 break;
-            case "物理":
-                chooseSubject = "physics";
+            case "physics":
+                chooseSubject = "物理";
                 break;
-            case "化学":
-                chooseSubject = "chemistry";
+            case "chemistry":
+                chooseSubject = "化学";
                 break;
-            case "历史":
-                chooseSubject = "history";
+            case "history":
+                chooseSubject = "历史";
                 break;
-            case "地理":
-                chooseSubject = "geo";
+            case "geo":
+                chooseSubject = "地理";
                 break;
-            case "政治":
-                chooseSubject = "politics";
+            case "politics":
+                chooseSubject = "政治";
                 break;
-            case "生物":
-                chooseSubject = "biology";
-                break;
+            case "biology":
             default:
-                chooseSubject = "";
+                chooseSubject = "生物";
                 break;
         }
         return chooseSubject;
     }
 
-    private MyHandler myHandler=new MyHandler();
+    private final MyHandler myHandler=new MyHandler();
 
     private class MyHandler extends Handler{
+
         @Override
         public void handleMessage(@NonNull Message msg)
         {
@@ -309,24 +236,23 @@ public class SearchViewActivity extends AppCompatActivity {
                     Toast.makeText(SearchViewActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    JSONObject data=JSONObject.parseObject(msg.obj.toString());
+                    JSONObject data= JSON.parseObject(msg.obj.toString());
                     JSONArray arr=data.getJSONArray("data");
-                    historyFragment.historyListAdapter.addData(arr);
-                    historyFragment.array=arr;
-                    historyFragment.recyclerViewForHistory.setAdapter(historyFragment.historyListAdapter);
+                    historyFragment.getHistoryListAdapter().addData(arr);
+                    historyFragment.getRecyclerViewForHistory().setAdapter(historyFragment.getHistoryListAdapter());
                     break;
                 case 3:
-                    JSONObject object=JSONObject.parseObject(msg.obj.toString());
-                    int maxx=object.getJSONArray("data").size();
-                    if(maxx>=8)
-                        maxx=8;
+                    JSONObject object=JSON.parseObject(msg.obj.toString());
+                    int max=object.getJSONArray("data").size();
+                    if(max>=8)
+                        max=8;
                     JSONArray array=new JSONArray();
-                    for(int i=0;i<maxx;i++)
-                    {
+                    for(int i=0;i<max;i++)
                         array.add(object.getJSONArray("data").get(i));
-                    }
                     historyListAdapter.addData(array);
                     historyListAdapter.notifyDataSetChanged();
+                    break;
+                default:
                     break;
             }
         }
@@ -338,7 +264,8 @@ public class SearchViewActivity extends AppCompatActivity {
             try {
                 Map<String, String> map = new HashMap<>();
                 map.put("subject", "");
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(main_activity_backend_url, map, false);
+                String mainActivityBackendUrl = "/api/uri/getname";
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(mainActivityBackendUrl, map, false);
                 Message message = new Message();
                 message.obj = msg.toString();
                 message.what = 3;
@@ -360,11 +287,12 @@ public class SearchViewActivity extends AppCompatActivity {
         public void run() {
             try {
                 receivedMessage.clear();
-                Map<String,String> map =new HashMap<String,String>();
+                Map<String,String> map =new HashMap<>();
                 map.put("course",  subject);
                 map.put("searchKey",s);
-                JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                if((String)msg.get("code")=="-1")
+                String searchUrl = "typeOpen/open/instanceList";
+                JSONObject msg = RequestBuilder.sendGetRequest(searchUrl, map);
+                if(msg.get("code").equals("-1"))
                 {
                     myHandler.sendEmptyMessage(1);
                 }
@@ -392,6 +320,7 @@ public class SearchViewActivity extends AppCompatActivity {
                 return;
             Map<String,String> map=new HashMap<>();
             try {
+                String getHistoryUrl = "/api/history/getHistory";
                 JSONObject msg=RequestBuilder.sendBackendGetRequest(getHistoryUrl, map, true);
                 Message message=new Message();
                 message.what=2;
@@ -406,7 +335,7 @@ public class SearchViewActivity extends AppCompatActivity {
     }
 
     private class AddHistory implements Runnable{
-        private String s;
+        private final String s;
         public AddHistory(String ss)
         {
             s=ss;
@@ -419,6 +348,7 @@ public class SearchViewActivity extends AppCompatActivity {
             map.put("content",s);
             map.put("subject",subject);
             try {
+                String addHistoryUrl = "/api/history/addHistory";
                 RequestBuilder.sendBackendGetRequest(addHistoryUrl, map, true);
             }
             catch (Exception e)

@@ -43,10 +43,10 @@ public class FavouriteItemHolder extends RecyclerView.ViewHolder {
 
         super(itemView);
 
-        checkBox = (CheckBox) itemView.findViewById(R.id.multiSelectItemCheckBox);
-        subjectImage = (ImageView) itemView.findViewById(R.id.itemSubjectPicture);
-        itemName = (TextView) itemView.findViewById(R.id.favouriteItemName);
-        dragButton = (ImageButton) itemView.findViewById(R.id.itemDragButton);
+        checkBox = itemView.findViewById(R.id.multiSelectItemCheckBox);
+        subjectImage = itemView.findViewById(R.id.itemSubjectPicture);
+        itemName = itemView.findViewById(R.id.favouriteItemName);
+        dragButton = itemView.findViewById(R.id.itemDragButton);
         viewLine = itemView.findViewById(R.id.directoryFavouriteItem);
 
     }

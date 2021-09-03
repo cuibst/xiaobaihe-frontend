@@ -5,26 +5,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.QuestionAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
-import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
-import com.yanzhenjie.recyclerview.SwipeMenu;
-import com.yanzhenjie.recyclerview.SwipeMenuBridge;
-import com.yanzhenjie.recyclerview.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,57 +34,39 @@ import java.util.Map;
 
 public class QuestionsCollectionActivity extends AppCompatActivity {
 
-    private ImageView backupImg;
-    private String getQuestionsUrl="/api/problem/getSaves";
-    private String removeQuestionUrl="/api/problem/deleteSave";
-    private SwipeRecyclerView swipeRecyclerView;
+    private static final Logger logger = LoggerFactory.getLogger(QuestionsCollectionActivity.class);
+
     private QuestionAdapter questionAdapter;
     private JSONArray questionsArr;
     private JSONArray originArr;
     private TextView questionTxt;
-    private SearchView searchQuestion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questions_collection);
-        swipeRecyclerView=findViewById(R.id.swipeRecyclerView);
+        SwipeRecyclerView swipeRecyclerView = findViewById(R.id.swipeRecyclerView);
         questionAdapter=new QuestionAdapter(QuestionsCollectionActivity.this);
         GetQuestions getQuestions=new GetQuestions();
-        backupImg=findViewById(R.id.backImg);
+        ImageView backupImg = findViewById(R.id.backImg);
         Thread getQuestionThread=new Thread(getQuestions);
         getQuestionThread.start();
         questionTxt=findViewById(R.id.questiontext);
-        backupImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        searchQuestion=findViewById(R.id.searchQuestion);
+        backupImg.setOnClickListener(v -> onBackPressed());
+        SearchView searchQuestion = findViewById(R.id.searchQuestion);
 
-        searchQuestion.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionTxt.setVisibility(View.INVISIBLE);
-            }
-        });
-        searchQuestion.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                questionTxt.setVisibility(View.VISIBLE);
-                questionAdapter.addQuestions(questionsArr);
-                questionAdapter.notifyDataSetChanged();
-                return false;
-            }
+        searchQuestion.setOnSearchClickListener(v -> questionTxt.setVisibility(View.INVISIBLE));
+        searchQuestion.setOnCloseListener(() -> {
+            questionTxt.setVisibility(View.VISIBLE);
+            questionAdapter.addQuestions(questionsArr);
+            questionAdapter.notifyDataSetChanged();
+            return false;
         });
         searchQuestion.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if(query.equals(""))
-                {
                     questionAdapter.addQuestions(questionsArr);
-                    questionAdapter.notifyDataSetChanged();
-                }
                 else
                 {
                     JSONArray arr=new JSONArray();
@@ -96,18 +79,15 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                         }
                     }
                     questionAdapter.addQuestions(arr);
-                    questionAdapter.notifyDataSetChanged();
                 }
+                questionAdapter.notifyDataSetChanged();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(newText.equals(""))
-                {
                     questionAdapter.addQuestions(questionsArr);
-                    questionAdapter.notifyDataSetChanged();
-                }
                 else
                 {
                     JSONArray arr=new JSONArray();
@@ -120,8 +100,8 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                         }
                     }
                     questionAdapter.addQuestions(arr);
-                    questionAdapter.notifyDataSetChanged();
                 }
+                questionAdapter.notifyDataSetChanged();
                 return true;
             }
         });
@@ -129,42 +109,37 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(QuestionsCollectionActivity.this);
         swipeRecyclerView.setLayoutManager(linearLayoutManager);
-        swipeRecyclerView.setSwipeMenuCreator(new SwipeMenuCreator() {
-            @Override
-            public void onCreateMenu(SwipeMenu leftMenu, SwipeMenu rightMenu, int position) {
-                SwipeMenuItem deleteItem = new SwipeMenuItem(QuestionsCollectionActivity.this);
-                deleteItem.setBackgroundColor(Color.parseColor("#FF3D39"))
-                        .setText("删除")
-                        .setTextColor(Color.WHITE)
-                        .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)
-                        .setWidth(170);
+        swipeRecyclerView.setSwipeMenuCreator((leftMenu, rightMenu, position) -> {
+            SwipeMenuItem deleteItem = new SwipeMenuItem(QuestionsCollectionActivity.this);
+            deleteItem.setBackgroundColor(Color.parseColor("#FF3D39"))
+                    .setText("删除")
+                    .setTextColor(Color.WHITE)
+                    .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)
+                    .setWidth(170);
 
-                rightMenu.addMenuItem(deleteItem);
+            rightMenu.addMenuItem(deleteItem);
 
-            }
         });
-        swipeRecyclerView.setOnItemMenuClickListener(new OnItemMenuClickListener() {
-            @Override
-            public void onItemClick(SwipeMenuBridge menuBridge, int adapterPosition) {
-                menuBridge.closeMenu();
-                questionAdapter.questionsArr.remove(adapterPosition);
-                questionAdapter.notifyItemRemoved(adapterPosition);
-                RemoveQuestion removeQuestion=new  RemoveQuestion(adapterPosition);
-                Thread removeThread=new Thread(removeQuestion);
-                removeThread.start();
-            }
+        swipeRecyclerView.setOnItemMenuClickListener((menuBridge, adapterPosition) -> {
+            menuBridge.closeMenu();
+            questionAdapter.questionsArr.remove(adapterPosition);
+            questionAdapter.notifyItemRemoved(adapterPosition);
+            RemoveQuestion removeQuestion=new  RemoveQuestion(adapterPosition);
+            Thread removeThread=new Thread(removeQuestion);
+            removeThread.start();
         });
         swipeRecyclerView.setAdapter(questionAdapter);
     }
 
-    MyHandler myHandler=new MyHandler();
+    private final MyHandler myHandler=new MyHandler();
+
     private class GetQuestions implements Runnable
     {
-
         @Override
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
+                String getQuestionsUrl = "/api/problem/getSaves";
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(getQuestionsUrl, map, true);
                 JSONArray arr=msg.getJSONArray("data");
                 Message message=new Message();
@@ -179,43 +154,40 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         }
     }
     private class MyHandler extends Handler {
+
         @Override
         public void handleMessage(@NonNull android.os.Message msg) {
-            switch(msg.what)
-            {
-                case 0:
-                    JSONArray array=new JSONArray();
-                    JSONArray arr=JSONArray.parseArray(msg.obj.toString());
-                    originArr=arr;
-                    for(int i=0;i<arr.size();i++)
-                    {
-                        System.out.println(arr.get(i).toString());
-                        JSONObject object=fixQuestions(JSONObject.parseObject(((JSONObject)arr.get(i)).get("problem").toString()));
-                        object.put("subject",((JSONObject)arr.get(i)).get("subject"));
-                        array.add(object);
-                    }
-                    questionAdapter.addQuestions(array);
-                    questionsArr=array;
-                    questionAdapter.notifyDataSetChanged();
-                    break;
+            if (msg.what == 0) {
+                JSONArray array = new JSONArray();
+                JSONArray arr = JSON.parseArray(msg.obj.toString());
+                originArr = arr;
+                for (int i = 0; i < arr.size(); i++) {
+                    logger.info("Array(i) : {}", arr.get(i));
+                    JSONObject object = fixQuestions(JSON.parseObject(((JSONObject) arr.get(i)).get("problem").toString()));
+                    object.put("subject", ((JSONObject) arr.get(i)).get("subject"));
+                    array.add(object);
+                }
+                questionAdapter.addQuestions(array);
+                questionsArr = array;
+                questionAdapter.notifyDataSetChanged();
             }
         }
     }
     public JSONObject fixQuestions(JSONObject questions)
     {
         String ans="";
-//        String sub=questions.get("subject").toString();
-        if(questions.get("qAnswer").toString().contains("A"))
+        String qAnswer = questions.getString("qAnswer");
+        if(qAnswer.contains("A"))
             ans+="A";
-        if(questions.get("qAnswer").toString().contains("B"))
+        if(qAnswer.contains("B"))
             ans+="B";
-        if(questions.get("qAnswer").toString().contains("C"))
+        if(qAnswer.contains("C"))
             ans+="C";
-        if(questions.get("qAnswer").toString().contains("D"))
+        if(qAnswer.contains("D"))
             ans+="D";
-        if(questions.get("qAnswer").toString().contains("E"))
+        if(qAnswer.contains("E"))
             ans+="E";
-        String qBody=questions.get("qBody").toString();
+        String qBody=questions.getString("qBody");
         List<String> chooses=new ArrayList<>();
         List<String> alp=new ArrayList<>();
         alp.add("A.");
@@ -223,14 +195,15 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         alp.add("C.");
         alp.add("D.");
         alp.add("E.");
-        int head=0,tail=0;
+        int head=0;
+        int tail;
         int cnt=0;
         String question="";
-        while(tail!=-1&&cnt!=alp.size()) {
+        while(cnt != alp.size()) {
             tail=qBody.indexOf(alp.get(cnt));
             if(tail==-1)
             {
-                chooses.add(qBody.substring(head,qBody.length()));
+                chooses.add(qBody.substring(head));
                 break;
             }
             if(cnt==0)
@@ -262,6 +235,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
             try {
                 Map<String ,Object> map=new HashMap<>();
                 map.put("problem",originArr.get(num));
+                String removeQuestionUrl = "/api/problem/deleteSave";
                 RequestBuilder.sendBackendPostRequest(removeQuestionUrl,new JSONObject(map), true);
                 originArr.remove(num);
             }

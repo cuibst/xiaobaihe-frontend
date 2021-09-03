@@ -18,14 +18,12 @@ public class ColorTrackTextView extends TextView {
 
     private Paint mOriginPaint;
     private Paint mChangePaint;
-    //设置变色百分比
-    private float currentProgress = 0.0f;
     //设置变色朝向
-    Direction mdirection = Direction.LEFT_TO_RIGHT;
+    Direction mDirection = Direction.LEFT_TO_RIGHT;
 
 
     public enum Direction {
-        LEFT_TO_RIGHT, RIGHT_TO_LEFT;
+        LEFT_TO_RIGHT, RIGHT_TO_LEFT
     }
 
     public ColorTrackTextView(Context context) {
@@ -50,18 +48,13 @@ public class ColorTrackTextView extends TextView {
      */
     private void initPaint(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ColorTrackTextView);
-        int orginColor = array.getColor(R.styleable.ColorTrackTextView_originColor, getTextColors().getDefaultColor());
+        int originColor = array.getColor(R.styleable.ColorTrackTextView_originColor, getTextColors().getDefaultColor());
         int changeColor = array.getColor(R.styleable.ColorTrackTextView_changeColor, getTextColors().getDefaultColor());
-        mOriginPaint = getPaintByColor(orginColor);
+        mOriginPaint = getPaintByColor(originColor);
         mChangePaint = getPaintByColor(changeColor);
         array.recycle();
     }
 
-    /**
-     * 根据颜色值获取画笔
-     *
-     * @return
-     */
     private Paint getPaintByColor(int color) {
         Paint paint = new Paint();
         //设置颜色
@@ -77,28 +70,21 @@ public class ColorTrackTextView extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //设置变色百分比
+        float currentProgress = 0.0f;
         int middle = (int) (currentProgress * getWidth());
         //从左变到右
-        if (mdirection == Direction.LEFT_TO_RIGHT) {
+        if (mDirection == Direction.LEFT_TO_RIGHT) {
             drawText(canvas, mOriginPaint, middle, getWidth());
             drawText(canvas, mChangePaint, 0, middle);
         }
         //从右边变到左
-        else if (mdirection == Direction.RIGHT_TO_LEFT) {
+        else if (mDirection == Direction.RIGHT_TO_LEFT) {
             drawText(canvas, mOriginPaint, 0, getWidth() - middle);
             drawText(canvas, mChangePaint, getWidth() - middle, getWidth());
         }
     }
 
-    /**
-     * * @description 文字图像绘制
-     *
-     * @param canvas
-     * @param paint
-     * @param start
-     * @param end
-     * @return void
-     */
     private void drawText(Canvas canvas, Paint paint, int start, int end) {
         canvas.save();
         //根据进度计算中间值
@@ -115,23 +101,5 @@ public class ColorTrackTextView extends TextView {
         int baseLine = getHeight() / 2 + dy;
         canvas.drawText(text, x, baseLine, paint);//初始颜色
         canvas.restore();
-    }
-
-    public void setCurrentProgress(float currentProgress) {
-        this.currentProgress = currentProgress;
-        invalidate();
-    }
-
-    //设置变色朝向
-    public void setMdirection(Direction mdirection) {
-        this.mdirection = mdirection;
-    }
-
-    public void setChangeColor(int changeColor) {
-        this.mChangePaint.setColor(changeColor);
-    }
-
-    public void setOriginColor(int originColor) {
-        this.mOriginPaint.setColor(originColor);
     }
 }

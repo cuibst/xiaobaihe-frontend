@@ -35,6 +35,9 @@ import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +55,8 @@ public class DirectoryFragment extends Fragment {
 
     private static final String ARG_DIRECTORY_NAME = "directoryName";
 
-    // TODO: Rename and change types of parameters
+    private static final Logger logger = LoggerFactory.getLogger(DirectoryFragment.class);
+
     private String directoryName;
 
     public DirectoryFragment() {
@@ -66,7 +70,6 @@ public class DirectoryFragment extends Fragment {
      * @param directoryName Parameter 1.
      * @return A new instance of fragment DirectoryFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DirectoryFragment newInstance(String directoryName) {
         DirectoryFragment fragment = new DirectoryFragment();
         Bundle args = new Bundle();
@@ -106,7 +109,7 @@ public class DirectoryFragment extends Fragment {
         if(directoryName.equals("default"))
             view.findViewById(R.id.btnDeleteDirectory).setVisibility(View.GONE);
 
-        SwipeRecyclerView favouriteItemList = (SwipeRecyclerView) view.findViewById(R.id.directoryNameList);
+        SwipeRecyclerView favouriteItemList = view.findViewById(R.id.directoryNameList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -150,7 +153,7 @@ public class DirectoryFragment extends Fragment {
         params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
         contentView.setLayoutParams(params);
 
-        ListViewForScrollView bottomFavouriteView = (ListViewForScrollView) contentView.findViewById(R.id.bottomFavouriteListView);
+        ListViewForScrollView bottomFavouriteView = contentView.findViewById(R.id.bottomFavouriteListView);
         JSONObject favouriteJson = ((MainApplication)getActivity().getApplication()).getFavourite();
         List<BottomFavouriteEntity> entityList = new ArrayList<>();
         for(String key : favouriteJson.keySet()) {
@@ -164,7 +167,7 @@ public class DirectoryFragment extends Fragment {
 
         favouriteItemList.setOnItemMenuClickListener((SwipeMenuBridge menuBridge, int position) -> {
             menuBridge.closeMenu();
-            System.out.printf("Menu %d clicked%n", menuBridge.getPosition());
+            logger.info("Menu {} clicked", menuBridge.getPosition());
             int menuPosition = menuBridge.getPosition();
             JSONArray moveArray = new JSONArray();
             moveArray.add(favouriteAdapter.getFavouriteArray().get(position));
@@ -259,8 +262,6 @@ public class DirectoryFragment extends Fragment {
         });
 
         view.findViewById(R.id.btnMoveFavourite).setOnClickListener((View v) -> {
-            //TODO: the logic for move!
-
             JSONArray newArray = new JSONArray();
             JSONArray moveArray = new JSONArray();
             for(int i=0;i<favouriteAdapter.getSelected().length;i++)
@@ -302,21 +303,21 @@ public class DirectoryFragment extends Fragment {
                 Log.v("lzgsm", jsObject.toJSONString());
                 subjectList.add((String) jsObject.get("subject"));
                 String uriname = (String) jsObject.get("name");
-                Map<String, String> request = new HashMap<String, String>();
+                Map<String, String> request = new HashMap<>();
                 request.put("uriName", uriname);
                 JSONObject tmp = null;
                 try {
-                    tmp = (JSONObject) RequestBuilder.sendGetRequest(
+                    tmp = RequestBuilder.sendGetRequest(
                             "typeOpen/open/questionListByUriName", request);
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-                List<String> mList = new ArrayList<>();
                 Log.v("tmp", tmp.toJSONString());
 
-                JSONArray mJSONArray = null;
+                JSONArray mJSONArray;
                 mJSONArray = (JSONArray) tmp.get("data");
                 Map<String , String> mMap = (Map<String, String>) mJSONArray.get(i);
                 String qBody = mMap.get("qBody");
@@ -329,8 +330,6 @@ public class DirectoryFragment extends Fragment {
             Log.v("answer", qAnswerList.toString());
             Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
             for(int j = 0; j < cnt; j ++){
-//                if(j == 0)
-//                    Log.v("mtag", qBodyList.get(j));
                 mIntent.putExtra("body" + " " + j, qBodyList.get(j));
                 mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
                 mIntent.putExtra("subject" + " " + j, subjectList.get(j));
@@ -342,8 +341,6 @@ public class DirectoryFragment extends Fragment {
 
 
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
-            //TODO: the logic for move!
-
             JSONArray moveArray = new JSONArray();
             for(int i=0;i<favouriteAdapter.getSelected().length;i++)
                 moveArray.add(favouriteAdapter.getFavouriteArray().get(i));
@@ -369,7 +366,6 @@ public class DirectoryFragment extends Fragment {
 
 
         view.findViewById(R.id.btnDeleteItems).setOnClickListener((View v) -> {
-            //TODO: the logic for delete!
             JSONArray newArray = new JSONArray();
             for(int i=0;i<favouriteAdapter.getSelected().length;i++)
                 if(!favouriteAdapter.getSelected()[i])
