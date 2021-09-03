@@ -30,10 +30,10 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
     public void addSubject(JSONObject arr) {
         subject=arr;
+        sum=0;
         Set<String> set=subject.keySet();
         for(String str:set)
         {
-            System.out.println(str);
             if(subject.getJSONObject(str).isEmpty())
                 continue;
             sum+=subject.getJSONObject(str).getJSONArray("data").size();
@@ -65,7 +65,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             f.putExtra("subject",(String) map.get("name"));
             mContext.startActivity(f);
         });
-
+//        System.out.println(((JSONObject)map.get("item")).toString());
         holder.getLabelTextView().setText(((JSONObject)map.get("item")).get("label").toString());
         switch ((String) map.get("name"))
         {
@@ -122,9 +122,9 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         Map<String,Object> map=new HashMap<>();
         for(String str:set)
         {
-            System.out.println(subject.getJSONObject(str).getJSONArray("data"));
+//            System.out.println(subject.getJSONObject(str).getJSONArray("data"));
             if((subject.getJSONObject(str).getJSONArray("data").size())>position) {
-                System.out.printf("Enter: %s %s%n", subject.getJSONObject(str).getJSONArray("data").get(position), str);
+//                System.out.printf("Enter: %s %s%n", subject.getJSONObject(str).getJSONArray("data").get(position), str);
                 map.put("item", subject.getJSONObject(str).getJSONArray("data").get(position));
                 map.put("name",str);
                 break;
@@ -132,6 +132,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                 position = position - (subject.getJSONObject(str).getJSONArray("data").size());
             }
         }
+        System.out.println("map: "+map.toString());
         return  map;
     }
 }

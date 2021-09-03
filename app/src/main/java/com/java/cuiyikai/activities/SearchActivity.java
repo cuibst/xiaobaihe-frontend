@@ -34,6 +34,7 @@ import java.util.Vector;
 
 public class SearchActivity extends AppCompatActivity {
     private final String[] all_subject_item={"语文","数学","英语","物理","化学","生物","历史","地理","政治"};
+    private String subject;
     private JSONObject receivedMessage;
     private Vector<String> checkSubject=new Vector<>();
     private Vector<String> checkMarked=new Vector<>();
@@ -52,6 +53,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Intent prevIntent=getIntent();
         Bundle prevBundle = prevIntent.getExtras();
+        subject=prevBundle.getString("sub");
         selectAdapter=new SelectAdapter(SearchActivity.this);
         selectFragment=new SelectFragment(selectAdapter);
         search_rcy=findViewById(R.id.search_rcy);
@@ -312,16 +314,21 @@ public class SearchActivity extends AppCompatActivity {
         public void run() {
             try {
                 receivedMessage.clear();
-                for (int i = 0; i < all_subject_item.length; i++) {
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("course", CheckSubject(all_subject_item[i]));
-                    map.put("searchKey", searchContent);
-                    JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
-                    if (msg.getJSONArray("data").size() != 0) {
-                        receivedMessage.put(CheckSubject(all_subject_item[i]), msg);
-                    }
+                Map<String,String> map =new HashMap<String,String>();
+                map.put("course",  subject);
+                map.put("searchKey",searchContent);
+                JSONObject msg = RequestBuilder.sendGetRequest(search_url, map);
+                if((String)msg.get("code")=="-1")
+                {
+                    handler.sendEmptyMessage(1);
                 }
-                handler.sendEmptyMessage(0);
+                else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
+                    receivedMessage.put(subject,msg);
+                }
+                Message message=new Message();
+                message.what=0;
+                message.obj=searchContent;
+                handler.sendMessage(message);
             } catch (Exception e) {
             }
         }
@@ -336,6 +343,9 @@ public class SearchActivity extends AppCompatActivity {
                     sadapter.addSubject(receivedMessage);
                     sadapter.notifyDataSetChanged();
                     search_rcy.refreshComplete();
+                    break;
+                case 1:
+                    Toast.makeText(SearchActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

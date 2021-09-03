@@ -20,6 +20,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
     private Context mContext;
     public JSONArray data;
     public  boolean flag=false;
+    public String subject;
     private SearchView searchView;
     private String RemoveUrl="/api/history/removeHistory";
     public HistoryListAdapter(Context c, SearchView s)
@@ -27,10 +28,11 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
         mContext=c;
         searchView=s;
     }
-    public void addOneItem(String  m)
+    public void addOneItem(JSONObject  m)
     {
         JSONArray arr=new JSONArray();
         arr.add(m);
+        System.out.println(arr.toString());
         if(data==null)
         {
             data=arr;
@@ -43,9 +45,11 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
             arr.add(data.get(i));
         }
         data=arr;
+        return;
     }
     public void addData(JSONArray data)
     {
+        System.out.println(data.toString());
         this.data=data;
         System.out.println(this.data);
     }
@@ -57,6 +61,8 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
+        holder.mContext=mContext;
+        holder.subject=((JSONObject)data.get(position)).get("subject").toString();
         if(recommendflag)
         {
             holder.historyRecord.setText(((JSONObject)data.get(position)).get("name").toString());
@@ -68,7 +74,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
         }
         holder.historyListAdapter=historyListAdapter;
         holder.editImg.setVisibility(View.INVISIBLE);
-        holder.historyRecord.setText(data.get(position).toString());
+        holder.historyRecord.setText(((JSONObject)data.get(position)).get("content").toString());
         holder.flag=flag;
         holder.searchView=searchView;
         if(flag&&!holder.historyRecord.isCursorVisible())

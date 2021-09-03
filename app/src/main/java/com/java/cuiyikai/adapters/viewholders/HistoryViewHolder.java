@@ -1,5 +1,6 @@
 package com.java.cuiyikai.adapters.viewholders;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.adapters.HistoryListAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
 
@@ -16,6 +18,8 @@ import java.util.Map;
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
     public TextView historyRecord;
     public boolean flag;
+    public String subject;
+    public Context mContext;
     public boolean recommendflag=false;
     public SearchView searchView;
     public HistoryListAdapter historyListAdapter;
@@ -31,10 +35,8 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         historyRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((SearchViewActivity)mContext).subject=subject;
                 searchView.setQuery(historyRecord.getText(),true);
-//                AddHistory addHistory=new AddHistory(historyRecord.getText().toString());
-//                Thread thread=new Thread(addHistory);
-//                thread.start();
             }
         });
         historyRecord.setOnLongClickListener(new View.OnLongClickListener() {
