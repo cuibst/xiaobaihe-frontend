@@ -3,6 +3,7 @@ package com.java.cuiyikai.activities;
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -13,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,11 @@ public class FavouriteCheckActivity extends AppCompatActivity {
                     transaction.remove(fragment);
             transaction.commit();
         }
+
+        @Override
+        public void restoreState(@Nullable Parcelable state, @Nullable ClassLoader loader) {
+            //Nullify to avoid state buffer.
+        }
     }
 
     private DirectoryStatePagerAdapter adapter;
@@ -88,15 +95,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         TabLayout directoryNameTab = findViewById(R.id.directoryTabLayout);
         directoryNameTab.setupWithViewPager(directoryPager);
 
-        JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
-
-        directoryNames = new ArrayList<>(favourite.keySet());
-
-        directoryFragments = new ArrayList<>();
-        for(String name : directoryNames) {
-            DirectoryFragment fragment = DirectoryFragment.newInstance(name);
-            directoryFragments.add(fragment);
-        }
+        initPager();
 
         adapter = new DirectoryStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
@@ -143,12 +142,24 @@ public class FavouriteCheckActivity extends AppCompatActivity {
 
     }
 
+    private void initPager() {
+        JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
+
+        directoryNames = new ArrayList<>(favourite.keySet());
+
+        directoryFragments = new ArrayList<>();
+        for(String name : directoryNames) {
+            DirectoryFragment fragment = DirectoryFragment.newInstance(name);
+            directoryFragments.add(fragment);
+        }
+    }
+
     public void updateDirectories() {
         directoryPager.setCurrentItem(0);
         directoryPager.removeAllViewsInLayout();
-        ((MainApplication)getApplication()).updateFavourite();
-        recreate();
         adapter.clear();
+        ((MainApplication)getApplication()).updateFavourite();
+        initPager();
         adapter.notifyDataSetChanged();
     }
 }

@@ -106,12 +106,8 @@ w
 Gapp/src/main/java/com/java/cuiyikai/entities/BottomFavouriteEntity.java,8\8\88c2171b55e1f3557126121d8edc8cfa3de1f3c5
 p
 @app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
-z
-Japp/src/main/java/com/java/cuiyikai/activities/FavouriteCheckActivity.java,7\6\7645f034a4c363e373aaedeb65ed209b40001637
 q
 Aapp/src/main/java/com/java/cuiyikai/activities/LoginActivity.java,3\9\392ade7419e44f9f6339a729bdf931c740a33b5d
-p
-@app/src/main/java/com/java/cuiyikai/activities/MainActivity.java,e\d\ed6a39c1d1f855e13a1155ad9ab61ea26ce0c66e
 s
 Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac66820c7b908cbfc48435a6e1d33457358f
 x
@@ -134,10 +130,6 @@ t
 Dapp/src/main/java/com/java/cuiyikai/activities/RegisterActivity.java,1\d\1d2f8eac66408b461b3828e1ef19e50bf80c3d88
 x
 Happ/src/main/java/com/java/cuiyikai/activities/VisitHistoryActivity.java,4\d\4d0febaf7f9af06661fe7ea26b7df097959c382b
-o
-?app/src/main/java/com/java/cuiyikai/fragments/ItemFragment.java,8\8\88b543b8f8a404dc9f5e7be08cda17f8534f7300
-o
-?app/src/main/java/com/java/cuiyikai/fragments/MainFragment.java,f\a\fa1fcab14a94e61f102fa426f7440f6cc03d62c9
 h
 8app/src/main/java/com/java/cuiyikai/MainApplication.java,6\8\6842d713d7ae3d55ef273f2d94956292a15508a3
 @
@@ -164,8 +156,6 @@ w
 Gapp/src/main/java/com/java/cuiyikai/fragments/PointExtractFragment.java,9\9\9924b8d3e86fb74cc6d349feda8cdd2d9be5372b
 w
 Gapp/src/main/java/com/java/cuiyikai/network/callables/PostCallable.java,b\4\b4c2493714e09b6477b4cf872314e0a5174d9972
-q
-Aapp/src/main/java/com/java/cuiyikai/fragments/DialogFragment.java,4\b\4bd690466a1e2d3ec145af47a2dc876e9aa789ec
 t
 Dapp/src/main/java/com/java/cuiyikai/adapters/HistoryListAdapter.java,c\8\c88fd5a02d506cb4a3c448f311e2cf101d7e9cb8
 r
