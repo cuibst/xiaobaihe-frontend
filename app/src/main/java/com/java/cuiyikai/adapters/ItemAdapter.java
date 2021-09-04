@@ -18,7 +18,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
-import com.java.cuiyikai.fragments.ItemFragment;
 import com.java.cuiyikai.network.RequestBuilder;
 
 import java.util.HashMap;
@@ -82,7 +81,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         String name = subject.getJSONObject(position).getString("name");
         String sub = subject.getJSONObject(position).getString("subject");
         holder.getLabelTextView().setText(name);
-        holder.getLabelTextView().setTextColor(Color.GRAY);
+        holder.getLabelTextView().setTextColor(Color.WHITE);
         if(visitHistory!=null)
         {
             if(RequestBuilder.checkedLogin()) {
@@ -90,7 +89,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                     JSONObject m = (JSONObject) visitHistory.get(i);
                     if (m.getString("name").equals(name) && m.getString("subject").equals(sub)) {
                         System.out.println(name+"------"+sub);
-                        holder.getLabelTextView().setTextColor(Color.RED);
+                        holder.getLabelTextView().setTextColor(Color.GRAY);
                         break;
                     }
                 }
@@ -119,7 +118,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                     getHistoryThread.start();
                 }
             }
-            holder.getLabelTextView().setTextColor(Color.RED);
+            if(RequestBuilder.checkedLogin())
+                holder.getLabelTextView().setTextColor(Color.GRAY);
             Intent intent = new Intent(mContext, EntityActivity.class);
             intent.putExtra("name", name);
             intent.putExtra("subject", sub);
