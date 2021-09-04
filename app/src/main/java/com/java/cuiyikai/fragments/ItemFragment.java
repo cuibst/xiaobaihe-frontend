@@ -5,11 +5,14 @@ import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.java.cuiyikai.adapters.ItemAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
@@ -18,6 +21,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -43,6 +47,7 @@ public class ItemFragment extends Fragment {
     private MyHandler myHandler;
     private ProgressBar progressBar;
     private static final String MAIN_ACTIVITY_BACKEND_URL ="/api/uri/getname";
+
     public ItemFragment(String s, Context c)
     {
         super();
@@ -124,6 +129,20 @@ public class ItemFragment extends Fragment {
                     Toast.makeText(context,"加载失败，请重试",Toast.LENGTH_LONG).show();
                 }
             }
+        });
+        view.findViewById(R.id.switch_layout_btn).setOnClickListener(v -> {
+            if(itemAdapter.getItemViewType(0) == ItemAdapter.LAYOUT_TYPE_LINEAR) {
+                itemAdapter.setType(ItemAdapter.LAYOUT_TYPE_GRID);
+                xRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                ((FloatingActionButton)view.findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.drag_button);
+            } else {
+                itemAdapter.setType(ItemAdapter.LAYOUT_TYPE_LINEAR);
+                LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+                manager.setOrientation(LinearLayoutManager.VERTICAL);
+                xRecyclerView.setLayoutManager(manager);
+                ((FloatingActionButton)view.findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.grid);
+            }
+            itemAdapter.notifyDataSetChanged();
         });
         return view;
     }

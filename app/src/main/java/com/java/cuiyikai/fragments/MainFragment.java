@@ -19,6 +19,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -26,6 +28,7 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.CategoryActivity;
 import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.activities.SearchViewActivity;
+import com.java.cuiyikai.adapters.ItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

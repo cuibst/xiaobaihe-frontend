@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.java.cuiyikai.adapters.ItemAdapter;
 import com.java.cuiyikai.adapters.SelectAdapter;
 import com.java.cuiyikai.fragments.SelectFragment;
 import com.alibaba.fastjson.JSONObject;
@@ -153,6 +156,21 @@ public class SearchActivity extends AppCompatActivity {
                 searchAdapter.addSubject(receivedMessage);
                 searchAdapter.notifyDataSetChanged();
             }
+        });
+
+        findViewById(R.id.switch_layout_btn).setOnClickListener(v -> {
+            if(searchAdapter.getItemViewType(0) == ItemAdapter.LAYOUT_TYPE_LINEAR) {
+                searchAdapter.setType(ItemAdapter.LAYOUT_TYPE_GRID);
+                searchRecyclerView.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
+                ((FloatingActionButton)findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.drag_button);
+            } else {
+                searchAdapter.setType(ItemAdapter.LAYOUT_TYPE_LINEAR);
+                LinearLayoutManager manager = new LinearLayoutManager(SearchActivity.this);
+                manager.setOrientation(LinearLayoutManager.VERTICAL);
+                searchRecyclerView.setLayoutManager(manager);
+                ((FloatingActionButton)findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.grid);
+            }
+            searchAdapter.notifyDataSetChanged();
         });
 
     }

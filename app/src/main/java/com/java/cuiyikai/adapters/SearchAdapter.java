@@ -35,6 +35,20 @@ import java.util.TreeMap;
 
 
 public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
+
+    public static final int LAYOUT_TYPE_LINEAR = 1;
+    public static final int LAYOUT_TYPE_GRID = 2;
+    private int type = LAYOUT_TYPE_LINEAR;
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return type;
+    }
+
     static private JSONArray visitHistory;
     private static final Logger logger = LoggerFactory.getLogger(SearchAdapter.class);
     private MyHandler myHandler;
@@ -101,7 +115,10 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     @NonNull
     public  ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent , int viewType)
     {
-        return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+        if(viewType == 1)
+            return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+        else
+            return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content_for_grid, parent, false));
     }
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position)

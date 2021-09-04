@@ -17,4 +17,10 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_height="match_parent">
     </com.jcodecraeer.xrecyclerview.XRecyclerView>
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:id="@+id/switch_layout_btn"
+        android:src="@drawable/grid"/>
 </FrameLayout>

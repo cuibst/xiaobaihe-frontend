@@ -44,8 +44,6 @@ Qapp/src/main/java/com/java/cuiyikai/adapters/viewholders/CategoryTitleHolder.ja
 Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/CategoryViewHolder.java,e\0\e06b0f2038d1780dd1095053f1b3e2bec86f362c
 Å
 Qapp/src/main/java/com/java/cuiyikai/adapters/viewholders/FavouriteItemHolder.java,1\5\15abe61872d8fd184decdb97aa4e3d35cc55a2f5
-|
-Lapp/src/main/java/com/java/cuiyikai/adapters/viewholders/ItemViewHolder.java,8\e\8ea4e214ef93a0092acaf01f5d57864dd77f1ef6
 
 Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/ProblemViewHolder.java,c\e\cee46133ab1504a7b0b91a2cb9eb7626757729b3
 Ä
@@ -64,8 +62,6 @@ q
 Aapp/src/main/java/com/java/cuiyikai/adapters/GridViewAdapter.java,f\3\f39df24955e3822087de4cddf22b764606bccf77
 {
 Kapp/src/main/java/com/java/cuiyikai/adapters/GridViewItemTouchCallback.java,8\8\882eba0faecdd590079ca178e7555fd3bb453ccd
-m
-=app/src/main/java/com/java/cuiyikai/adapters/ItemAdapter.java,a\4\a4e2ca850f6337ed1bfced9052b6e6d81b94301d
 p
 @app/src/main/java/com/java/cuiyikai/adapters/OfflineAdapter.java,0\3\03055e3b61cbee50b398747523c31ccb271e2eae
 p

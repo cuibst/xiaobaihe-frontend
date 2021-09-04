@@ -27,6 +27,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
+
+    public static final int LAYOUT_TYPE_LINEAR = 1;
+    public static final int LAYOUT_TYPE_GRID = 2;
+    private int type = LAYOUT_TYPE_LINEAR;
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return type;
+    }
+
     static private JSONArray visitHistory;
     public ItemAdapter(Context context, String s) {
         mContext=context;
@@ -72,12 +86,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent , int viewType) {
-        return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+        if(viewType == 1)
+            return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content,parent,false));
+        else
+            return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.search_content_for_grid, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-
+        holder.getCategoryTextView().setVisibility(View.GONE);
         String name = subject.getJSONObject(position).getString("name");
         String sub = subject.getJSONObject(position).getString("subject");
         holder.getLabelTextView().setText(name);
