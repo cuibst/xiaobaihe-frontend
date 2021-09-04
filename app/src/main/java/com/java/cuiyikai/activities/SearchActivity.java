@@ -22,8 +22,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import com.java.cuiyikai.adapters.SearchAdapter;
+
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +65,7 @@ public class SearchActivity extends AppCompatActivity {
         searchRecyclerView.setArrowImageView(R.drawable.waiting);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
         searchAdapter =new SearchAdapter(SearchActivity.this);
-        receivedMessage= JSON.parseObject(prevBundle.getString("msg"));
+        receivedMessage = JSON.parseObject(prevBundle.getString("msg"));
         searchContent=prevBundle.getString("name");
         searchRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
@@ -131,6 +135,26 @@ public class SearchActivity extends AppCompatActivity {
             }
             fragmentTransaction.commit();
         });
+
+        RadioGroup radioGroup = findViewById(R.id.sortingRadioGroup);
+        ((RadioButton)findViewById(R.id.radioDefault)).setSelected(true);
+
+        radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
+            LoggerFactory.getLogger(SearchActivity.class).info("Radio check changed, {}", i);
+            if (i == R.id.radioNameDesc) {
+                searchAdapter.sortNameAscend();
+            } else if (i == R.id.radioNameAsc) {
+                searchAdapter.sortNameDescend();
+            } else if (i == R.id.radioCategoryAsc) {
+                searchAdapter.sortCategoryAscend();
+            } else if (i == R.id.radioCategoryDesc) {
+                searchAdapter.sortCategoryDescend();
+            } else {
+                searchAdapter.addSubject(receivedMessage);
+                searchAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     public String reverseCheckSubject(String title)

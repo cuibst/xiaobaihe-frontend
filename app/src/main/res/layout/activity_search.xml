@@ -41,26 +41,66 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lin2"
         android:layout_below="@id/lin1"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/groupScrollView"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/selectButton"
+            android:scrollbars="none">
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:id="@+id/sortingRadioGroup"
+                android:layout_gravity="center_vertical">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="默认"
+                    android:id="@+id/radioDefault"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="名称升序"
+                    android:id="@+id/radioNameAsc"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="名称降序"
+                    android:id="@+id/radioNameDesc"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分类升序"
+                    android:id="@+id/radioCategoryAsc"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分类降序"
+                    android:id="@+id/radioCategoryDesc"/>
+            </RadioGroup>
+        </HorizontalScrollView>
         <Button
             android:id="@+id/selectButton"
             android:text="筛选"
             android:textSize="16sp"
             android:background="#FFFFFF"
-            android:layout_gravity="right"
-            android:layout_width="50dp"
-            android:layout_height="40dp"/>
-    </LinearLayout>
-        <androidx.fragment.app.FragmentTabHost
-            android:layout_below="@id/lin2"
-            android:id="@+id/selectFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+    <androidx.fragment.app.FragmentTabHost
+        android:layout_below="@id/lin2"
+        android:id="@+id/selectFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/search_rcy"
         android:layout_width="match_parent"
