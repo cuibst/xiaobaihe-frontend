@@ -51,10 +51,12 @@ public class SearchViewActivity extends AppCompatActivity {
         return subjectText;
     }
 
+    private MyHandler myHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
+        myHandler=new MyHandler(getMainLooper());
         searchView=findViewById(R.id.searchView);
         RecyclerView recommendXRecyclerView = findViewById(R.id.recommendXRecylcerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -216,10 +218,12 @@ public class SearchViewActivity extends AppCompatActivity {
         return chooseSubject;
     }
 
-    private final MyHandler myHandler=new MyHandler();
+
 
     private class MyHandler extends Handler{
-
+        MyHandler(Looper looper){
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull Message msg)
         {

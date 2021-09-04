@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.java.cuiyikai.adapters.ItemAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -33,7 +35,9 @@ public class ItemFragment extends Fragment {
     private XRecyclerView xRecyclerView;
     private Context context;
     private String title = "title";
+    public  RecyclerView.LayoutManager layoutManager;
     private ItemAdapter itemAdapter;
+    private MyHandler myHandler;
     private ProgressBar progressBar;
     private static final String MAIN_ACTIVITY_BACKEND_URL ="/api/uri/getname";
     public ItemFragment() {}
@@ -83,6 +87,7 @@ public class ItemFragment extends Fragment {
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
         progressBar=view.findViewById(R.id.waitingBar);
         itemAdapter=new ItemAdapter(getActivity(), title);
+        myHandler=new MyHandler(Looper.getMainLooper());
         xRecyclerView.setAdapter(itemAdapter);
         sendMessage();
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
@@ -125,7 +130,6 @@ public class ItemFragment extends Fragment {
         thread.start();
     }
 
-    private final MyHandler handler=new MyHandler();
     private class ConnectToWeb implements Runnable{
         private final String chooseSubject;
         ConnectToWeb(String s)
@@ -141,7 +145,7 @@ public class ItemFragment extends Fragment {
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=0;
-                handler.sendMessage(message);
+                myHandler.sendMessage(message);
             }
             catch (Exception e)
             {
@@ -164,7 +168,7 @@ public class ItemFragment extends Fragment {
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=1;
-                handler.sendMessage(message);
+                myHandler.sendMessage(message);
             }
             catch (Exception e)
             {
@@ -182,7 +186,7 @@ public class ItemFragment extends Fragment {
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=2;
-                handler.sendMessage(message);
+                myHandler.sendMessage(message);
             }
             catch (Exception e)
             {
@@ -191,7 +195,9 @@ public class ItemFragment extends Fragment {
         }
     }
     private class MyHandler extends Handler {
-
+        MyHandler(Looper looper){
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull Message msg) {
             JSONObject object;
@@ -210,7 +216,10 @@ public class ItemFragment extends Fragment {
                 itemAdapter.addMoreSubject(object.getJSONArray("data"));
                 itemAdapter.notifyDataSetChanged();
                 xRecyclerView.loadMoreComplete();
+
             }
         }
     }
+
+
 }

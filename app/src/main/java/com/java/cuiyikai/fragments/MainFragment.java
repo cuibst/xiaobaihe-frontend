@@ -4,6 +4,7 @@ import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CU
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import java.util.List;
 public class MainFragment extends Fragment {
     private ViewPager viewPager;
     private ItemFragment[] itemFragment;
+    private ImageView searchImageView;
     private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
     private List<String> allSubjectItem = new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
 
@@ -40,7 +42,6 @@ public class MainFragment extends Fragment {
         View view = View.inflate(getActivity(), R.layout.fragment_main, null);
         initViewPager(view);
         itemFragment=new ItemFragment[allSubjectItem.size()];
-
 
         TabLayout tabLayout = view.findViewById(R.id.tablayout1);
         tabLayout.setupWithViewPager(viewPager);
@@ -114,4 +115,5 @@ public class MainFragment extends Fragment {
         ItemFragment fragment=new ItemFragment(chooseSubject,getActivity());
         itemFragment[position]=fragment;
     }
+
 }
