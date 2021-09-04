@@ -160,5 +160,3 @@ k
 ;app/src/main/java/com/java/cuiyikai/entities/GraphNode.java,6\e\6ecf965bf5416fddcd791bba142f9c6738f0b748
 s
 Capp/src/main/java/com/java/cuiyikai/activities/MindMapActivity.java,2\6\266b75af16dd6fb28dea258170e98d5cab901bd8
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
