@@ -106,8 +106,6 @@ w
 Gapp/src/main/java/com/java/cuiyikai/entities/BottomFavouriteEntity.java,8\8\88c2171b55e1f3557126121d8edc8cfa3de1f3c5
 p
 @app/src/main/java/com/java/cuiyikai/database/DatabaseEntity.java,7\0\706a7ae1937ac8aac1fdeef7faf581817c6b1922
-z
-Japp/src/main/java/com/java/cuiyikai/activities/FavouriteCheckActivity.java,7\6\7645f034a4c363e373aaedeb65ed209b40001637
 q
 Aapp/src/main/java/com/java/cuiyikai/activities/LoginActivity.java,3\9\392ade7419e44f9f6339a729bdf931c740a33b5d
 s
