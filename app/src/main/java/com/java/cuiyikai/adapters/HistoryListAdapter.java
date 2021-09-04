@@ -32,7 +32,6 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
     {
         JSONArray arr=new JSONArray();
         arr.add(m);
-        System.out.println(arr.toString());
         if(data==null)
         {
             data=arr;
@@ -49,9 +48,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
     }
     public void addData(JSONArray data)
     {
-        System.out.println(data.toString());
         this.data=data;
-        System.out.println(this.data);
     }
     @NonNull
     @Override

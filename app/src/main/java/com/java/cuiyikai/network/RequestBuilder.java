@@ -14,6 +14,9 @@ import com.java.cuiyikai.network.callables.GetCallable;
 import com.java.cuiyikai.network.callables.JsonPostCallable;
 import com.java.cuiyikai.network.callables.PostCallable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -37,6 +40,9 @@ import java.util.concurrent.Future;
  * This is an utility class.
  */
 public class RequestBuilder {
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestBuilder.class);
+
 //    private static final String PHONE = "18211517925";
 //    private static final String PASSWORD = "ldx0881110103";
     private static final String PHONE = "16688092093";
@@ -57,7 +63,7 @@ public class RequestBuilder {
     private RequestBuilder() {}
 
     public static void setConnectionHeader(HttpURLConnection connection, String method) throws ProtocolException {
-        System.out.printf("Set connection method : %s%n", method);
+        logger.info("Set connection method : {}", method);
         connection.setRequestMethod(method);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(10000);
@@ -72,7 +78,7 @@ public class RequestBuilder {
     }
 
     public static void setConnectionHeader(HttpURLConnection connection, String method, boolean sendJson) throws ProtocolException {
-        System.out.printf("Set connection method : %s, type : %b%n", method, sendJson);
+        logger.info("Set connection method : {}, type : {}", method, sendJson);
         connection.setRequestMethod(method);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(10000);
@@ -119,7 +125,7 @@ public class RequestBuilder {
                     Map<String, String> form = new HashMap<>();
                     form.put("password", PASSWORD);
                     form.put("phone", PHONE);
-                    System.out.printf("POST : %s %s%n", loginUrl, buildForm(form));
+                    logger.info("POST : {} {}", loginUrl, buildForm(form));
                     writer.write(buildForm(form));
                     writer.flush();
                     if(connection.getResponseCode() == 200)
@@ -131,12 +137,11 @@ public class RequestBuilder {
                             buffer.append(line);
                         }
                         JSONObject response = JSON.parseObject(buffer.toString());
-                        System.out.printf("Reply with : %s%n", response);
+                        logger.info("Reply with : {}", response);
                         token = response.get("id").toString();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println(e.getMessage());
                 }
             }
             return token;
@@ -288,7 +293,6 @@ public class RequestBuilder {
                         return null;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println(e.getMessage());
                 }
             }
             return backendToken;

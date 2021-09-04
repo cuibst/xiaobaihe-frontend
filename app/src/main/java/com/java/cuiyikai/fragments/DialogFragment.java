@@ -169,7 +169,7 @@ public class DialogFragment extends Fragment {
         };
         if((list=historyList())==null)
             list=new ArrayList<>();
-        System.out.println("size: "+list.size());
+        logger.info("size: {}", list.size());
         pc= new Author("pc", "1");
         author= new Author("author", "0");
         dialogAdapter=new MessagesListAdapter<>(USER_ID,imageLoader);
