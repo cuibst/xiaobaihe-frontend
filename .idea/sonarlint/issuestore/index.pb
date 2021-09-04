@@ -138,10 +138,6 @@ h
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 t
 Dapp/src/main/java/com/java/cuiyikai/fragments/DirectoryFragment.java,8\6\861563394ce0a70ff84d96654c9bbef2d226ec88
-x
-Happ/src/main/java/com/java/cuiyikai/fragments/UserPageEntryFragment.java,0\b\0b00c668283686f2d13868607914ebd7dfcd8729
-v
-Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6
 r
 Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
 o
