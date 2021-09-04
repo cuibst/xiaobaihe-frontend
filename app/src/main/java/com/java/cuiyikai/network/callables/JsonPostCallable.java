@@ -7,6 +7,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.network.RequestBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -18,6 +21,8 @@ import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
 public class JsonPostCallable implements Callable<JSONObject> {
+
+    private static final Logger logger = LoggerFactory.getLogger(JsonPostCallable.class);
 
     Handler handler = null;
 
@@ -40,7 +45,7 @@ public class JsonPostCallable implements Callable<JSONObject> {
         HttpURLConnection connection = (HttpURLConnection) loginUrl.openConnection();
         RequestBuilder.setConnectionHeader(connection, "POST", true);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
-        System.out.printf("POST json = %s to %s%n", arguments, url);
+        logger.info("POST json = {} to {}", arguments, url);
         writer.write(arguments.toString());
         writer.flush();
         if(connection.getResponseCode() == 200)
@@ -53,7 +58,7 @@ public class JsonPostCallable implements Callable<JSONObject> {
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
-                System.out.printf("Reply with : %s%n", buffer.toString());
+                logger.info("Reply with : {}", buffer);
                 if(handler != null) {
                     Message message = handler.obtainMessage();
                     message.what = 1;
@@ -67,7 +72,7 @@ public class JsonPostCallable implements Callable<JSONObject> {
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
-                System.out.printf("Reply with : %s%n", buffer.toString());
+                logger.info("Reply with : {}", buffer);
                 if(handler != null) {
                     Message message = handler.obtainMessage();
                     message.what = 1;

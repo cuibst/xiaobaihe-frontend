@@ -95,7 +95,12 @@
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/geography_radius.xml" value="0.3958974358974359" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/green_radius.xml" value="0.2947916666666667" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/history_radius.xml" value="0.38974358974358975" />
+        <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/ic_info_black_24dp.xml" value="0.26875" />
+        <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/ic_lightbulb_outline_black_24dp.xml" value="0.26875" />
+        <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/idea_bg.xml" value="0.26875" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/maths_radius.xml" value="0.38974358974358975" />
+        <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/mind_map_background.xml" value="0.26875" />
+        <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/mind_map_text_background.xml" value="0.26875" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/orange_radius.xml" value="0.44947916666666665" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/physics_radius.xml" value="0.38974358974358975" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/drawable/politics_radius.xml" value="0.38974358974358975" />
@@ -109,6 +114,7 @@
         <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_favourite_check.xml" value="0.22395833333333334" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_login.xml" value="0.55" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_main.xml" value="0.32864583333333336" />
+        <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_mind_map.xml" value="0.19238095238095237" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_offline.xml" value="0.23854166666666668" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_point_extract.xml" value="0.21041666666666667" />
         <entry key="..\:/git-repo/java_homework/app/src/main/res/layout/activity_problem.xml" value="0.23645833333333333" />

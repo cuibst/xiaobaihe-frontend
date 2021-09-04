@@ -7,6 +7,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.network.RequestBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -17,6 +20,8 @@ import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
 public class GetCallable implements Callable<JSONObject> {
+
+    private static final Logger logger = LoggerFactory.getLogger(GetCallable.class);
 
     Handler handler = null;
 
@@ -36,10 +41,10 @@ public class GetCallable implements Callable<JSONObject> {
     @Override
     public JSONObject call() throws Exception {
         URL url = new URL(sUrl);
-        System.out.printf("GET : %s%n", url);
+        logger.info("GET : {}", url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         RequestBuilder.setConnectionHeader(connection, "GET");
-        System.out.printf("Connection type : %s%n", connection.getRequestMethod());
+        logger.info("Connection type : {}", connection.getRequestMethod());
         connection.connect();
         if(connection.getResponseCode() == 200)
         {
@@ -51,7 +56,7 @@ public class GetCallable implements Callable<JSONObject> {
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
-                System.out.printf("Reply with : %s%n", buffer.toString());
+                logger.info("Reply with : {}", buffer);
                 if(handler != null) {
                     Message message = handler.obtainMessage();
                     message.what = 1;
@@ -65,7 +70,7 @@ public class GetCallable implements Callable<JSONObject> {
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
                 }
-                System.out.printf("Reply with : %s%n", buffer.toString());
+                logger.info("Reply with : {}", buffer);
                 if(handler != null) {
                     Message message = handler.obtainMessage();
                     message.what = 1;

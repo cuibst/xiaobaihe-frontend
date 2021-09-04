@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
+import com.java.cuiyikai.activities.MindMapActivity;
 import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.adapters.BottomFavouriteAdapter;
 import com.java.cuiyikai.adapters.FavouriteAdapter;
@@ -394,6 +395,11 @@ public class DirectoryFragment extends Fragment {
 
         });
 
+        view.findViewById(R.id.btnGenerateMap).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MindMapActivity.class);
+            intent.putExtra("directoryName", directoryName);
+            startActivity(intent);
+        });
 
         favouriteItemList.setAdapter(favouriteAdapter);
 

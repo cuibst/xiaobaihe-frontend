@@ -42,6 +42,9 @@ import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.utilities.PermissionUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -58,6 +61,7 @@ import java.util.Map;
 public class PointExtractFragment extends Fragment {
 
     private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private static final Logger logger = LoggerFactory.getLogger(PointExtractFragment.class);
 
     private static final int TAKE_PHOTO = 101;
     private static final int TAKE_CAMERA = 100;
@@ -125,7 +129,7 @@ public class PointExtractFragment extends Fragment {
             baseAPI.setImage(bitmap);
             String result = baseAPI.getUTF8Text();
             baseAPI.end();
-            System.out.printf("result:%s%n",result);
+            logger.info("result: {}",result);
             EditText editText = getView().findViewById(R.id.extract_text_input);
             editText.setText(result);
             onTextReceived(result);
@@ -145,10 +149,8 @@ public class PointExtractFragment extends Fragment {
             Thread.currentThread().interrupt();
             return;
         }
-        System.out.println("requesting!!");
         SpannableStringBuilder ssBuilder = new SpannableStringBuilder(text);
         JSONArray data = res.getJSONObject("data").getJSONArray("results");
-        System.out.println(data.toString());
         for(Object keyword: data) {
             JSONObject obj = JSON.parseObject(keyword.toString());
             int startIndex = obj.getInteger("start_index");
@@ -157,10 +159,8 @@ public class PointExtractFragment extends Fragment {
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View view) {
-                    System.out.println("clicked!!!");
                     Intent f=new Intent(getActivity(), EntityActivity.class);
                     f.putExtra("name",name);
-                    System.out.println(name);
                     f.putExtra("subject","");
                     startActivity(f);
                 }

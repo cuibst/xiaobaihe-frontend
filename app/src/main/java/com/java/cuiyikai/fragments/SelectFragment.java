@@ -56,13 +56,11 @@ public class SelectFragment extends Fragment {
     public void getType(ArrayList<String> v)
     {
         selectAdapter.getCheckMarked().clear();
-        System.out.println(v.toString());
         selectAdapter.setType(v);
         selectAdapter.notifyDataSetChanged();
     }
     public List<String> returnCheckMarked()
     {
-        System.out.println(selectAdapter.getCheckMarked().toString());
         return selectAdapter.getCheckMarked();
     }
     public List<String> returnCheckSubject()
