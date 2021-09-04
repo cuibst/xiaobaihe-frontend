@@ -80,8 +80,6 @@ u
 Eapp/src/main/java/com/java/cuiyikai/adapters/VisitHistoryAdapter.java,4\2\4244332085d1e0cc8bff9a52afa23d801cce136e
 q
 Aapp/src/main/java/com/java/cuiyikai/activities/StartActivity.java,5\0\500d5460bf6d97bf87b551fe788496a44e3fc81b
-o
-?app/src/main/java/com/java/cuiyikai/adapters/SearchAdapter.java,b\d\bdced547b1c843fbe1b38f7325f80db5b5b9c56f
 n
 >app/src/main/java/com/java/cuiyikai/entities/CategoryItem.java,3\8\3821cc116a436ece391dff3fced742ea98b087f2
 p
@@ -134,8 +132,6 @@ Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/HistoryViewHolder.java
 Oapp/src/main/java/com/java/cuiyikai/activities/QuestionsCollectionActivity.java,2\e\2e79690afb16ce17b98ba12ee3858ecf7cb64111
 t
 Dapp/src/main/java/com/java/cuiyikai/activities/RegisterActivity.java,1\d\1d2f8eac66408b461b3828e1ef19e50bf80c3d88
-r
-Bapp/src/main/java/com/java/cuiyikai/activities/SearchActivity.java,6\a\6a45b42281b379b3f125ce227e00b2fd7af60b18
 x
 Happ/src/main/java/com/java/cuiyikai/activities/VisitHistoryActivity.java,4\d\4d0febaf7f9af06661fe7ea26b7df097959c382b
 o
@@ -144,8 +140,6 @@ o
 ?app/src/main/java/com/java/cuiyikai/fragments/MainFragment.java,f\a\fa1fcab14a94e61f102fa426f7440f6cc03d62c9
 h
 8app/src/main/java/com/java/cuiyikai/MainApplication.java,6\8\6842d713d7ae3d55ef273f2d94956292a15508a3
-v
-Fapp/src/main/java/com/java/cuiyikai/activities/SearchViewActivity.java,2\f\2f058307bd0bc6585df195abe81ca848fd14a5eb
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 <
@@ -170,3 +164,15 @@ w
 Gapp/src/main/java/com/java/cuiyikai/fragments/PointExtractFragment.java,9\9\9924b8d3e86fb74cc6d349feda8cdd2d9be5372b
 w
 Gapp/src/main/java/com/java/cuiyikai/network/callables/PostCallable.java,b\4\b4c2493714e09b6477b4cf872314e0a5174d9972
+q
+Aapp/src/main/java/com/java/cuiyikai/fragments/DialogFragment.java,4\b\4bd690466a1e2d3ec145af47a2dc876e9aa789ec
+t
+Dapp/src/main/java/com/java/cuiyikai/adapters/HistoryListAdapter.java,c\8\c88fd5a02d506cb4a3c448f311e2cf101d7e9cb8
+r
+Bapp/src/main/java/com/java/cuiyikai/adapters/FavouriteAdapter.java,c\f\cf98ed3ce36881cbf58cd221e0e66bb453cfd6cf
+k
+;app/src/main/java/com/java/cuiyikai/entities/GraphNode.java,6\e\6ecf965bf5416fddcd791bba142f9c6738f0b748
+s
+Capp/src/main/java/com/java/cuiyikai/activities/MindMapActivity.java,2\6\266b75af16dd6fb28dea258170e98d5cab901bd8
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e

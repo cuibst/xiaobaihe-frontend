@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
@@ -17,9 +19,14 @@ import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 
 public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
@@ -31,15 +38,28 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         mContext=context;
     }
 
-    public void addSubject(JSONObject arr) {
+    public void addSubject(JSONObject jsonObject) {
+        Map<String, List<JSONObject>> actualArray = new TreeMap<>();
+        for(String key : jsonObject.keySet()) {
+            JSONArray array = jsonObject.getJSONObject(key).getJSONArray("data");
+            List<JSONObject> objectList = new ArrayList<>();
+            for(Object o : array) {
+                objectList.add(JSON.parseObject(o.toString()));
+            }
+            actualArray.put(key, objectList);
+        }
+        addSubject(actualArray);
+    }
+
+    public void addSubject(Map<String, List<JSONObject>> arr) {
         subject=arr;
         sum=0;
         Set<String> set=subject.keySet();
         for(String str:set)
         {
-            if(subject.getJSONObject(str).isEmpty())
+            if(subject.get(str) == null || subject.get(str).isEmpty())
                 continue;
-            sum+=subject.getJSONObject(str).getJSONArray("data").size();
+            sum+=subject.get(str).size();
         }
         size = Math.min(sum, 10);
     }
@@ -49,7 +69,8 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     }
     private int size=0;
     private int sum=0;
-    private JSONObject subject=new JSONObject();
+    private Map<String, List<JSONObject>> subject = new TreeMap<>();
+//    private JSONObject subject=new JSONObject();
     private final Context mContext;
 
     public int getSize() {
@@ -131,15 +152,54 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         Map<String,Object> map=new HashMap<>();
         for(String str:set)
         {
-            if((subject.getJSONObject(str).getJSONArray("data").size())>position) {
-                map.put("item", subject.getJSONObject(str).getJSONArray("data").get(position));
+            if((subject.get(str).size())>position) {
+                map.put("item", subject.get(str).get(position));
                 map.put("name",str);
                 break;
             } else {
-                position = position - (subject.getJSONObject(str).getJSONArray("data").size());
+                position = position - (subject.get(str).size());
             }
         }
         logger.info("map: {}", map);
         return  map;
+    }
+
+    public void sortNameAscend() {
+        for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
+            List<JSONObject> list = entry.getValue();
+            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString("label")));
+            subject.replace(entry.getKey(), list);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void sortNameDescend() {
+        for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
+            List<JSONObject> list = entry.getValue();
+            logger.info("key : {} , value : {}", entry.getKey(), entry.getValue());
+            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString("label")));
+            Collections.reverse(list);
+            subject.replace(entry.getKey(), list);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void sortCategoryAscend() {
+        for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
+            List<JSONObject> list = entry.getValue();
+            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString("category")));
+            subject.replace(entry.getKey(), list);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void sortCategoryDescend() {
+        for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
+            List<JSONObject> list = entry.getValue();
+            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString("category")));
+            Collections.reverse(list);
+            subject.replace(entry.getKey(), list);
+        }
+        notifyDataSetChanged();
     }
 }
