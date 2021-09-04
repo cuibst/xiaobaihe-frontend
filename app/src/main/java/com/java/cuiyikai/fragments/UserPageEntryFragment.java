@@ -89,6 +89,7 @@ public class UserPageEntryFragment extends Fragment {
         mHistory.setOnClickListener(v -> {
             if(!RequestBuilder.checkedLogin()){
                 Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
+                return;
             }
             Intent intent=new Intent(getActivity(), VisitHistoryActivity.class);
             startActivity(intent);
@@ -113,36 +114,38 @@ public class UserPageEntryFragment extends Fragment {
             }
         });
         mQuestion.setOnClickListener((View v) -> {
-                Map<String, String> map = new HashMap<>();
-                Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-                JSONObject msg = null;
-                try {
-                    msg = RequestBuilder.sendBackendGetRequest("/api/problem/", map, true);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+            if(!RequestBuilder.checkedLogin()){
+                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Map<String, String> map = new HashMap<>();
+            Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
+            JSONObject msg = null;
+            try {
+                msg = RequestBuilder.sendBackendGetRequest("/api/problem/", map, true);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 
-                //FIXME: backend api updated, please change the logic!!
-
-                JSONArray arr=msg.getJSONArray("data");
-                for(int i = 0; i < arr.size(); i ++){
-                    Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
-                    JSONObject problem = map1.get("problem");
-                    String qBody = (String) problem.get("qBody");
-                    String qAnswer = (String) problem.get("qAnswer");
-                    String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
-                    mIntent.putExtra("body " + i, qBody);
-                    mIntent.putExtra("answer " + i, qAnswer);
-                    mIntent.putExtra("subject " + i, subject);
-                }
-                mIntent.putExtra("sum", arr.size() + "");
-                mIntent.putExtra("type", "list");
-                Log.v("mTag",arr.toString());
-                Log.v("mTag", arr.size() + "");
-                Log.v("mTag", arr.get(0).toString() + "");
-                Log.v("mTag", arr.get(0).getClass().toString());
-                startActivity(mIntent);
-            });
+            JSONArray arr=msg.getJSONArray("data");
+            for(int i = 0; i < arr.size(); i ++){
+                Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
+                JSONObject problem = map1.get("problem");
+                String qBody = (String) problem.get("qBody");
+                String qAnswer = (String) problem.get("qAnswer");
+                String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
+                mIntent.putExtra("body " + i, qBody);
+                mIntent.putExtra("answer " + i, qAnswer);
+                mIntent.putExtra("subject " + i, subject);
+            }
+            mIntent.putExtra("sum", arr.size() + "");
+            mIntent.putExtra("type", "list");
+            Log.v("mTag",arr.toString());
+            Log.v("mTag", arr.size() + "");
+            Log.v("mTag", arr.get(0).toString() + "");
+            Log.v("mTag", arr.get(0).getClass().toString());
+            startActivity(mIntent);
+        });
         return view;
     }
 }
