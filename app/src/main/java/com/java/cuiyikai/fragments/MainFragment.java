@@ -4,6 +4,7 @@ import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CU
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
@@ -71,12 +73,12 @@ public class MainFragment extends Fragment {
 
     private void initViewPager(View view) {
         viewPager = view.findViewById(R.id.viewpgr1);
-        viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getActivity().getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        viewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         allSubjectItem = ((MainApplication)getActivity().getApplication()).getSubjects();
         viewPager.setAdapter(viewPagerFragmentAdapter);
     }
 
-    public class ViewPagerFragmentAdapter extends FragmentPagerAdapter {
+    public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerFragmentAdapter(@NonNull FragmentManager fm, int behavior) {
             super(fm, behavior);
@@ -105,6 +107,16 @@ public class MainFragment extends Fragment {
                 if (fragment != null)
                     transaction.remove(fragment);
             transaction.commit();
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public void restoreState(@Nullable Parcelable state, @Nullable ClassLoader loader) {
+            //Nullified this function to avoid page buffer!!!
         }
     }
 

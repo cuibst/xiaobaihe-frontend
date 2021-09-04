@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.java.cuiyikai.adapters.ItemAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -25,6 +26,8 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import com.java.cuiyikai.R;
 
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,13 +39,14 @@ public class ItemFragment extends Fragment {
     private ItemAdapter itemAdapter;
     private ProgressBar progressBar;
     private static final String MAIN_ACTIVITY_BACKEND_URL ="/api/uri/getname";
-    public ItemFragment() {}
     public ItemFragment(String s, Context c)
     {
         super();
         title =s;
         context=c;
     }
+
+    public ItemFragment(){}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -213,4 +217,11 @@ public class ItemFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LoggerFactory.getLogger(ItemFragment.class).info("Item Fragment destroyed");
+    }
+
 }
