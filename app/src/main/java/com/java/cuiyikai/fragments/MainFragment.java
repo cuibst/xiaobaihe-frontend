@@ -2,6 +2,7 @@ package com.java.cuiyikai.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class MainFragment extends Fragment {
     private ViewPager viewpgr;
     private ImageView tabAdd;
     private ItemFragment[] itemFragment;
+    private final String getVisitHistoryUrl="/api/history/getVisitHistory";
     private ImageView searchImageView;
     private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
     private List<String> all_subject_item=new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
@@ -41,7 +43,6 @@ public class MainFragment extends Fragment {
         View view = View.inflate(getActivity(), R.layout.fragment_main, null);
         initViewPager(view);
         itemFragment=new ItemFragment[all_subject_item.size()];
-
 
         tabLayout=view.findViewById(R.id.tablayout1);
         tabLayout.setupWithViewPager(viewpgr);
@@ -119,4 +120,5 @@ public class MainFragment extends Fragment {
         ItemFragment fragment=new ItemFragment(chooseSubject,getActivity());
         itemFragment[position]=fragment;
     }
+
 }

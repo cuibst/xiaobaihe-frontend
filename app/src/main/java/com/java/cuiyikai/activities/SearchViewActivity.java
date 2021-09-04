@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -50,10 +51,12 @@ public class SearchViewActivity extends AppCompatActivity {
     private String addHistoryUrl="/api/history/addHistory";
     private TextView quitText;
     private String main_activity_backend_url="/api/uri/getname";
+    private MyHandler myHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
+        myHandler=new MyHandler(getMainLooper());
         searchView=findViewById(R.id.searchView);
         recommendXRecyclerView=findViewById(R.id.recommendXRecylcerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -290,9 +293,11 @@ public class SearchViewActivity extends AppCompatActivity {
         return chooseSubject;
     }
 
-    private MyHandler myHandler=new MyHandler();
 
     private class MyHandler extends Handler{
+        MyHandler(Looper looper){
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull Message msg)
         {

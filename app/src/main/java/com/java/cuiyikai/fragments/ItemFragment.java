@@ -3,6 +3,7 @@ package com.java.cuiyikai.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.alibaba.fastjson.JSONArray;
 import com.java.cuiyikai.adapters.ItemAdapter;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +32,14 @@ import java.util.Map;
 
 
 public class ItemFragment extends Fragment {
+    static  private JSONArray visitHistory;
     public  XRecyclerView xRecyclerView;
     public  Context context;
     public  String TITLE = "tile";
     public  RecyclerView.LayoutManager layoutManager;
     public  ItemAdapter itemAdapter;
+    private final String getVisitHistoryUrl="/api/history/getVisitHistory";
+    private MyHandler myHandler;
     private ProgressBar progressBar;
     private String main_activity_backend_url="/api/uri/getname";
     public ItemFragment() {
@@ -80,6 +85,7 @@ public class ItemFragment extends Fragment {
         xRecyclerView=view.findViewById(R.id.fragment_xrecycleview);
         progressBar=view.findViewById(R.id.waitingBar);
         itemAdapter=new ItemAdapter(getActivity(),TITLE);
+        myHandler=new MyHandler(Looper.getMainLooper());
         xRecyclerView.setAdapter(itemAdapter);
         sendMessage();
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
@@ -122,7 +128,6 @@ public class ItemFragment extends Fragment {
         thread.start();
     }
 
-    MyHandler handler=new MyHandler();
     private class ConnectToWeb implements Runnable{
         private String chooseSubject;
         ConnectToWeb(String s)
@@ -138,7 +143,7 @@ public class ItemFragment extends Fragment {
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=0;
-                handler.sendMessage(message);
+                myHandler.sendMessage(message);
             }
             catch (Exception e)
             {
@@ -161,7 +166,7 @@ public class ItemFragment extends Fragment {
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=1;
-                handler.sendMessage(message);
+                myHandler.sendMessage(message);
             }
             catch (Exception e)
             {
@@ -184,7 +189,7 @@ public class ItemFragment extends Fragment {
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=2;
-                handler.sendMessage(message);
+                myHandler.sendMessage(message);
             }
             catch (Exception e)
             {
@@ -193,6 +198,9 @@ public class ItemFragment extends Fragment {
         }
     }
     private class MyHandler extends Handler {
+        MyHandler(Looper looper){
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull Message msg) {
             JSONObject object;
@@ -211,11 +219,13 @@ public class ItemFragment extends Fragment {
                     xRecyclerView.refreshComplete();
                     break;
                 case 2:
-                    object=JSONObject.parseObject(msg.obj.toString());
+                    object= JSONObject.parseObject(msg.obj.toString());
                     itemAdapter.addMoreSubject(object.getJSONArray("data"));
                     itemAdapter.notifyDataSetChanged();
                     xRecyclerView.loadMoreComplete();
             }
         }
     }
+
+
 }

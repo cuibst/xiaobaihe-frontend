@@ -2,6 +2,10 @@ package com.java.cuiyikai.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +19,34 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
+import com.java.cuiyikai.fragments.ItemFragment;
+import com.java.cuiyikai.network.RequestBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
+    static private JSONArray visitHistory;
     public ItemAdapter(Context context, String s) {
         mContext=context;
+        myHandler=new MyHandler(context.getMainLooper());
         chooseSubject=s;
+        if(RequestBuilder.checkedLogin()) {
+            if (visitHistory == null) {
+                GetVisitHistory getVisitHistory = new GetVisitHistory();
+                Thread getHistoryThread = new Thread(getVisitHistory);
+                getHistoryThread.start();
+            }
+        }
+        else
+        {
+            visitHistory=null;
+        }
     }
     public  String chooseSubject;
+    private MyHandler myHandler;
     public JSONArray subject=new JSONArray();
+    private final String getVisitHistoryUrl="/api/history/getVisitHistory";
     private Context mContext;
     public void addSubject(JSONArray arr) {
         subject=arr;
@@ -38,11 +62,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         System.out.println(newSubject.size());
         System.out.println(subject.size());
     }
-    public void clearSubject()
-    {
-        subject.clear();
-    }
-
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent , int viewType) {
@@ -54,16 +73,50 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
         String name = subject.getJSONObject(position).getString("name");
         String sub = subject.getJSONObject(position).getString("subject");
-
         holder.getLabelTextView().setText(name);
+        holder.getLabelTextView().setTextColor(Color.GRAY);
+        if(visitHistory!=null)
+        {
+            if(RequestBuilder.checkedLogin()) {
+                for (int i = 0; i < visitHistory.size(); i++) {
+                    JSONObject m = (JSONObject) visitHistory.get(i);
+                    if (m.getString("name").equals(name) && m.getString("subject").equals(sub)) {
+                        System.out.println(name+"------"+sub);
+                        holder.getLabelTextView().setTextColor(Color.RED);
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(RequestBuilder.checkedLogin()) {
+                GetVisitHistory getVisitHistory = new GetVisitHistory();
+                Thread getHistoryThread = new Thread(getVisitHistory);
+                getHistoryThread.start();
+            }
+        }
         holder.getSearchLine().setOnClickListener((View view) -> {
-
+            if(visitHistory!=null) {
+                JSONObject m = new JSONObject();
+                m.put("subject", sub);
+                m.put("name", name);
+                visitHistory.add(m);
+            }
+            else
+            {
+                if(RequestBuilder.checkedLogin()) {
+                    GetVisitHistory getVisitHistory = new GetVisitHistory();
+                    Thread getHistoryThread = new Thread(getVisitHistory);
+                    getHistoryThread.start();
+                }
+            }
+            holder.getLabelTextView().setTextColor(Color.RED);
             Intent intent = new Intent(mContext, EntityActivity.class);
             intent.putExtra("name", name);
             intent.putExtra("subject", sub);
             mContext.startActivity(intent);
         });
-
         switch (sub) {
             case "chinese" :
                 holder.getSearchLine().setBackgroundResource(R.drawable.chinese_radius);
@@ -111,5 +164,43 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         if(subject==null)
             return 0;
         return subject.size();
+    }
+
+
+    private class MyHandler extends Handler {
+        MyHandler(Looper looper){
+            super(looper);
+        }
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch(msg.what)
+            {
+                case 0:
+                    JSONArray arr=JSONArray.parseArray(msg.obj.toString());
+                    visitHistory=arr;
+                    notifyDataSetChanged();
+            }
+        }
+    }
+
+    private class GetVisitHistory implements Runnable{
+
+        @Override
+        public void run() {
+            Map<String, String> map = new HashMap<>();
+            try {
+                JSONObject object=RequestBuilder.sendBackendGetRequest(getVisitHistoryUrl, map, true);
+                JSONArray arr=object.getJSONArray("data");
+                System.out.println("data: "+arr.toString());
+                Message msg=new Message();
+                msg.what=0;
+                msg.obj=arr.toString();
+                myHandler.sendMessage(msg);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }
