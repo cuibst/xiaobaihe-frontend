@@ -108,8 +108,6 @@ s
 Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac66820c7b908cbfc48435a6e1d33457358f
 x
 Happ/src/main/java/com/java/cuiyikai/activities/PointExtractActivity.java,c\a\ca306bf15b13af3cb337efa6b0f57c169f1b1424
-s
-Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
 r
 Bapp/src/main/java/com/java/cuiyikai/fragments/HistoryFragment.java,b\0\b0e587c671a4fb5454ea6dbbf44e59e249f4ef8e
 t
@@ -146,7 +144,11 @@ r
 Bapp/src/main/java/com/java/cuiyikai/adapters/FavouriteAdapter.java,c\f\cf98ed3ce36881cbf58cd221e0e66bb453cfd6cf
 k
 ;app/src/main/java/com/java/cuiyikai/entities/GraphNode.java,6\e\6ecf965bf5416fddcd791bba142f9c6738f0b748
-s
-Capp/src/main/java/com/java/cuiyikai/activities/MindMapActivity.java,2\6\266b75af16dd6fb28dea258170e98d5cab901bd8
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+r
+Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
+o
+?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
+v
+Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
