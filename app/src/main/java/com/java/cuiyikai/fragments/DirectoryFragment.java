@@ -341,7 +341,7 @@ public class DirectoryFragment extends Fragment {
                             mIntent.putExtra("subject" + " " + j, subjectList.get(j));
                         }
                         mIntent.putExtra("type", "list");
-                        mIntent.putExtra("sum", cnt + "");
+                        mIntent.putExtra("sum", qBodyList.size() + "");
                         startActivity(mIntent);
                     } else if(msg.what == 2) {
                         loadingFlag = false;
