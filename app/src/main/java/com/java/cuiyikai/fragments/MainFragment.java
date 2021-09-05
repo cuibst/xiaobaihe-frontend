@@ -106,7 +106,7 @@ public class MainFragment extends Fragment {
         }
 
         public void clear() {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             for (ItemFragment fragment : itemFragment)
                 if (fragment != null)
                     transaction.remove(fragment);
