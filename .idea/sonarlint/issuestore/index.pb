@@ -134,10 +134,6 @@ h
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 t
 Dapp/src/main/java/com/java/cuiyikai/fragments/DirectoryFragment.java,8\6\861563394ce0a70ff84d96654c9bbef2d226ec88
-r
-Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
-v
-Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
 {
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
 q
