@@ -190,17 +190,25 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         String qBody=questions.getString("qBody");
         List<String> chooses=new ArrayList<>();
         List<String> alp=new ArrayList<>();
+        List<String> alp1=new ArrayList<>();
         alp.add("A.");
         alp.add("B.");
         alp.add("C.");
         alp.add("D.");
         alp.add("E.");
+        alp1.add("A．");
+        alp1.add("B．");
+        alp1.add("C．");
+        alp1.add("D．");
+        alp1.add("E．");
         int head=0;
-        int tail;
+        int tail=0;
         int cnt=0;
         String question="";
         while(cnt != alp.size()) {
             tail=qBody.indexOf(alp.get(cnt));
+            if(tail==-1)
+                tail=qBody.indexOf(alp1.get(cnt));
             if(tail==-1)
             {
                 chooses.add(qBody.substring(head));
