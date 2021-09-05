@@ -5,17 +5,23 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.MainApplication;
@@ -29,6 +35,7 @@ import com.java.cuiyikai.entities.BottomFavouriteEntity;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
+import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 import com.yanzhenjie.recyclerview.SwipeMenu;
 import com.yanzhenjie.recyclerview.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.SwipeMenuCreator;
@@ -296,48 +303,56 @@ public class DirectoryFragment extends Fragment {
             JSONObject js = ((MainApplication) getActivity().getApplication()).getFavourite();
             int cnt = 0;
             JSONArray jsArray = (JSONArray) js.get(directoryName);
+            if(jsArray == null) {
+                Toast.makeText(getActivity(), "空文件夹", Toast.LENGTH_SHORT).show();
+                return;
+            }
             List<String> qBodyList = new ArrayList<>();
             List<String> qAnswerList = new ArrayList<>();
             List<String> subjectList = new ArrayList<>();
-            for(int i = 0; i < jsArray.size(); i ++){
-                JSONObject jsObject = (JSONObject) jsArray.get(i);
-                Log.v("lzgsm", jsObject.toJSONString());
-                subjectList.add((String) jsObject.get("subject"));
-                String uriname = (String) jsObject.get("name");
-                Map<String, String> request = new HashMap<>();
-                request.put("uriName", uriname);
-                JSONObject tmp = null;
-                try {
-                    tmp = RequestBuilder.sendGetRequest(
-                            "typeOpen/open/questionListByUriName", request);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                Log.v("tmp", tmp.toJSONString());
 
-                JSONArray mJSONArray;
-                mJSONArray = (JSONArray) tmp.get("data");
-                Map<String , String> mMap = (Map<String, String>) mJSONArray.get(i);
-                String qBody = mMap.get("qBody");
-                String answer = mMap.get("qAnswer");
-                Log.v("answer", i + " " + answer);
-                qAnswerList.add(answer);
-                qBodyList.add(qBody);
-                cnt ++;
-            }
-            Log.v("answer", qAnswerList.toString());
-            Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-            for(int j = 0; j < cnt; j ++){
-                mIntent.putExtra("body" + " " + j, qBodyList.get(j));
-                mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
-                mIntent.putExtra("subject" + " " + j, subjectList.get(j));
-            }
-            mIntent.putExtra("type", "list");
-            mIntent.putExtra("sum", cnt + "");
-            startActivity(mIntent);
+            LoadingDialog loadingDialog = new LoadingDialog(getActivity());
+            loadingDialog.setLoadingText("正在生成")
+                    .setInterceptBack(false)
+                    .setFailedText("加载失败")
+                    .show();
+
+            loadingFlag = true;
+
+            loadingDialog.setDimissListener(() -> loadingFlag = false);
+
+            Handler handler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    if(!loadingFlag)
+                        return;
+                    if(msg.what == 1) {
+                        if(qBodyList.isEmpty()) {
+                            loadingDialog.loadFailed();
+                            Toast.makeText(getActivity(), "没有相关题目", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        loadingDialog.close();
+                        Log.v("answer", qAnswerList.toString());
+                        Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
+                        for(int j = 0; j < qBodyList.size(); j ++){
+                            mIntent.putExtra("body" + " " + j, qBodyList.get(j));
+                            mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
+                            mIntent.putExtra("subject" + " " + j, subjectList.get(j));
+                        }
+                        mIntent.putExtra("type", "list");
+                        mIntent.putExtra("sum", cnt + "");
+                        startActivity(mIntent);
+                    } else if(msg.what == 2) {
+                        loadingFlag = false;
+                        loadingDialog.loadFailed();
+                    }
+                }
+            };
+
+            Thread thread = new Thread(new GenerateProblemThread(handler, qAnswerList, qBodyList, subjectList, jsArray));
+            thread.start();
+
         });
 
 
@@ -412,6 +427,69 @@ public class DirectoryFragment extends Fragment {
         ((MainApplication)getActivity().getApplication()).updateFavourite();
         favouriteAdapter.setFavouriteArray(((MainApplication)getActivity().getApplication()).getFavourite().getJSONArray(directoryName));
         favouriteAdapter.notifyDataSetChanged();
+    }
+
+    private boolean loadingFlag = false;
+
+    private class GenerateProblemThread implements Runnable {
+
+        private final Handler handler;
+        private final List<String> qAnswerList;
+        private final List<String> qBodyList;
+        private final List<String> subjectList;
+        private final JSONArray jsArray;
+
+        public GenerateProblemThread(Handler handler, @NonNull List<String> qAnswerList, @NonNull List<String> qBodyList,
+                                     @NonNull List<String> subjectList, @NonNull JSONArray jsArray) {
+            this.handler = handler;
+            this.qAnswerList = qAnswerList;
+            this.qBodyList = qBodyList;
+            this.subjectList = subjectList;
+            this.jsArray = jsArray;
+        }
+
+        @Override
+        public void run() {
+            for(int i = 0; i < jsArray.size(); i ++){
+                JSONObject jsObject = (JSONObject) jsArray.get(i);
+                Log.v("lzgsm", jsObject.toJSONString());
+                String uriname = (String) jsObject.get("name");
+                Map<String, String> request = new HashMap<>();
+                request.put("uriName", uriname);
+                JSONObject tmp = null;
+                try {
+                    tmp = RequestBuilder.sendGetRequest(
+                            "typeOpen/open/questionListByUriName", request);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    e.printStackTrace();
+                    Message message = new Message();
+                    message.what = 2;
+                    handler.sendMessage(message);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                    Message message = new Message();
+                    message.what = 2;
+                    handler.sendMessage(message);
+                }
+                Log.v("tmp", tmp.toJSONString());
+
+                JSONArray mJSONArray;
+                mJSONArray = (JSONArray) tmp.get("data");
+                if(mJSONArray != null)
+                    for(Object obj : mJSONArray) {
+                        JSONObject object = JSON.parseObject(obj.toString());
+                        String qBody = object.getString("qBody");
+                        String answer = object.getString("qAnswer");
+                        qAnswerList.add(answer);
+                        qBodyList.add(qBody);
+                        subjectList.add((String) jsObject.get("subject"));
+                    }
+            }
+            Message message = new Message();
+            message.what = 1;
+            handler.sendMessage(message);
+        }
     }
 
 }

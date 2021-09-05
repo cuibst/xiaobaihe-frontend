@@ -132,8 +132,6 @@ h
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
-t
-Dapp/src/main/java/com/java/cuiyikai/fragments/DirectoryFragment.java,8\6\861563394ce0a70ff84d96654c9bbef2d226ec88
 {
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
 q
