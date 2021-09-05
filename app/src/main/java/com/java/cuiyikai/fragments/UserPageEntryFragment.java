@@ -1,14 +1,19 @@
 package com.java.cuiyikai.fragments;
 
 import static android.app.Activity.RESULT_OK;
+import static android.os.Looper.getMainLooper;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +26,19 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.MainApplication;
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.activities.FavouriteCheckActivity;
 import com.java.cuiyikai.activities.LoginActivity;
 import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.activities.QuestionsCollectionActivity;
 import com.java.cuiyikai.activities.VisitHistoryActivity;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 public class UserPageEntryFragment extends Fragment {
 
@@ -119,38 +129,81 @@ public class UserPageEntryFragment extends Fragment {
                 return;
             }
             Map<String, String> map = new HashMap<>();
-            Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-            JSONObject msg = null;
+            loadingDialog = new LoadingDialog(getActivity());
+            loadingFlag = true;
+            loadingDialog.setDimissListener(() -> loadingFlag = false);
+            loadingDialog.setLoadingText("正在生成")
+                    .setInterceptBack(false)
+                    .setFailedText("加载失败")
+                    .show();
             try {
-                msg = RequestBuilder.sendBackendGetRequest("/api/problem/", map, true);
-            } catch (Exception e){
+                Handler handler = new MyHandler(getMainLooper());
+                futureMsg = RequestBuilder.asyncSendBackendGetRequest("/api/problem/", map, handler, true);
+            } catch (BackendTokenExpiredException e) {
                 e.printStackTrace();
+                Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
             }
 
-            JSONArray arr=msg.getJSONArray("data");
-            for(int i = 0; i < arr.size(); i ++){
-                Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
-                JSONObject problem = map1.get("problem");
-                String qBody = (String) problem.get("qBody");
-                String qAnswer = (String) problem.get("qAnswer");
-                for(int j=0;j<qAnswer.length();j++)
-                    if(qAnswer.charAt(j) >= 'A' && qAnswer.charAt(j) <= 'E') {
-                        qAnswer = qAnswer.substring(j, j+1);
-                        break;
-                    }
-                String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
-                mIntent.putExtra("body " + i, qBody);
-                mIntent.putExtra("answer " + i, qAnswer);
-                mIntent.putExtra("subject " + i, subject);
-            }
-            mIntent.putExtra("sum", arr.size() + "");
-            mIntent.putExtra("type", "list");
-            Log.v("mTag",arr.toString());
-            Log.v("mTag", arr.size() + "");
-            Log.v("mTag", arr.get(0).toString() + "");
-            Log.v("mTag", arr.get(0).getClass().toString());
-            startActivity(mIntent);
         });
         return view;
     }
+
+    private Future<JSONObject> futureMsg = null;
+
+    private LoadingDialog loadingDialog;
+    private boolean loadingFlag = false;
+
+    private class MyHandler extends Handler {
+
+        public MyHandler(@NonNull Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg1) {
+            if(!loadingFlag)
+                return;
+            if(msg1.what == 1) {
+                JSONObject msg;
+                try {
+                    msg = futureMsg.get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    loadingDialog.loadFailed();
+                    return;
+                }
+                if(msg == null || msg.getJSONArray("data").isEmpty()) {
+                    loadingDialog.loadFailed();
+                    return;
+                }
+                loadingDialog.close();
+                Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
+                JSONArray arr = msg.getJSONArray("data");
+                for(int i = 0; i < arr.size(); i ++){
+                    Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
+                    JSONObject problem = map1.get("problem");
+                    String qBody = (String) problem.get("qBody");
+                    String qAnswer = (String) problem.get("qAnswer");
+                    for(int j=0;j<qAnswer.length();j++)
+                        if(qAnswer.charAt(j) >= 'A' && qAnswer.charAt(j) <= 'E') {
+                            qAnswer = qAnswer.substring(j, j+1);
+                            break;
+                        }
+                    String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
+                    mIntent.putExtra("body " + i, qBody);
+                    mIntent.putExtra("answer " + i, qAnswer);
+                    mIntent.putExtra("subject " + i, subject);
+                }
+                mIntent.putExtra("sum", arr.size() + "");
+                mIntent.putExtra("type", "list");
+                Log.v("mTag",arr.toString());
+                Log.v("mTag", arr.size() + "");
+                Log.v("mTag", arr.get(0).toString() + "");
+                Log.v("mTag", arr.get(0).getClass().toString());
+                startActivity(mIntent);
+            }
+        }
+
+    }
+
 }
