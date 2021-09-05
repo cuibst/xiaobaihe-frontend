@@ -136,8 +136,6 @@ t
 Dapp/src/main/java/com/java/cuiyikai/fragments/DirectoryFragment.java,8\6\861563394ce0a70ff84d96654c9bbef2d226ec88
 r
 Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
-o
-?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
 v
 Fapp/src/main/java/com/java/cuiyikai/network/callables/GetCallable.java,5\1\510d29723f1e0855ef2a37bf943ce7d45379fdb0
 {

@@ -133,6 +133,11 @@ public class UserPageEntryFragment extends Fragment {
                 JSONObject problem = map1.get("problem");
                 String qBody = (String) problem.get("qBody");
                 String qAnswer = (String) problem.get("qAnswer");
+                for(int j=0;j<qAnswer.length();j++)
+                    if(qAnswer.charAt(j) >= 'A' && qAnswer.charAt(j) <= 'E') {
+                        qAnswer = qAnswer.substring(j, j+1);
+                        break;
+                    }
                 String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
                 mIntent.putExtra("body " + i, qBody);
                 mIntent.putExtra("answer " + i, qAnswer);
