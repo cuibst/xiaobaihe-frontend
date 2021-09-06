@@ -135,7 +135,7 @@ public class ItemFragment extends Fragment {
             if(itemAdapter.getItemViewType(0) == ItemAdapter.LAYOUT_TYPE_LINEAR) {
                 itemAdapter.setType(ItemAdapter.LAYOUT_TYPE_GRID);
                 xRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                ((FloatingActionButton)view.findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.drag_button);
+                ((FloatingActionButton)view.findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.linear);
             } else {
                 itemAdapter.setType(ItemAdapter.LAYOUT_TYPE_LINEAR);
                 LinearLayoutManager manager = new LinearLayoutManager(getActivity());

@@ -167,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
             if(searchAdapter.getItemViewType(0) == ItemAdapter.LAYOUT_TYPE_LINEAR) {
                 searchAdapter.setType(ItemAdapter.LAYOUT_TYPE_GRID);
                 searchRecyclerView.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
-                ((FloatingActionButton)findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.drag_button);
+                ((FloatingActionButton)findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.linear);
             } else {
                 searchAdapter.setType(ItemAdapter.LAYOUT_TYPE_LINEAR);
                 LinearLayoutManager manager = new LinearLayoutManager(SearchActivity.this);
