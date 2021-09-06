@@ -4,6 +4,7 @@ import android.app.Application;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +51,7 @@ public class MainApplication extends Application {
     public void updateFavourite() {
         if(RequestBuilder.checkedLogin())
             try {
-                favourite = RequestBuilder.sendBackendGetRequest("/api/favourite/getFavourite", new HashMap<>(), true).getJSONObject("data");
+                favourite = RequestBuilder.sendBackendGetRequest("/api/favourite/getFavourite", new HashMap<>(), true).getJSONObject(ConstantUtilities.ARG_DATA);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
                 Thread.currentThread().interrupt();

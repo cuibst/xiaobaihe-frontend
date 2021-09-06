@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.java.cuiyikai.utilities.ConstantUtilities;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,8 +101,8 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
      */
     public long insert(DatabaseEntity databaseEntity) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name", databaseEntity.getName());
-        contentValues.put("subject", databaseEntity.getSubject());
+        contentValues.put(ConstantUtilities.ARG_NAME, databaseEntity.getName());
+        contentValues.put(ConstantUtilities.ARG_SUBJECT, databaseEntity.getSubject());
         contentValues.put("jsonContent", databaseEntity.getJsonContent());
         contentValues.put("problemsJson", databaseEntity.getProblemsJson());
         return database.insert(TABLE_NAME, null, contentValues);

@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.adapters.viewholders.QuestionViewHolder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
@@ -40,7 +41,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             QuestionViewHolder holder=(QuestionViewHolder) holder1;
             JSONObject m=(JSONObject) questionsArr.get(position);
             String name = m.getString("question");
-            String sub = m.getString("subject");
+            String sub = m.getString(ConstantUtilities.ARG_SUBJECT);
             holder.getCategory().setText("");
             holder.getView().setOnClickListener((View view) -> {
                 Intent intent = new Intent(mContext, ProblemActivity.class);
@@ -53,39 +54,39 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
             holder.getLabel().setText(name);
             switch (sub) {
-                case "chinese" :
+                case ConstantUtilities.SUBJECT_CHINESE :
                     holder.getView().setBackgroundResource(R.drawable.chinese_radius);
                     holder.getImg().setImageResource(R.drawable.chinese);
                     break;
-                case "math" :
+                case ConstantUtilities.SUBJECT_MATH :
                     holder.getView().setBackgroundResource(R.drawable.maths_radius);
                     holder.getImg().setImageResource(R.drawable.maths);
                     break;
-                case "english" :
+                case ConstantUtilities.SUBJECT_ENGLISH :
                     holder.getView().setBackgroundResource(R.drawable.english_radius);
                     holder.getImg().setImageResource(R.drawable.english);
                     break;
-                case "physics" :
+                case ConstantUtilities.SUBJECT_PHYSICS :
                     holder.getView().setBackgroundResource(R.drawable.physics_radius);
                     holder.getImg().setImageResource(R.drawable.physics);
                     break;
-                case "chemistry" :
+                case ConstantUtilities.SUBJECT_CHEMISTRY :
                     holder.getView().setBackgroundResource(R.drawable.chemistry_radius);
                     holder.getImg().setImageResource(R.drawable.chemistry);
                     break;
-                case "biology" :
+                case ConstantUtilities.SUBJECT_BIOLOGY :
                     holder.getView().setBackgroundResource(R.drawable.biology_radius);
                     holder.getImg().setImageResource(R.drawable.biology);
                     break;
-                case "history" :
+                case ConstantUtilities.SUBJECT_HISTORY :
                     holder.getView().setBackgroundResource(R.drawable.history_radius);
                     holder.getImg().setImageResource(R.drawable.history);
                     break;
-                case "geo" :
+                case ConstantUtilities.SUBJECT_GEO :
                     holder.getView().setBackgroundResource(R.drawable.geography_radius);
                     holder.getImg().setImageResource(R.drawable.geography);
                     break;
-                case "politics":
+                case ConstantUtilities.SUBJECT_POLITICS:
                     holder.getView().setBackgroundResource(R.drawable.politics_radius);
                     holder.getImg().setImageResource(R.drawable.politics);
                     break;

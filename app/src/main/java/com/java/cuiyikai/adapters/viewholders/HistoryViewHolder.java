@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ class ClearOne implements Runnable
     public void run() {
         try{
             Map<String,String> map=new HashMap<>();
-            map.put("content",s);
+            map.put(ConstantUtilities.ARG_CONTENT,s);
             map.put("all","false");
             String removeUrl = "/api/history/removeHistory";
             RequestBuilder.sendBackendGetRequest(removeUrl,map,true);

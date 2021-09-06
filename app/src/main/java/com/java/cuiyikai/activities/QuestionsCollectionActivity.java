@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.QuestionAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
@@ -141,7 +142,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                 Map<String, String> map = new HashMap<>();
                 String getQuestionsUrl = "/api/problem/getSaves";
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(getQuestionsUrl, map, true);
-                JSONArray arr=msg.getJSONArray("data");
+                JSONArray arr=msg.getJSONArray(ConstantUtilities.ARG_DATA);
                 Message message=new Message();
                 message.what=0;
                 message.obj=arr.toString();
@@ -163,8 +164,8 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                 originArr = arr;
                 for (int i = 0; i < arr.size(); i++) {
                     logger.info("Array(i) : {}", arr.get(i));
-                    JSONObject object = fixQuestions(JSON.parseObject(((JSONObject) arr.get(i)).get("problem").toString()));
-                    object.put("subject", ((JSONObject) arr.get(i)).get("subject"));
+                    JSONObject object = fixQuestions(JSON.parseObject(((JSONObject) arr.get(i)).get(ConstantUtilities.ARG_PROBLEM).toString()));
+                    object.put(ConstantUtilities.ARG_SUBJECT, ((JSONObject) arr.get(i)).get(ConstantUtilities.ARG_SUBJECT));
                     array.add(object);
                 }
                 questionAdapter.addQuestions(array);
@@ -242,7 +243,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         public void run() {
             try {
                 Map<String ,Object> map=new HashMap<>();
-                map.put("problem",originArr.get(num));
+                map.put(ConstantUtilities.ARG_PROBLEM,originArr.get(num));
                 String removeQuestionUrl = "/api/problem/deleteSave";
                 RequestBuilder.sendBackendPostRequest(removeQuestionUrl,new JSONObject(map), true);
                 originArr.remove(num);

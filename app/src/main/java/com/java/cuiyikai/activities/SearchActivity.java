@@ -21,6 +21,7 @@ import com.java.cuiyikai.fragments.SelectFragment;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import android.content.Intent;
@@ -79,7 +80,7 @@ public class SearchActivity extends AppCompatActivity {
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
         searchAdapter =new SearchAdapter(SearchActivity.this);
         receivedMessage = JSON.parseObject(prevBundle.getString("msg"));
-        searchContent=prevBundle.getString("name");
+        searchContent=prevBundle.getString(ConstantUtilities.ARG_NAME);
         searchRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
@@ -125,16 +126,16 @@ public class SearchActivity extends AppCompatActivity {
                             continue;
                         JSONArray categoryMap = new JSONArray();
                         for (int category = 0; category < checkMarked.size(); category++) {
-                            for (int i = 0; i < receivedMessage.getJSONObject(str).getJSONArray("data").size(); i++) {
-                                String s = (String) ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i)).get("category");
+                            for (int i = 0; i < receivedMessage.getJSONObject(str).getJSONArray(ConstantUtilities.ARG_DATA).size(); i++) {
+                                String s = (String) ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray(ConstantUtilities.ARG_DATA).get(i)).get(ConstantUtilities.ARG_CATEGORY);
                                 if (!s.equals(checkMarked.get(category)))
                                     continue;
-                                JSONObject cate = ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray("data").get(i));
+                                JSONObject cate = ((JSONObject) receivedMessage.getJSONObject(str).getJSONArray(ConstantUtilities.ARG_DATA).get(i));
                                 if (categoryMap.contains(cate))
                                     continue;
                                 categoryMap.add(cate);
                             }
-                            lessonMap.put("data", categoryMap);
+                            lessonMap.put(ConstantUtilities.ARG_DATA, categoryMap);
                         }
                         totalMap.put(checkSubject(checkSubject.get(lesson)), lessonMap);
                     }
@@ -237,31 +238,31 @@ public class SearchActivity extends AppCompatActivity {
     {
         String chooseSubject;
         switch (title) {
-            case "chinese":
+            case ConstantUtilities.SUBJECT_CHINESE:
                 chooseSubject = "语文";
                 break;
-            case "math":
+            case ConstantUtilities.SUBJECT_MATH:
                 chooseSubject = "数学";
                 break;
-            case "english":
+            case ConstantUtilities.SUBJECT_ENGLISH:
                 chooseSubject = "英语";
                 break;
-            case "physics":
+            case ConstantUtilities.SUBJECT_PHYSICS:
                 chooseSubject = "物理";
                 break;
-            case "chemistry":
+            case ConstantUtilities.SUBJECT_CHEMISTRY:
                 chooseSubject = "化学";
                 break;
-            case "history":
+            case ConstantUtilities.SUBJECT_HISTORY:
                 chooseSubject = "历史";
                 break;
-            case "geo":
+            case ConstantUtilities.SUBJECT_GEO:
                 chooseSubject = "地理";
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
                 chooseSubject = "政治";
                 break;
-            case "biology":
+            case ConstantUtilities.SUBJECT_BIOLOGY:
                 chooseSubject = "生物";
                 break;
             default:
@@ -274,31 +275,31 @@ public class SearchActivity extends AppCompatActivity {
         String chooseSubject;
         switch (title) {
             case "语文":
-                chooseSubject = "chinese";
+                chooseSubject = ConstantUtilities.SUBJECT_CHINESE;
                 break;
             case "数学":
-                chooseSubject = "math";
+                chooseSubject = ConstantUtilities.SUBJECT_MATH;
                 break;
             case "英语":
-                chooseSubject = "english";
+                chooseSubject = ConstantUtilities.SUBJECT_ENGLISH;
                 break;
             case "物理":
-                chooseSubject = "physics";
+                chooseSubject = ConstantUtilities.SUBJECT_PHYSICS;
                 break;
             case "化学":
-                chooseSubject = "chemistry";
+                chooseSubject = ConstantUtilities.SUBJECT_CHEMISTRY;
                 break;
             case "历史":
-                chooseSubject = "history";
+                chooseSubject = ConstantUtilities.SUBJECT_HISTORY;
                 break;
             case "地理":
-                chooseSubject = "geo";
+                chooseSubject = ConstantUtilities.SUBJECT_GEO;
                 break;
             case "政治":
-                chooseSubject = "politics";
+                chooseSubject = ConstantUtilities.SUBJECT_POLITICS;
                 break;
             case "生物":
-                chooseSubject = "biology";
+                chooseSubject = ConstantUtilities.SUBJECT_BIOLOGY;
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + title);
@@ -314,9 +315,9 @@ public class SearchActivity extends AppCompatActivity {
         for(String str:set)
         {
             subjectType.add(str);
-            for(int i=0;i<receivedMessage.getJSONObject(str).getJSONArray("data").size();i++)
+            for(int i=0;i<receivedMessage.getJSONObject(str).getJSONArray(ConstantUtilities.ARG_DATA).size();i++)
             {
-                String s=(String)((JSONObject)receivedMessage.getJSONObject(str).getJSONArray("data").get(i)).get("category");
+                String s=(String)((JSONObject)receivedMessage.getJSONObject(str).getJSONArray(ConstantUtilities.ARG_DATA).get(i)).get(ConstantUtilities.ARG_CATEGORY);
                 if(!type.contains(s))
                     type.add(s);
             }
@@ -333,14 +334,14 @@ public class SearchActivity extends AppCompatActivity {
             try {
                 receivedMessage.clear();
                 Map<String,String> map =new HashMap<>();
-                map.put("course",  subject);
+                map.put(ConstantUtilities.ARG_COURSE,  subject);
                 map.put("searchKey",searchContent);
                 JSONObject msg = RequestBuilder.sendGetRequest(searchUrl, map);
                 if(msg.get("code").equals("-1"))
                 {
                     handler.sendEmptyMessage(1);
                 }
-                else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
+                else if(msg.get(ConstantUtilities.ARG_DATA)!=null&&!msg.getJSONArray(ConstantUtilities.ARG_DATA).isEmpty()) {
                     receivedMessage.put(subject,msg);
                 }
                 Message message=new Message();

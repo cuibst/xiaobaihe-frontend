@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.database.DatabaseEntity;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.List;
 
@@ -35,39 +36,39 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
         ImageView imageView = view.findViewById(R.id.itemSubjectPicture);
         View itemView = view.findViewById(R.id.directoryFavouriteItem);
         switch(entity.getSubject()) {
-            case "chinese" :
+            case ConstantUtilities.SUBJECT_CHINESE :
                 itemView.setBackgroundResource(R.drawable.chinese_radius);
                 imageView.setImageResource(R.drawable.chinese);
                 break;
-            case "math" :
+            case ConstantUtilities.SUBJECT_MATH :
                 itemView.setBackgroundResource(R.drawable.maths_radius);
                 imageView.setImageResource(R.drawable.maths);
                 break;
-            case "english" :
+            case ConstantUtilities.SUBJECT_ENGLISH :
                 itemView.setBackgroundResource(R.drawable.english_radius);
                 imageView.setImageResource(R.drawable.english);
                 break;
-            case "physics" :
+            case ConstantUtilities.SUBJECT_PHYSICS :
                 itemView.setBackgroundResource(R.drawable.physics_radius);
                 imageView.setImageResource(R.drawable.physics);
                 break;
-            case "chemistry" :
+            case ConstantUtilities.SUBJECT_CHEMISTRY :
                 itemView.setBackgroundResource(R.drawable.chemistry_radius);
                 imageView.setImageResource(R.drawable.chemistry);
                 break;
-            case "biology" :
+            case ConstantUtilities.SUBJECT_BIOLOGY :
                 itemView.setBackgroundResource(R.drawable.biology_radius);
                 imageView.setImageResource(R.drawable.biology);
                 break;
-            case "history" :
+            case ConstantUtilities.SUBJECT_HISTORY :
                 itemView.setBackgroundResource(R.drawable.history_radius);
                 imageView.setImageResource(R.drawable.history);
                 break;
-            case "geo" :
+            case ConstantUtilities.SUBJECT_GEO :
                 itemView.setBackgroundResource(R.drawable.geography_radius);
                 imageView.setImageResource(R.drawable.geography);
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
             default:
                 itemView.setBackgroundResource(R.drawable.politics_radius);
                 imageView.setImageResource(R.drawable.politics);
@@ -77,8 +78,8 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
         textView.setText(entity.getName());
         view.setOnClickListener((View v) -> {
             Intent intent = new Intent(getContext(), EntityActivity.class);
-            intent.putExtra("name",entity.getName());
-            intent.putExtra("subject",entity.getSubject());
+            intent.putExtra(ConstantUtilities.ARG_NAME,entity.getName());
+            intent.putExtra(ConstantUtilities.ARG_SUBJECT,entity.getSubject());
             getContext().startActivity(intent);
         });
         return view;

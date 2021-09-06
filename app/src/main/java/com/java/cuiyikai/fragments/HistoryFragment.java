@@ -17,6 +17,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.HistoryListAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,7 @@ public class HistoryFragment extends Fragment {
         public void run() {
             try{
                 Map<String,String> map=new HashMap<>();
-                map.put("content","");
+                map.put(ConstantUtilities.ARG_CONTENT,"");
                 map.put("all","true");
                 String removeUrl = "/api/history/removeHistory";
                 RequestBuilder.sendBackendGetRequest(removeUrl,map,true);
