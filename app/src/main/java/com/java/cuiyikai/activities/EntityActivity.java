@@ -6,6 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListener;
+import androidx.core.widget.NestedScrollView;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +25,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -405,6 +410,49 @@ public class EntityActivity extends AppCompatActivity {
                 .show();
 
         long start = System.currentTimeMillis();
+
+        NestedScrollView scrollView = findViewById(R.id.entity_scroll_view);
+        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+
+            private boolean visible = true;
+            private int distance = 0;
+            private final Interpolator interpolator = new FastOutSlowInInterpolator();
+
+            @Override
+            public void onScrollChange(View view, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                int dy = scrollY - oldScrollY;
+                if(distance > 10 && visible) {
+                    visible = false;
+                    ViewCompat.animate(findViewById(R.id.floatMenu)).alpha(0.0F).setInterpolator(interpolator).withLayer()
+                            .setListener(new ViewPropertyAnimatorListener() {
+                                @Override
+                                public void onAnimationStart(View view) {
+
+                                }
+
+                                public void onAnimationEnd(View view) {
+                                    view.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(View view) {
+
+                                }
+                            }).start();
+                    distance = 0;
+                } else if(distance < -20 && !visible) {
+                    findViewById(R.id.floatMenu).setVisibility(View.VISIBLE);
+                    visible = true;
+                    ViewCompat.animate(findViewById(R.id.floatMenu)).alpha(1.0f)
+                            .setInterpolator(interpolator).withLayer().setListener(null)
+                            .start();
+                    distance = 0;
+                }
+                if((visible && dy > 0) || (!visible && dy < 0)) {
+                    distance += dy;
+                }
+            }
+        });
 
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
