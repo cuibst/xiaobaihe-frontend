@@ -666,12 +666,12 @@ public class EntityActivity extends AppCompatActivity {
                 JSONObject object = JSON.parseObject(obj.toString());
                 logger.info("Receive object in favourite {}", object.getString("name"));
                 if(object.getString("name").equals(entityName)) {
-                    button.setImageResource(R.drawable.star_yellow_16);
+                    button.setIcon(R.drawable.star_yellow_16);
                     return;
                 }
             }
         }
-        button.setImageResource(R.drawable.star_gray_16);
+        button.setIcon(R.drawable.star_gray_16);
     }
 
     private void doWeiboShare() {
