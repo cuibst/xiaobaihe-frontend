@@ -37,7 +37,6 @@ import java.util.List;
 public class MainFragment extends Fragment {
     private ViewPager viewPager;
     private ItemFragment[] itemFragment;
-    private ImageView searchImageView;
     private ViewPagerFragmentAdapter viewPagerFragmentAdapter ;
     private List<String> allSubjectItem = new ArrayList<>(Arrays.asList("语文","数学","英语","物理","化学","生物","历史","地理","政治"));
 

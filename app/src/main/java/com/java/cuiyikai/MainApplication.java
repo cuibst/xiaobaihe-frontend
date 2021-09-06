@@ -4,9 +4,6 @@ import android.app.Application;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
-import com.sina.weibo.sdk.auth.AuthInfo;
-import com.sina.weibo.sdk.openapi.IWBAPI;
-import com.sina.weibo.sdk.openapi.WBAPIFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +12,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
