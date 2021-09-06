@@ -26,6 +26,7 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -46,6 +47,8 @@ import java.util.Set;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private MyHandler handler;
+    private boolean exitFlag;
     private String subject;
     private JSONObject receivedMessage;
     private List<String> checkSubject=new ArrayList<>();
@@ -66,11 +69,13 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Intent prevIntent=getIntent();
         Bundle prevBundle = prevIntent.getExtras();
+        exitFlag=false;
         subject=prevBundle.getString("sub");
         selectAdapter=new SelectAdapter(SearchActivity.this);
         selectFragment=new SelectFragment(selectAdapter);
         searchRecyclerView =findViewById(R.id.search_rcy);
         searchRecyclerView.setArrowImageView(R.drawable.waiting);
+        handler=new MyHandler(Looper.getMainLooper());
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
         searchAdapter =new SearchAdapter(SearchActivity.this);
         receivedMessage = JSON.parseObject(prevBundle.getString("msg"));
@@ -221,6 +226,12 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
+    @Override
+    public void onBackPressed()
+    {
+        exitFlag=true;
+        super.onBackPressed();
+    }
 
     public String reverseCheckSubject(String title)
     {
@@ -341,10 +352,15 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
-    private final MyHandler handler=new MyHandler();
     private class MyHandler extends Handler {
+        MyHandler(Looper looper)
+        {
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull Message msg) {
+            if(exitFlag)
+                return;
             switch(msg.what)
             {
                 case 0:
