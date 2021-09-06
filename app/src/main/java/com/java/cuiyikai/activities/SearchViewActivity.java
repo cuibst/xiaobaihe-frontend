@@ -37,6 +37,7 @@ import java.util.Map;
 public class SearchViewActivity extends AppCompatActivity {
     private String subject="chinese";
     private HistoryFragment historyFragment;
+    private boolean exitflag;
     private HistoryListAdapter historyListAdapter;
     private TextView subjectText;
     private SearchView searchView;
@@ -56,6 +57,7 @@ public class SearchViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
+        exitflag=false;
         myHandler=new MyHandler(getMainLooper());
         searchView=findViewById(R.id.searchView);
         RecyclerView recommendXRecyclerView = findViewById(R.id.recommendXRecylcerView);
@@ -152,7 +154,12 @@ public class SearchViewActivity extends AppCompatActivity {
         }
 
 
-
+    }
+    @Override
+    public void onBackPressed()
+    {
+        exitflag=true;
+        super.onBackPressed();
     }
     public void initSearchView()
     {
@@ -227,6 +234,8 @@ public class SearchViewActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg)
         {
+            if(exitflag)
+                return;
             switch(msg.what)
             {
                 case 0:
