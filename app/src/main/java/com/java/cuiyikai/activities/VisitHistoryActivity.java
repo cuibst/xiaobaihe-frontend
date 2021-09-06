@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.VisitHistoryAdapter;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 
@@ -151,7 +152,7 @@ public class VisitHistoryActivity extends AppCompatActivity {
                 Map<String, String> map = new HashMap<>();
                 String getHistoryUrl = "/api/history/getVisitHistory";
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(getHistoryUrl, map, true);
-                JSONArray arr=msg.getJSONArray("data");
+                JSONArray arr=msg.getJSONArray(ConstantUtilities.ARG_DATA);
                 Message message=new Message();
                 message.what=0;
                 message.obj=arr.toString();

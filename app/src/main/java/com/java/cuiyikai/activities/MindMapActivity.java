@@ -21,6 +21,7 @@ import com.java.cuiyikai.database.DatabaseEntity;
 import com.java.cuiyikai.database.EntityDatabaseHelper;
 import com.java.cuiyikai.entities.GraphNode;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +78,8 @@ public class MindMapActivity extends AppCompatActivity {
             else {
                 logger.info("No matches in database!!");
                 Map<String, String> arguments = new HashMap<>();
-                arguments.put("name", name);
-                arguments.put("course", subject);
+                arguments.put(ConstantUtilities.ARG_NAME, name);
+                arguments.put(ConstantUtilities.ARG_COURSE, subject);
 
                 JSONObject reply;
 
@@ -89,7 +90,7 @@ public class MindMapActivity extends AppCompatActivity {
                     throw e;
                 }
 
-                return reply.getJSONObject("data");
+                return reply.getJSONObject(ConstantUtilities.ARG_DATA);
             }
         }
     }
@@ -104,7 +105,7 @@ public class MindMapActivity extends AppCompatActivity {
         mindMappingView = findViewById(R.id.mind_mapping_view);
 
         Intent intent = getIntent();
-        String directoryName = intent.getStringExtra("directoryName");
+        String directoryName = intent.getStringExtra(ConstantUtilities.ARG_DIRECTORY_NAME);
 
         JSONArray favourite = ((MainApplication) getApplication()).getFavourite().getJSONArray(directoryName);
 
@@ -115,8 +116,8 @@ public class MindMapActivity extends AppCompatActivity {
 
         for(Object obj : favourite) {
             JSONObject object = JSON.parseObject(obj.toString());
-            String name = object.getString("name");
-            String subject = object.getString("subject");
+            String name = object.getString(ConstantUtilities.ARG_NAME);
+            String subject = object.getString(ConstantUtilities.ARG_SUBJECT);
             GraphNode child = centralNode.addBaseEntity(MindMapActivity.this, mindMappingView, name, subject);
             nameIdMap.put(object.toString(), child);
             futureList.add(executorService.submit(new GetItemCallable(subject, name)));
@@ -141,12 +142,12 @@ public class MindMapActivity extends AppCompatActivity {
                 Map<String, StringBuilder> propertyMap = new HashMap<>();
                 for (Object o : properties) {
                     JSONObject property = JSON.parseObject(o.toString());
-                    if (property.getString("object").startsWith("http"))
+                    if (property.getString(ConstantUtilities.ARG_OBJECT).startsWith("http"))
                         continue;
-                    if (propertyMap.containsKey(property.getString("predicateLabel"))) {
-                        propertyMap.get(property.getString("predicateLabel")).append("\n").append(property.getString("object"));
+                    if (propertyMap.containsKey(property.getString(ConstantUtilities.ARG_PREDICATE_LABEL))) {
+                        propertyMap.get(property.getString(ConstantUtilities.ARG_PREDICATE_LABEL)).append("\n").append(property.getString(ConstantUtilities.ARG_OBJECT));
                     } else {
-                        propertyMap.put(property.getString("predicateLabel"), new StringBuilder(property.getString("object")));
+                        propertyMap.put(property.getString(ConstantUtilities.ARG_PREDICATE_LABEL), new StringBuilder(property.getString(ConstantUtilities.ARG_OBJECT)));
                     }
                 }
                 GraphNode parent = nameIdMap.get(entityObjects.get(i).toString());
@@ -154,15 +155,15 @@ public class MindMapActivity extends AppCompatActivity {
                     for (Map.Entry<String, StringBuilder> entry : propertyMap.entrySet()) {
                         parent.addNewProperty(MindMapActivity.this, mindMappingView, entry.getKey(), entry.getValue().toString());
                     }
-                JSONArray relations = jsonObject.getJSONArray("content");
+                JSONArray relations = jsonObject.getJSONArray(ConstantUtilities.ARG_CONTENT);
                 for (Object o : relations) {
                     JSONObject relation = JSON.parseObject(o.toString());
-                    if(relation.containsKey("object")) {
+                    if(relation.containsKey(ConstantUtilities.ARG_OBJECT)) {
                         String target = relation.getString("object_label");
-                        String subject = entityObjects.get(i).getString("subject");
+                        String subject = entityObjects.get(i).getString(ConstantUtilities.ARG_SUBJECT);
                         JSONObject targetObject = new JSONObject();
-                        targetObject.put("name", target);
-                        targetObject.put("subject", subject);
+                        targetObject.put(ConstantUtilities.ARG_NAME, target);
+                        targetObject.put(ConstantUtilities.ARG_SUBJECT, subject);
                         if(nameIdMap.containsKey(targetObject.toString())) {
                             GraphNode targetNode = nameIdMap.get(targetObject.toString());
                             Edge edge = new Edge();
@@ -172,12 +173,12 @@ public class MindMapActivity extends AppCompatActivity {
                             edge2.to = parent;
                             edge2.start = targetNode;
                             if(!edges.contains(edge) && !edges.contains(edge2) && parent != targetNode.getParent() && targetNode != parent.getParent()) {
-                                GraphNode.addSubConnection(parent, targetNode, relation.getString("predicate_label"), MindMapActivity.this, mindMappingView);
+                                GraphNode.addSubConnection(parent, targetNode, relation.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE), MindMapActivity.this, mindMappingView);
                                 edges.add(edge);
                                 edges.add(edge2);
                             }
                         } else {
-                            GraphNode targetNode = parent.addNewEntity(MindMapActivity.this, mindMappingView, target, subject, relation.getString("predicate_label"));
+                            GraphNode targetNode = parent.addNewEntity(MindMapActivity.this, mindMappingView, target, subject, relation.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE));
                             if(level != MAX_LEVEL - 1) {
                                 nextLevelFutureList.add(executorService.submit(new GetItemCallable(target, subject)));
                                 nextLevelObjects.add(targetObject);
@@ -194,10 +195,10 @@ public class MindMapActivity extends AppCompatActivity {
                         }
                     } else {
                         String target = relation.getString("subject_label");
-                        String subject = entityObjects.get(i).getString("subject");
+                        String subject = entityObjects.get(i).getString(ConstantUtilities.ARG_SUBJECT);
                         JSONObject targetObject = new JSONObject();
-                        targetObject.put("name", target);
-                        targetObject.put("subject", subject);
+                        targetObject.put(ConstantUtilities.ARG_NAME, target);
+                        targetObject.put(ConstantUtilities.ARG_SUBJECT, subject);
                         if(nameIdMap.containsKey(targetObject.toString())) {
                             GraphNode targetNode = nameIdMap.get(targetObject.toString());
                             Edge edge = new Edge();
@@ -207,12 +208,12 @@ public class MindMapActivity extends AppCompatActivity {
                             edge2.to = parent;
                             edge2.start = targetNode;
                             if(!edges.contains(edge) && !edges.contains(edge2) && parent != targetNode.getParent() && targetNode != parent.getParent()) {
-                                GraphNode.addSubConnection(parent, targetNode, relation.getString("predicate_label"), MindMapActivity.this, mindMappingView);
+                                GraphNode.addSubConnection(parent, targetNode, relation.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE), MindMapActivity.this, mindMappingView);
                                 edges.add(edge);
                                 edges.add(edge2);
                             }
                         } else {
-                            GraphNode targetNode = parent.addNewEntity(MindMapActivity.this, mindMappingView, target, subject, relation.getString("predicate_label"));
+                            GraphNode targetNode = parent.addNewEntity(MindMapActivity.this, mindMappingView, target, subject, relation.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE));
                             if(level != MAX_LEVEL - 1) {
                                 nextLevelFutureList.add(executorService.submit(new GetItemCallable(target, subject)));
                                 nextLevelObjects.add(targetObject);

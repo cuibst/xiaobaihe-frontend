@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 
@@ -63,31 +64,31 @@ public class ItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view;
         switch (title) {
-            case "chinese":
+            case ConstantUtilities.SUBJECT_CHINESE:
                 view = inflater.inflate(R.layout.fragment_item_chinese, container, false);
                 break;
-            case "math":
+            case ConstantUtilities.SUBJECT_MATH:
                 view = inflater.inflate(R.layout.fragment_item_math, container, false);
                 break;
-            case "english":
+            case ConstantUtilities.SUBJECT_ENGLISH:
                 view = inflater.inflate(R.layout.fragment_item_english, container, false);
                 break;
-            case "physics":
+            case ConstantUtilities.SUBJECT_PHYSICS:
                 view = inflater.inflate(R.layout.fragment_item_physics, container, false);
                 break;
-            case "chemistry":
+            case ConstantUtilities.SUBJECT_CHEMISTRY:
                 view = inflater.inflate(R.layout.fragment_item_chemistry, container, false);
                 break;
-            case "geo":
+            case ConstantUtilities.SUBJECT_GEO:
                 view = inflater.inflate(R.layout.fragment_item_geo, container, false);
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
                 view = inflater.inflate(R.layout.fragment_item_politics, container, false);
                 break;
-            case "history":
+            case ConstantUtilities.SUBJECT_HISTORY:
                 view = inflater.inflate(R.layout.fragment_item_history, container, false);
                 break;
-            case "biology":
+            case ConstantUtilities.SUBJECT_BIOLOGY:
                 view = inflater.inflate(R.layout.fragment_item_biology, container, false);
                 break;
             default:
@@ -207,7 +208,7 @@ public class ItemFragment extends Fragment {
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("subject", chooseSubject);
+                map.put(ConstantUtilities.ARG_SUBJECT, chooseSubject);
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
                 Message message=new Message();
                 message.obj=msg.toString();
@@ -230,7 +231,7 @@ public class ItemFragment extends Fragment {
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("subject", chooseSubject);
+                map.put(ConstantUtilities.ARG_SUBJECT, chooseSubject);
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
                 Message message=new Message();
                 message.obj=msg.toString();
@@ -248,7 +249,7 @@ public class ItemFragment extends Fragment {
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("subject", itemAdapter.getChooseSubject());
+                map.put(ConstantUtilities.ARG_SUBJECT, itemAdapter.getChooseSubject());
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
                 Message message=new Message();
                 message.obj=msg.toString();
@@ -271,16 +272,16 @@ public class ItemFragment extends Fragment {
             if (msg.what == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
                 object = JSON.parseObject(msg.obj.toString());
-                itemAdapter.addSubject(object.getJSONArray("data"));
+                itemAdapter.addSubject(object.getJSONArray(ConstantUtilities.ARG_DATA));
                 itemAdapter.notifyDataSetChanged();
             } else if (msg.what == 1) {
                 object = JSON.parseObject(msg.obj.toString());
-                itemAdapter.addSubject(object.getJSONArray("data"));
+                itemAdapter.addSubject(object.getJSONArray(ConstantUtilities.ARG_DATA));
                 itemAdapter.notifyDataSetChanged();
                 xRecyclerView.refreshComplete();
             } else if (msg.what == 2) {
                 object = JSON.parseObject(msg.obj.toString());
-                itemAdapter.addMoreSubject(object.getJSONArray("data"));
+                itemAdapter.addMoreSubject(object.getJSONArray(ConstantUtilities.ARG_DATA));
                 itemAdapter.notifyDataSetChanged();
                 xRecyclerView.loadMoreComplete();
 

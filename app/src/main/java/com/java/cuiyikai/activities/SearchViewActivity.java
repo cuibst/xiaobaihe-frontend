@@ -29,13 +29,14 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.HistoryListAdapter;
 import com.java.cuiyikai.fragments.HistoryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SearchViewActivity extends AppCompatActivity {
-    private String subject="chinese";
+    private String subject=ConstantUtilities.SUBJECT_CHINESE;
     private HistoryFragment historyFragment;
     private boolean exitflag;
     private HistoryListAdapter historyListAdapter;
@@ -86,47 +87,47 @@ public class SearchViewActivity extends AppCompatActivity {
         Button history = contentView.findViewById(R.id.history);
         Button politics = contentView.findViewById(R.id.politics);
         chinese.setOnClickListener(v -> {
-            subject="chinese";
+            subject= ConstantUtilities.SUBJECT_CHINESE;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         math.setOnClickListener(v -> {
-            subject="math";
+            subject=ConstantUtilities.SUBJECT_MATH;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         english.setOnClickListener(v -> {
-            subject="english";
+            subject=ConstantUtilities.SUBJECT_ENGLISH;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         physics.setOnClickListener(v -> {
-            subject="physics";
+            subject=ConstantUtilities.SUBJECT_PHYSICS;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         chemistry.setOnClickListener(v -> {
-            subject="chemistry";
+            subject=ConstantUtilities.SUBJECT_CHEMISTRY;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         biology.setOnClickListener(v -> {
-            subject="biology";
+            subject=ConstantUtilities.SUBJECT_BIOLOGY;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         geo.setOnClickListener(v -> {
-            subject="geo";
+            subject=ConstantUtilities.SUBJECT_GEO;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         politics.setOnClickListener(v -> {
-            subject="politics";
+            subject=ConstantUtilities.SUBJECT_POLITICS;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         history.setOnClickListener(v -> {
-            subject="history";
+            subject=ConstantUtilities.SUBJECT_HISTORY;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
@@ -170,8 +171,8 @@ public class SearchViewActivity extends AppCompatActivity {
                 Thread thread=new Thread(addHistory);
                 thread.start();
                 JSONObject m=new JSONObject();
-                m.put("subject",subject);
-                m.put("content",s);
+                m.put(ConstantUtilities.ARG_SUBJECT,subject);
+                m.put(ConstantUtilities.ARG_CONTENT,s);
                 historyFragment.getHistoryListAdapter().addOneItem(m);
                 historyFragment.getHistoryListAdapter().notifyDataSetChanged();
                 StartSearch startSearch=new StartSearch(s);
@@ -193,31 +194,31 @@ public class SearchViewActivity extends AppCompatActivity {
     {
         String chooseSubject;
         switch (title) {
-            case "chinese":
+            case ConstantUtilities.SUBJECT_CHINESE:
                 chooseSubject = "语文";
                 break;
-            case "math":
+            case ConstantUtilities.SUBJECT_MATH:
                 chooseSubject = "数学";
                 break;
-            case "english":
+            case ConstantUtilities.SUBJECT_ENGLISH:
                 chooseSubject = "英语";
                 break;
-            case "physics":
+            case ConstantUtilities.SUBJECT_PHYSICS:
                 chooseSubject = "物理";
                 break;
-            case "chemistry":
+            case ConstantUtilities.SUBJECT_CHEMISTRY:
                 chooseSubject = "化学";
                 break;
-            case "history":
+            case ConstantUtilities.SUBJECT_HISTORY:
                 chooseSubject = "历史";
                 break;
-            case "geo":
+            case ConstantUtilities.SUBJECT_GEO:
                 chooseSubject = "地理";
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
                 chooseSubject = "政治";
                 break;
-            case "biology":
+            case ConstantUtilities.SUBJECT_BIOLOGY:
             default:
                 chooseSubject = "生物";
                 break;
@@ -241,7 +242,7 @@ public class SearchViewActivity extends AppCompatActivity {
                 case 0:
                     Intent intent=new Intent(SearchViewActivity.this,SearchActivity.class);
                     intent.putExtra("msg",receivedMessage.toString());
-                    intent.putExtra("name",msg.obj.toString());
+                    intent.putExtra(ConstantUtilities.ARG_NAME,msg.obj.toString());
                     intent.putExtra("sub",subject);
                     startActivity(intent);
                     break;
@@ -250,18 +251,18 @@ public class SearchViewActivity extends AppCompatActivity {
                     break;
                 case 2:
                     JSONObject data= JSON.parseObject(msg.obj.toString());
-                    JSONArray arr=data.getJSONArray("data");
+                    JSONArray arr=data.getJSONArray(ConstantUtilities.ARG_DATA);
                     historyFragment.getHistoryListAdapter().addData(arr);
                     historyFragment.getRecyclerViewForHistory().setAdapter(historyFragment.getHistoryListAdapter());
                     break;
                 case 3:
                     JSONObject object=JSON.parseObject(msg.obj.toString());
-                    int max=object.getJSONArray("data").size();
+                    int max=object.getJSONArray(ConstantUtilities.ARG_DATA).size();
                     if(max>=8)
                         max=8;
                     JSONArray array=new JSONArray();
                     for(int i=0;i<max;i++)
-                        array.add(object.getJSONArray("data").get(i));
+                        array.add(object.getJSONArray(ConstantUtilities.ARG_DATA).get(i));
                     historyListAdapter.addData(array);
                     historyListAdapter.notifyDataSetChanged();
                     break;
@@ -276,7 +277,7 @@ public class SearchViewActivity extends AppCompatActivity {
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("subject", "");
+                map.put(ConstantUtilities.ARG_SUBJECT, "");
                 String mainActivityBackendUrl = "/api/uri/getname";
                 JSONObject msg = RequestBuilder.sendBackendGetRequest(mainActivityBackendUrl, map, false);
                 Message message = new Message();
@@ -301,7 +302,7 @@ public class SearchViewActivity extends AppCompatActivity {
             try {
                 receivedMessage.clear();
                 Map<String,String> map =new HashMap<>();
-                map.put("course",  subject);
+                map.put(ConstantUtilities.ARG_COURSE,  subject);
                 map.put("searchKey",s);
                 String searchUrl = "typeOpen/open/instanceList";
                 JSONObject msg = RequestBuilder.sendGetRequest(searchUrl, map);
@@ -309,7 +310,7 @@ public class SearchViewActivity extends AppCompatActivity {
                 {
                     myHandler.sendEmptyMessage(1);
                 }
-                else if(msg.get("data")!=null&&!msg.getJSONArray("data").isEmpty()) {
+                else if(msg.get(ConstantUtilities.ARG_DATA)!=null&&!msg.getJSONArray(ConstantUtilities.ARG_DATA).isEmpty()) {
                     receivedMessage.put(subject,msg);
                 }
                 Message message=new Message();
@@ -358,8 +359,8 @@ public class SearchViewActivity extends AppCompatActivity {
             if(!RequestBuilder.checkedLogin())
                 return;
             Map<String,String> map=new HashMap<>();
-            map.put("content",s);
-            map.put("subject",subject);
+            map.put(ConstantUtilities.ARG_CONTENT,s);
+            map.put(ConstantUtilities.ARG_SUBJECT,subject);
             try {
                 String addHistoryUrl = "/api/history/addHistory";
                 RequestBuilder.sendBackendGetRequest(addHistoryUrl, map, true);

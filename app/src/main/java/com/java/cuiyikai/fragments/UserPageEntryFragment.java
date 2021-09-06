@@ -34,6 +34,7 @@ import com.java.cuiyikai.activities.QuestionsCollectionActivity;
 import com.java.cuiyikai.activities.VisitHistoryActivity;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 import java.util.HashMap;
@@ -98,7 +99,7 @@ public class UserPageEntryFragment extends Fragment {
             });
         mHistory.setOnClickListener(v -> {
             if(!RequestBuilder.checkedLogin()){
-                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ConstantUtilities.MESSAGE_NOT_LOGIN, Toast.LENGTH_SHORT).show();
                 return;
             }
             Intent intent=new Intent(getActivity(), VisitHistoryActivity.class);
@@ -106,7 +107,7 @@ public class UserPageEntryFragment extends Fragment {
         });
         mCollect.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
-                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ConstantUtilities.MESSAGE_NOT_LOGIN, Toast.LENGTH_SHORT).show();
             }
             else {
                 Intent intent = new Intent(getActivity(), FavouriteCheckActivity.class);
@@ -116,7 +117,7 @@ public class UserPageEntryFragment extends Fragment {
         });
         mQuestionsCollection.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
-                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ConstantUtilities.MESSAGE_NOT_LOGIN, Toast.LENGTH_SHORT).show();
             }
             else {
                 Intent intent = new Intent(getActivity(), QuestionsCollectionActivity.class);
@@ -125,7 +126,7 @@ public class UserPageEntryFragment extends Fragment {
         });
         mQuestion.setOnClickListener((View v) -> {
             if(!RequestBuilder.checkedLogin()){
-                Toast.makeText(getContext(), "您尚未登录", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ConstantUtilities.MESSAGE_NOT_LOGIN, Toast.LENGTH_SHORT).show();
                 return;
             }
             Map<String, String> map = new HashMap<>();
@@ -172,16 +173,16 @@ public class UserPageEntryFragment extends Fragment {
                     loadingDialog.loadFailed();
                     return;
                 }
-                if(msg == null || msg.getJSONArray("data").isEmpty()) {
+                if(msg == null || msg.getJSONArray(ConstantUtilities.ARG_DATA).isEmpty()) {
                     loadingDialog.loadFailed();
                     return;
                 }
                 loadingDialog.close();
                 Intent mIntent = new Intent(getActivity(), ProblemActivity.class);
-                JSONArray arr = msg.getJSONArray("data");
+                JSONArray arr = msg.getJSONArray(ConstantUtilities.ARG_DATA);
                 for(int i = 0; i < arr.size(); i ++){
                     Map<String, JSONObject> map1 = (Map<String, JSONObject>) arr.get(i);
-                    JSONObject problem = map1.get("problem");
+                    JSONObject problem = map1.get(ConstantUtilities.ARG_PROBLEM);
                     String qBody = (String) problem.get("qBody");
                     String qAnswer = (String) problem.get("qAnswer");
                     for(int j=0;j<qAnswer.length();j++)
@@ -189,7 +190,7 @@ public class UserPageEntryFragment extends Fragment {
                             qAnswer = qAnswer.substring(j, j+1);
                             break;
                         }
-                    String subject = ((Map<?, ?>) arr.get(i)).get("subject").toString();
+                    String subject = ((Map<?, ?>) arr.get(i)).get(ConstantUtilities.ARG_SUBJECT).toString();
                     mIntent.putExtra("body " + i, qBody);
                     mIntent.putExtra("answer " + i, qAnswer);
                     mIntent.putExtra("subject " + i, subject);
