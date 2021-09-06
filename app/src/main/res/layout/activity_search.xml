@@ -109,12 +109,13 @@
 
     </com.jcodecraeer.xrecyclerview.XRecyclerView>
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/switch_layout_btn"
         android:src="@drawable/grid"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="@color/common_blue"/>
 
 </RelativeLayout>

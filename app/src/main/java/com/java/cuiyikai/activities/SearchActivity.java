@@ -2,15 +2,19 @@ package com.java.cuiyikai.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListener;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.cuiyikai.adapters.ItemAdapter;
 import com.java.cuiyikai.adapters.SelectAdapter;
 import com.java.cuiyikai.fragments.SelectFragment;
@@ -24,6 +28,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -171,6 +176,48 @@ public class SearchActivity extends AppCompatActivity {
                 ((FloatingActionButton)findViewById(R.id.switch_layout_btn)).setImageResource(R.drawable.grid);
             }
             searchAdapter.notifyDataSetChanged();
+        });
+
+        searchRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            private boolean visible = true;
+            private int distance = 0;
+            private final Interpolator interpolator = new FastOutSlowInInterpolator();
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(distance > 10 && visible) {
+                    visible = false;
+                    ViewCompat.animate(findViewById(R.id.switch_layout_btn)).scaleX(0.0F).scaleY(0.0F).alpha(0.0F).setInterpolator(interpolator).withLayer()
+                            .setListener(new ViewPropertyAnimatorListener() {
+                                @Override
+                                public void onAnimationStart(View view) {
+
+                                }
+
+                                public void onAnimationEnd(View view) {
+                                    view.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(View view) {
+
+                                }
+                            }).start();
+                    distance = 0;
+                } else if(distance < -20 && !visible) {
+                    findViewById(R.id.switch_layout_btn).setVisibility(View.VISIBLE);
+                    visible = true;
+                    ViewCompat.animate(findViewById(R.id.switch_layout_btn)).scaleX(1.0f).scaleY(1.0f).alpha(1.0f)
+                            .setInterpolator(interpolator).withLayer().setListener(null)
+                            .start();
+                    distance = 0;
+                }
+                if((visible && dy > 0) || (!visible && dy < 0)) {
+                    distance += dy;
+                }
+            }
         });
 
     }

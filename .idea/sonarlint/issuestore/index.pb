@@ -146,8 +146,6 @@ k
 ;app/src/main/java/com/java/cuiyikai/entities/GraphNode.java,6\e\6ecf965bf5416fddcd791bba142f9c6738f0b748
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-r
-Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
 o
 ?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
 v

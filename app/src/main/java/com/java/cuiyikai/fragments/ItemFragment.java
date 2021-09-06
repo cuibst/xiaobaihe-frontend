@@ -4,13 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.cuiyikai.adapters.ItemAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListener;
 import androidx.fragment.app.Fragment;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +22,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.animation.Interpolator;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -144,6 +145,49 @@ public class ItemFragment extends Fragment {
             }
             itemAdapter.notifyDataSetChanged();
         });
+
+        xRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            private boolean visible = true;
+            private int distance = 0;
+            private final Interpolator interpolator = new FastOutSlowInInterpolator();
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(distance > 10 && visible) {
+                    visible = false;
+                    ViewCompat.animate(view.findViewById(R.id.switch_layout_btn)).scaleX(0.0F).scaleY(0.0F).alpha(0.0F).setInterpolator(interpolator).withLayer()
+                            .setListener(new ViewPropertyAnimatorListener() {
+                                @Override
+                                public void onAnimationStart(View view) {
+
+                                }
+
+                                public void onAnimationEnd(View view) {
+                                    view.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(View view) {
+
+                                }
+                            }).start();
+                    distance = 0;
+                } else if(distance < -20 && !visible) {
+                    view.findViewById(R.id.switch_layout_btn).setVisibility(View.VISIBLE);
+                    visible = true;
+                    ViewCompat.animate(view.findViewById(R.id.switch_layout_btn)).scaleX(1.0f).scaleY(1.0f).alpha(1.0f)
+                            .setInterpolator(interpolator).withLayer().setListener(null)
+                            .start();
+                    distance = 0;
+                }
+                if((visible && dy > 0) || (!visible && dy < 0)) {
+                    distance += dy;
+                }
+            }
+        });
+
         return view;
     }
     public void sendMessage()
