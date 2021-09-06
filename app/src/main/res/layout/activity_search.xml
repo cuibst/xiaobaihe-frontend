@@ -116,6 +116,7 @@
         android:src="@drawable/grid"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="@color/common_blue"/>
+        android:backgroundTint="@color/common_blue"
+        android:layout_margin="10dp"/>
 
 </RelativeLayout>
