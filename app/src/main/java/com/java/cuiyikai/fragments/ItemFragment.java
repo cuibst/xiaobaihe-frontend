@@ -198,6 +198,8 @@ public class ItemFragment extends Fragment {
         thread.start();
     }
 
+    private int offset = 0;
+
     private class ConnectToWeb implements Runnable{
         private final String chooseSubject;
         ConnectToWeb(String s)
@@ -208,8 +210,9 @@ public class ItemFragment extends Fragment {
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
+                map.put("offset", String.valueOf(offset));
                 map.put(ConstantUtilities.ARG_SUBJECT, chooseSubject);
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, RequestBuilder.checkedLogin());
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=0;
@@ -221,6 +224,7 @@ public class ItemFragment extends Fragment {
             }
         }
     }
+
     private class Refresh implements Runnable{
         private final String chooseSubject;
         Refresh(String s)
@@ -230,9 +234,11 @@ public class ItemFragment extends Fragment {
         @Override
         public void run() {
             try {
+                offset = 0;
                 Map<String, String> map = new HashMap<>();
+                map.put("offset", String.valueOf(offset));
                 map.put(ConstantUtilities.ARG_SUBJECT, chooseSubject);
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, RequestBuilder.checkedLogin());
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=1;
@@ -244,13 +250,15 @@ public class ItemFragment extends Fragment {
             }
         }
     }
+
     private class LoadMore implements Runnable{
         @Override
         public void run() {
             try {
                 Map<String, String> map = new HashMap<>();
+                map.put("offset", String.valueOf(offset));
                 map.put(ConstantUtilities.ARG_SUBJECT, itemAdapter.getChooseSubject());
-                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, false);
+                JSONObject msg = RequestBuilder.sendBackendGetRequest(MAIN_ACTIVITY_BACKEND_URL, map, RequestBuilder.checkedLogin());
                 Message message=new Message();
                 message.obj=msg.toString();
                 message.what=2;
@@ -268,7 +276,7 @@ public class ItemFragment extends Fragment {
         }
         @Override
         public void handleMessage(@NonNull Message msg) {
-            JSONObject object;
+            JSONObject object = null;
             if (msg.what == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
                 object = JSON.parseObject(msg.obj.toString());
@@ -284,8 +292,9 @@ public class ItemFragment extends Fragment {
                 itemAdapter.addMoreSubject(object.getJSONArray(ConstantUtilities.ARG_DATA));
                 itemAdapter.notifyDataSetChanged();
                 xRecyclerView.loadMoreComplete();
-
             }
+            if(object != null && object.getJSONArray(ConstantUtilities.ARG_DATA) != null)
+                offset += object.getJSONArray(ConstantUtilities.ARG_DATA).size();
         }
     }
 
