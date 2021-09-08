@@ -75,8 +75,8 @@ public class RequestBuilder {
     public static void setConnectionHeader(HttpURLConnection connection, String method) throws ProtocolException {
         logger.info("Set connection method : {}", method);
         connection.setRequestMethod(method);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(10000);
+        connection.setConnectTimeout(7000);
+        connection.setReadTimeout(15000);
         if(method.equals("POST")) {
             connection.setRequestProperty("Accept", "*/*");
             connection.setRequestProperty("Accept-Language", "zh-CN");
