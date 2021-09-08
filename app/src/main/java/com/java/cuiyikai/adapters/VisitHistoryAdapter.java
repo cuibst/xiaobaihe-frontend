@@ -28,9 +28,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
+import com.java.cuiyikai.activities.VisitHistoryActivity;
 
-
+/**
+ * This Adapter is used for {@link VisitHistoryActivity}
+ * It support two kinds of ViewHolder:{@link VisitHistoryViewHolder} which shows the item,
+ * {@link VisitHistoryTimeViewHolder} which shows the visit time.
+ */
 public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final Logger logger = LoggerFactory.getLogger(VisitHistoryAdapter.class);
@@ -52,19 +56,24 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         historyArr=arr;
         initDateList();
     }
-    public void reportRemove(int a)
+
+    /**
+     * Remove the visit history record from the JsonArray and tell backend the remove behavior
+     * @param position the loaction of the object in JsonArray
+     */
+    public void reportRemove(int position)
     {
-        logger.info("a={}", a);
-        logger.info("class is: {}", allData.get(a).getClass());
-        logger.info("a to String is : {}", allData.get(a));
-        if(!(allData.get(a) instanceof Date))
+        logger.info("a={}", position);
+        logger.info("class is: {}", allData.get(position).getClass());
+        logger.info("a to String is : {}", allData.get(position));
+        if(!(allData.get(position) instanceof Date))
         {
-            RemoveHistory removeHistory=new RemoveHistory((JSONObject) allData.get(a));
+            RemoveHistory removeHistory=new RemoveHistory((JSONObject) allData.get(position));
             Thread removeThread=new Thread(removeHistory);
             removeThread.start();
             for(int i=0;i<historyArr.size();i++)
             {
-                if(historyArr.get(i).equals(allData.get(a)))
+                if(historyArr.get(i).equals(allData.get(position)))
                 {
                     historyArr.remove(i);
                     addHistory(historyArr);
@@ -76,6 +85,12 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public List<Integer> getTimeNumber(){
         return timeNumber;
     }
+
+    /**
+     * To get all the date message, we need to know how many VisitViewTimeHolder we should construct.
+     * If this visit record and the below one are generate in two days, we shuold add a new VisitViewTimeHolder between them.
+     * considering that both time and item are all need to show as viewholder, we can use a map called allData to save both of them.
+     */
     public void initDateList()
     {
         timeNumber=new ArrayList<>();
@@ -108,6 +123,13 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 allData.put(i,historyArr.getJSONObject(i-cnt));
         }
     }
+
+    /**
+     *
+     * @param parent
+     * @param viewType to judge at this position it should be a time or an item.
+     * @return one kind of visitviewholder
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -124,6 +146,12 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    /**
+     *
+     * @param holder1 There are two kinds of holders, VisitHistoryViewHolder and VisitViewHistoryTimeViewholder
+     *                we should handle them seperately.
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder1, int position) {
         if(holder1 instanceof VisitHistoryTimeViewHolder)
@@ -201,6 +229,11 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    /**
+     * this is used to judge which viewholder should be show in this postion
+     * @param position
+     * @return one of the viewholder:VisitHistoryViewHolder or VisitHistoryTimeViewHolder.
+     */
     @Override
     public int getItemViewType(int position) {
         if(allData.get(position) instanceof Date)
@@ -208,6 +241,11 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         else
             return 0;
     }
+
+    /**
+     * Notice that the time is a kind of viewholder,it should be treated as an item.
+     * @return
+     */
     @Override
     public int getItemCount() {
         if(historyArr==null)

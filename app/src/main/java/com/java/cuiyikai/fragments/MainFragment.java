@@ -29,6 +29,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * This fragment is used to show different subjects' items.
+ * It contains a series of {@link ItemFragment} and each of them represent one subject.
+ */
 public class MainFragment extends Fragment {
     private ViewPager viewPager;
     private ItemFragment[] itemFragment;
@@ -76,6 +81,9 @@ public class MainFragment extends Fragment {
         viewPager.setAdapter(viewPagerFragmentAdapter);
     }
 
+    /**
+     * This adapter is used for viewpager, you can change the subject through viewpager.
+     */
     public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerFragmentAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -118,6 +126,10 @@ public class MainFragment extends Fragment {
         }
     }
 
+    /**
+     * init the itemFragment
+     * @param position judge which subject should be here.
+     */
     public void initFragment(int position)
     {
         String chooseSubject = ((MainActivity)getActivity()).checkSubject(allSubjectItem.get(position));

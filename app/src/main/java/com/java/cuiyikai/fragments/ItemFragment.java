@@ -39,7 +39,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * This fragment is used in{@link MainFragment}, it represents a specific subject.
+ */
 public class ItemFragment extends Fragment {
     private XRecyclerView xRecyclerView;
     private Context context;
