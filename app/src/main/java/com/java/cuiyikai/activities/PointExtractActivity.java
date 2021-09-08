@@ -35,6 +35,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.utilities.PermissionUtilities;
 
@@ -72,7 +73,7 @@ public class PointExtractActivity extends AppCompatActivity {
                     try {
                         if(imageUri == null) {
                             Bundle bundle = data.getExtras();
-                            bitmap = (Bitmap) bundle.get("data");
+                            bitmap = (Bitmap) bundle.get(ConstantUtilities.ARG_DATA);
                         }
                         else
                             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
@@ -128,7 +129,7 @@ public class PointExtractActivity extends AppCompatActivity {
         TextView result = findViewById(R.id.extract_result);
         Map<String,String> args = new HashMap<>();
         args.put("context", text);
-        args.put("course", "");
+        args.put(ConstantUtilities.ARG_COURSE, "");
         JSONObject res;
         try {
             res = RequestBuilder.sendPostRequest("typeOpen/open/linkInstance", args);
@@ -139,7 +140,7 @@ public class PointExtractActivity extends AppCompatActivity {
         }
         logger.info("requesting!!");
         SpannableStringBuilder ssBuilder = new SpannableStringBuilder(text);
-        JSONArray data = res.getJSONObject("data").getJSONArray("results");
+        JSONArray data = res.getJSONObject(ConstantUtilities.ARG_DATA).getJSONArray("results");
         logger.info(data.toString());
         for(Object keyword: data) {
             JSONObject obj = JSON.parseObject(keyword.toString());
@@ -151,9 +152,9 @@ public class PointExtractActivity extends AppCompatActivity {
                 public void onClick(@NonNull View view) {
                     logger.info("clicked!!!");
                     Intent f=new Intent(PointExtractActivity.this,EntityActivity.class);
-                    f.putExtra("name",name);
+                    f.putExtra(ConstantUtilities.ARG_NAME,name);
                     logger.info(name);
-                    f.putExtra("subject","");
+                    f.putExtra(ConstantUtilities.ARG_SUBJECT,"");
                     startActivity(f);
                 }
                 @Override

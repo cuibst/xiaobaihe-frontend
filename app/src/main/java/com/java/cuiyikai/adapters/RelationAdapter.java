@@ -13,6 +13,7 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.RelationViewHolder;
 import com.java.cuiyikai.entities.RelationEntity;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,8 @@ public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
         holder.getTargetName().setText(curList.get(position).getTargetName());
         holder.getRelationView().setOnClickListener((View view) -> {
             Intent f=new Intent(mContext ,EntityActivity.class);
-            f.putExtra("name",curList.get(position).getTargetName());
-            f.putExtra("subject",subject);
+            f.putExtra(ConstantUtilities.ARG_NAME,curList.get(position).getTargetName());
+            f.putExtra(ConstantUtilities.ARG_SUBJECT,subject);
             mContext.startActivity(f);
         });
     }

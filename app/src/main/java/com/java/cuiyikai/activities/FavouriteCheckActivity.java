@@ -29,6 +29,7 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.fragments.DirectoryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
                 if(editText.getText().toString().equals(""))
                     return;
                 JSONObject args = new JSONObject();
-                args.put("directory", editText.getText().toString());
+                args.put(ConstantUtilities.ARG_DIRECTORY, editText.getText().toString());
                 try {
                     RequestBuilder.sendBackendPostRequest("/api/favourite/addDirectory", args, true);
                     ((MainApplication) getApplication()).updateFavourite();

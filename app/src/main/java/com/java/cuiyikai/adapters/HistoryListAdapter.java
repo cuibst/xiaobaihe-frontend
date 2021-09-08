@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.viewholders.HistoryViewHolder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     public  boolean recommendflag=false;
@@ -59,17 +60,17 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         holder.setContext(mContext);
-        holder.setSubject(((JSONObject)data.get(position)).getString("subject"));
+        holder.setSubject(((JSONObject)data.get(position)).getString(ConstantUtilities.ARG_SUBJECT));
         if(recommendflag)
         {
-            holder.getHistoryRecord().setText(((JSONObject)data.get(position)).getString("name"));
+            holder.getHistoryRecord().setText(((JSONObject)data.get(position)).getString(ConstantUtilities.ARG_NAME));
             holder.setSearchView(searchView);
             holder.getEditImg().setVisibility(View.INVISIBLE);
             holder.setRecommendFlag(recommendflag);
             return;
         }
         holder.getEditImg().setVisibility(View.INVISIBLE);
-        holder.getHistoryRecord().setText(((JSONObject)data.get(position)).getString("content"));
+        holder.getHistoryRecord().setText(((JSONObject)data.get(position)).getString(ConstantUtilities.ARG_CONTENT));
         holder.setSearchView(searchView);
         if(flag&&!holder.getHistoryRecord().isCursorVisible())
             data.remove(holder.getHistoryRecord().getText());

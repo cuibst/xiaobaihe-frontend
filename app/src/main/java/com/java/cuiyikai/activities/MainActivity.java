@@ -25,6 +25,7 @@ import com.java.cuiyikai.fragments.MainFragment;
 import com.java.cuiyikai.fragments.PointExtractFragment;
 import com.java.cuiyikai.fragments.UserPageEntryFragment;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.xuexiang.xui.XUI;
 
 import android.widget.Toast;
@@ -92,31 +93,31 @@ public class MainActivity extends AppCompatActivity {
         String chooseSubject;
         switch (title) {
             case "语文":
-                chooseSubject = "chinese";
+                chooseSubject = ConstantUtilities.SUBJECT_CHINESE;
                 break;
             case "数学":
-                chooseSubject = "math";
+                chooseSubject = ConstantUtilities.SUBJECT_MATH;
                 break;
             case "英语":
-                chooseSubject = "english";
+                chooseSubject = ConstantUtilities.SUBJECT_ENGLISH;
                 break;
             case "物理":
-                chooseSubject = "physics";
+                chooseSubject = ConstantUtilities.SUBJECT_PHYSICS;
                 break;
             case "化学":
-                chooseSubject = "chemistry";
+                chooseSubject = ConstantUtilities.SUBJECT_CHEMISTRY;
                 break;
             case "历史":
-                chooseSubject = "history";
+                chooseSubject = ConstantUtilities.SUBJECT_HISTORY;
                 break;
             case "地理":
-                chooseSubject = "geo";
+                chooseSubject = ConstantUtilities.SUBJECT_GEO;
                 break;
             case "政治":
-                chooseSubject = "politics";
+                chooseSubject = ConstantUtilities.SUBJECT_POLITICS;
                 break;
             case "生物":
-                chooseSubject = "biology";
+                chooseSubject = ConstantUtilities.SUBJECT_BIOLOGY;
                 break;
             default:
                 chooseSubject = "";

@@ -16,6 +16,7 @@ import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.VisitHistoryTimeViewHolder;
 import com.java.cuiyikai.adapters.viewholders.VisitHistoryViewHolder;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,53 +135,53 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         {
             VisitHistoryViewHolder holder=(VisitHistoryViewHolder)holder1;
             JSONObject m=(JSONObject) allData.get(position);
-            String name = m.getString("name");
-            String sub = m.getString("subject");
+            String name = m.getString(ConstantUtilities.ARG_NAME);
+            String sub = m.getString(ConstantUtilities.ARG_SUBJECT);
             long time=Long.parseLong(m.getString("time"));
             Date date=new Date(time);
             holder.category.setText(setTimeFormatInADay.format(date));
             holder.view.setOnClickListener((View view) -> {
 
                 Intent intent = new Intent(mContext, EntityActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("subject", sub);
+                intent.putExtra(ConstantUtilities.ARG_NAME, name);
+                intent.putExtra(ConstantUtilities.ARG_SUBJECT, sub);
                 mContext.startActivity(intent);
             });
             holder.label.setText(name);
             switch (sub) {
-                case "chinese" :
+                case ConstantUtilities.SUBJECT_CHINESE :
                     holder.view.setBackgroundResource(R.drawable.chinese_radius);
                     holder.img.setImageResource(R.drawable.chinese);
                     break;
-                case "math" :
+                case ConstantUtilities.SUBJECT_MATH :
                     holder.view.setBackgroundResource(R.drawable.maths_radius);
                     holder.img.setImageResource(R.drawable.maths);
                     break;
-                case "english" :
+                case ConstantUtilities.SUBJECT_ENGLISH :
                     holder.view.setBackgroundResource(R.drawable.english_radius);
                     holder.img.setImageResource(R.drawable.english);
                     break;
-                case "physics" :
+                case ConstantUtilities.SUBJECT_PHYSICS :
                     holder.view.setBackgroundResource(R.drawable.physics_radius);
                     holder.img.setImageResource(R.drawable.physics);
                     break;
-                case "chemistry" :
+                case ConstantUtilities.SUBJECT_CHEMISTRY :
                     holder.view.setBackgroundResource(R.drawable.chemistry_radius);
                     holder.img.setImageResource(R.drawable.chemistry);
                     break;
-                case "biology" :
+                case ConstantUtilities.SUBJECT_BIOLOGY :
                     holder.view.setBackgroundResource(R.drawable.biology_radius);
                     holder.img.setImageResource(R.drawable.biology);
                     break;
-                case "history" :
+                case ConstantUtilities.SUBJECT_HISTORY :
                     holder.view.setBackgroundResource(R.drawable.history_radius);
                     holder.img.setImageResource(R.drawable.history);
                     break;
-                case "geo" :
+                case ConstantUtilities.SUBJECT_GEO :
                     holder.view.setBackgroundResource(R.drawable.geography_radius);
                     holder.img.setImageResource(R.drawable.geography);
                     break;
-                case "politics":
+                case ConstantUtilities.SUBJECT_POLITICS:
                 default:
                     holder.view.setBackgroundResource(R.drawable.politics_radius);
                     holder.img.setImageResource(R.drawable.politics);
@@ -215,8 +216,8 @@ class RemoveHistory implements Runnable
     public void run() {
         try {
             Map<String, String> map = new HashMap<>();
-            map.put("name",(num.getString("name")));
-            map.put("subject",(num.getString("subject")));
+            map.put(ConstantUtilities.ARG_NAME,(num.getString(ConstantUtilities.ARG_NAME)));
+            map.put(ConstantUtilities.ARG_SUBJECT,(num.getString(ConstantUtilities.ARG_SUBJECT)));
             String removeHistoryUrl = "/api/history/removeVisitHistory";
             RequestBuilder.sendBackendGetRequest(removeHistoryUrl, map, true);
         }

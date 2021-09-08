@@ -49,6 +49,7 @@ import com.java.cuiyikai.entities.PropertyEntity;
 import com.java.cuiyikai.entities.RelationEntity;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.utilities.PermissionUtilities;
 import com.java.cuiyikai.utilities.WeiboShareCallback;
@@ -84,7 +85,7 @@ public class EntityActivity extends AppCompatActivity {
 
     private static final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
 
-    private static final String[] SUBJECTS = {"chinese", "english", "math", "physics", "chemistry", "biology", "history", "geo", "politics"};
+    private static final String[] SUBJECTS = {ConstantUtilities.SUBJECT_CHINESE, ConstantUtilities.SUBJECT_ENGLISH, ConstantUtilities.SUBJECT_MATH, ConstantUtilities.SUBJECT_PHYSICS, ConstantUtilities.SUBJECT_CHEMISTRY, ConstantUtilities.SUBJECT_BIOLOGY, ConstantUtilities.SUBJECT_HISTORY, ConstantUtilities.SUBJECT_GEO, ConstantUtilities.SUBJECT_POLITICS};
 
     private RelationAdapter relationAdapter;
     private List<RelationEntity> relationFullList;
@@ -130,8 +131,8 @@ public class EntityActivity extends AppCompatActivity {
                 logger.info("No matches in database!!");
 
                 Map<String, String> arguments = new HashMap<>();
-                arguments.put("name", entityName);
-                arguments.put("course", subject);
+                arguments.put(ConstantUtilities.ARG_NAME, entityName);
+                arguments.put(ConstantUtilities.ARG_COURSE, subject);
 
                 JSONObject reply;
 
@@ -139,7 +140,7 @@ public class EntityActivity extends AppCompatActivity {
                     if (subject.equals("")) {
                         reply = new JSONObject();
                         for (String sub : SUBJECTS) {
-                            arguments.put("course", sub);
+                            arguments.put(ConstantUtilities.ARG_COURSE, sub);
                             JSONObject tmp = RequestBuilder.sendGetRequest("typeOpen/open/infoByInstanceName", arguments);
                             if (tmp != null && tmp.toString().length() > reply.toString().length()) {
                                 subject = sub;
@@ -156,7 +157,7 @@ public class EntityActivity extends AppCompatActivity {
                     throw e;
                 }
 
-                entityJson = reply.getJSONObject("data");
+                entityJson = reply.getJSONObject(ConstantUtilities.ARG_DATA);
 
                 Map<String, String> args = new HashMap<>();
                 args.put("uriName", entityName);
@@ -189,7 +190,7 @@ public class EntityActivity extends AppCompatActivity {
 
             Bundle prevBundle = prevIntent.getExtras();
 
-            subject = prevBundle.getString("subject", "chinese");
+            subject = prevBundle.getString(ConstantUtilities.ARG_SUBJECT, ConstantUtilities.SUBJECT_CHINESE);
 
             try {
                 initJsonObjects(entityName, subject);
@@ -205,14 +206,14 @@ public class EntityActivity extends AppCompatActivity {
 
             logger.info("Handling relations: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
-            List<JSONObject> objectList = entityJson.getJSONArray("content").toJavaList(JSONObject.class);
+            List<JSONObject> objectList = entityJson.getJSONArray(ConstantUtilities.ARG_CONTENT).toJavaList(JSONObject.class);
 
             relationFullList = new ArrayList<>();
             Set<RelationEntity> relationSet = new HashSet<>();
             for (JSONObject relationJson : objectList) {
                 RelationEntity entity = new RelationEntity();
-                entity.setRelationName(relationJson.getString("predicate_label"));
-                if (relationJson.getString("object") != null) {
+                entity.setRelationName(relationJson.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE));
+                if (relationJson.getString(ConstantUtilities.ARG_OBJECT) != null) {
                     entity.setSubject(false);
                     entity.setTargetName(relationJson.getString("object_label"));
                 } else {
@@ -276,10 +277,10 @@ public class EntityActivity extends AppCompatActivity {
             Set<PropertyEntity> propertyEntitySet = new HashSet<>();
             for (JSONObject propertyJson : objectList) {
                 PropertyEntity entity = new PropertyEntity();
-                if (propertyJson.getString("object").contains("http"))
+                if (propertyJson.getString(ConstantUtilities.ARG_OBJECT).contains("http"))
                     continue;
-                entity.setLabel(propertyJson.getString("predicateLabel"));
-                entity.setObject(propertyJson.getString("object"));
+                entity.setLabel(propertyJson.getString(ConstantUtilities.ARG_PREDICATE_LABEL));
+                entity.setObject(propertyJson.getString(ConstantUtilities.ARG_OBJECT));
 
                 if(stringBuilder == null || stringBuilder.length() < 100) {
                     if (stringBuilder == null)
@@ -319,7 +320,7 @@ public class EntityActivity extends AppCompatActivity {
 
             logger.info("Handling problems: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
-            questionFullList = problems.getJSONArray("data").toJavaList(JSONObject.class);
+            questionFullList = problems.getJSONArray(ConstantUtilities.ARG_DATA).toJavaList(JSONObject.class);
 
             logger.info("request finished: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
@@ -335,8 +336,8 @@ public class EntityActivity extends AppCompatActivity {
 
             if(RequestBuilder.checkedLogin()) {
                 Map<String, String> args = new HashMap<>();
-                args.put("name", entityName);
-                args.put("subject", subject);
+                args.put(ConstantUtilities.ARG_NAME, entityName);
+                args.put(ConstantUtilities.ARG_SUBJECT, subject);
                 try {
                     RequestBuilder.asyncSendBackendGetRequest("/api/history/addVisitHistory", args, true);
                 } catch (BackendTokenExpiredException e) {
@@ -392,8 +393,8 @@ public class EntityActivity extends AppCompatActivity {
 
         Bundle prevBundle = prevIntent.getExtras();
 
-        entityName = prevBundle.getString("name", "李白");
-        subject = prevBundle.getString("subject", "chinese");
+        entityName = prevBundle.getString(ConstantUtilities.ARG_NAME, "李白");
+        subject = prevBundle.getString(ConstantUtilities.ARG_SUBJECT, ConstantUtilities.SUBJECT_CHINESE);
 
         TextView titleView = findViewById(R.id.entityTitle);
         titleView.setText(entityName);
@@ -578,8 +579,8 @@ public class EntityActivity extends AppCompatActivity {
             finishButton.setOnClickListener((View view) -> {
                 Set<String> checked = bottomFavouriteAdapter.getCheckedSet();
                 JSONObject args = new JSONObject();
-                args.put("name", entityName);
-                args.put("subject", subject);
+                args.put(ConstantUtilities.ARG_NAME, entityName);
+                args.put(ConstantUtilities.ARG_SUBJECT, subject);
                 args.put("checked", JSON.toJSONString(checked));
                 try {
                     RequestBuilder.sendBackendPostRequest("/api/favourite/updateFavourite", args, true);
@@ -614,7 +615,7 @@ public class EntityActivity extends AppCompatActivity {
                 if(editText.getText().toString().equals(""))
                     return;
                 JSONObject args = new JSONObject();
-                args.put("directory", editText.getText().toString());
+                args.put(ConstantUtilities.ARG_DIRECTORY, editText.getText().toString());
                 try {
                     RequestBuilder.sendBackendPostRequest("/api/favourite/addDirectory", args, true);
                 } catch (BackendTokenExpiredException e) {
@@ -648,7 +649,7 @@ public class EntityActivity extends AppCompatActivity {
             boolean flag = false;
             for(Object val : array) {
                 JSONObject object = JSON.parseObject(val.toString());
-                if(object.getString("name").equals(entityName)) {
+                if(object.getString(ConstantUtilities.ARG_NAME).equals(entityName)) {
                     flag = true;
                     break;
                 }
@@ -664,8 +665,8 @@ public class EntityActivity extends AppCompatActivity {
             JSONArray array = JSON.parseArray(entry.getValue().toString());
             for(Object obj : array) {
                 JSONObject object = JSON.parseObject(obj.toString());
-                logger.info("Receive object in favourite {}", object.getString("name"));
-                if(object.getString("name").equals(entityName)) {
+                logger.info("Receive object in favourite {}", object.getString(ConstantUtilities.ARG_NAME));
+                if(object.getString(ConstantUtilities.ARG_NAME).equals(entityName)) {
                     button.setIcon(R.drawable.star_yellow_16);
                     return;
                 }

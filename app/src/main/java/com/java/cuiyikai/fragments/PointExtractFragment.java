@@ -39,6 +39,7 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.utilities.PermissionUtilities;
 
@@ -84,7 +85,7 @@ public class PointExtractFragment extends Fragment {
                     try {
                         if(imageUri == null) {
                             Bundle bundle = data.getExtras();
-                            bitmap = (Bitmap) bundle.get("data");
+                            bitmap = (Bitmap) bundle.get(ConstantUtilities.ARG_DATA);
                         }
                         else
                             bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(imageUri));
@@ -140,7 +141,7 @@ public class PointExtractFragment extends Fragment {
         TextView result = getView().findViewById(R.id.extract_result);
         Map<String,String> args = new HashMap<>();
         args.put("context", text);
-        args.put("course", "");
+        args.put(ConstantUtilities.ARG_COURSE, "");
         JSONObject res;
         try {
             res = RequestBuilder.sendPostRequest("typeOpen/open/linkInstance", args);
@@ -150,7 +151,7 @@ public class PointExtractFragment extends Fragment {
             return;
         }
         SpannableStringBuilder ssBuilder = new SpannableStringBuilder(text);
-        JSONArray data = res.getJSONObject("data").getJSONArray("results");
+        JSONArray data = res.getJSONObject(ConstantUtilities.ARG_DATA).getJSONArray("results");
         for(Object keyword: data) {
             JSONObject obj = JSON.parseObject(keyword.toString());
             int startIndex = obj.getInteger("start_index");
@@ -160,8 +161,8 @@ public class PointExtractFragment extends Fragment {
                 @Override
                 public void onClick(@NonNull View view) {
                     Intent f=new Intent(getActivity(), EntityActivity.class);
-                    f.putExtra("name",name);
-                    f.putExtra("subject","");
+                    f.putExtra(ConstantUtilities.ARG_NAME,name);
+                    f.putExtra(ConstantUtilities.ARG_SUBJECT,"");
                     startActivity(f);
                 }
                 @Override

@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.Map;
 
@@ -62,31 +63,31 @@ public class GraphNode {
 
     private void setEntityBackground(String content) {
         switch(content) {
-            case "chinese":
+            case ConstantUtilities.SUBJECT_CHINESE:
                 item.setBackgroundResource(R.drawable.chinese_radius);
                 break;
-            case "math":
+            case ConstantUtilities.SUBJECT_MATH:
                 item.setBackgroundResource(R.drawable.maths_radius);
                 break;
-            case "english":
+            case ConstantUtilities.SUBJECT_ENGLISH:
                 item.setBackgroundResource(R.drawable.english_radius);
                 break;
-            case "physics":
+            case ConstantUtilities.SUBJECT_PHYSICS:
                 item.setBackgroundResource(R.drawable.physics_radius);
                 break;
-            case "chemistry":
+            case ConstantUtilities.SUBJECT_CHEMISTRY:
                 item.setBackgroundResource(R.drawable.chemistry_radius);
                 break;
-            case "biology":
+            case ConstantUtilities.SUBJECT_BIOLOGY:
                 item.setBackgroundResource(R.drawable.biology_radius);
                 break;
-            case "history":
+            case ConstantUtilities.SUBJECT_HISTORY:
                 item.setBackgroundResource(R.drawable.history_radius);
                 break;
-            case "geo":
+            case ConstantUtilities.SUBJECT_GEO:
                 item.setBackgroundResource(R.drawable.geography_radius);
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
             default:
                 item.setBackgroundResource(R.drawable.politics_radius);
                 break;

@@ -13,6 +13,7 @@ import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.callables.GetCallable;
 import com.java.cuiyikai.network.callables.JsonPostCallable;
 import com.java.cuiyikai.network.callables.PostCallable;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,7 +139,7 @@ public class RequestBuilder {
                         }
                         JSONObject response = JSON.parseObject(buffer.toString());
                         logger.info("Reply with : {}", response);
-                        token = response.get("id").toString();
+                        token = response.get(ConstantUtilities.ARG_ID).toString();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -152,7 +153,7 @@ public class RequestBuilder {
         String id;
         Future<String> token = getToken();
         id = token.get();
-        arguments.put("id", id);
+        arguments.put(ConstantUtilities.ARG_ID, id);
         PostCallable postCallable = new PostCallable(BASE_URL + remainUrl, arguments);
         return executorService.submit(postCallable);
     }
@@ -166,7 +167,7 @@ public class RequestBuilder {
         String id;
         Future<String> token = getToken();
         id = token.get();
-        arguments.put("id", id);
+        arguments.put(ConstantUtilities.ARG_ID, id);
         PostCallable postCallable = new PostCallable(BASE_URL + remainUrl, arguments);
         postCallable.attachHandler(handler);
         return executorService.submit(postCallable);
@@ -181,7 +182,7 @@ public class RequestBuilder {
         String id;
         Future<String> token = getToken();
         id = token.get();
-        arguments.put("id", id);
+        arguments.put(ConstantUtilities.ARG_ID, id);
         String builder = BASE_URL +
                 remainUrl +
                 '?' +
@@ -199,7 +200,7 @@ public class RequestBuilder {
         String id;
         Future<String> token = getToken();
         id = token.get();
-        arguments.put("id", id);
+        arguments.put(ConstantUtilities.ARG_ID, id);
         String builder = BASE_URL +
                 remainUrl +
                 '?' +
@@ -239,10 +240,10 @@ public class RequestBuilder {
             return false;
         if(expireTime < System.currentTimeMillis()) {
             Map<String, String> args = new HashMap<>();
-            args.put("token", backendToken);
+            args.put(ConstantUtilities.ARG_TOKEN, backendToken);
             try {
                 JSONObject reply = sendBackendGetRequest("/api/login/exchangeToken", args, false);
-                backendToken = reply.getString("token");
+                backendToken = reply.getString(ConstantUtilities.ARG_TOKEN);
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DAY_OF_WEEK, 1);
                 expireTime = calendar.getTimeInMillis();
@@ -284,7 +285,7 @@ public class RequestBuilder {
                             buffer.append(line);
                         }
                         JSONObject response = JSON.parseObject(buffer.toString());
-                        backendToken = response.get("token").toString();
+                        backendToken = response.get(ConstantUtilities.ARG_TOKEN).toString();
                         Calendar calendar = Calendar.getInstance();
                         calendar.add(Calendar.DAY_OF_WEEK, 1);
                         expireTime = calendar.getTimeInMillis();
@@ -302,8 +303,8 @@ public class RequestBuilder {
     public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
-                throw new BackendTokenExpiredException("Token expired!!");
-            arguments.put("token", backendToken);
+                throw new BackendTokenExpiredException(ConstantUtilities.MESSAGE_TOKEN_EXPIRED);
+            arguments.put(ConstantUtilities.ARG_TOKEN, backendToken);
         }
         String builder = BACKEND_ADDRESS +
                 remainUrl +
@@ -320,8 +321,8 @@ public class RequestBuilder {
     public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments, Handler handler, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
-                throw new BackendTokenExpiredException("Token expired!!");
-            arguments.put("token", backendToken);
+                throw new BackendTokenExpiredException(ConstantUtilities.MESSAGE_TOKEN_EXPIRED);
+            arguments.put(ConstantUtilities.ARG_TOKEN, backendToken);
         }
         String builder = BACKEND_ADDRESS +
                 remainUrl +
@@ -339,8 +340,8 @@ public class RequestBuilder {
     public static Future<JSONObject> asyncSendBackendPostRequest(String remainUrl, JSONObject arguments, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
-                throw new BackendTokenExpiredException("Token expired!!");
-            arguments.put("token", backendToken);
+                throw new BackendTokenExpiredException(ConstantUtilities.MESSAGE_TOKEN_EXPIRED);
+            arguments.put(ConstantUtilities.ARG_TOKEN, backendToken);
         }
         JsonPostCallable jsonPostCallable = new JsonPostCallable(BACKEND_ADDRESS + remainUrl, arguments);
         return executorService.submit(jsonPostCallable);
@@ -354,8 +355,8 @@ public class RequestBuilder {
     public static Future<JSONObject> asyncSendBackendPostRequest(String remainUrl, JSONObject arguments, Handler handler, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
-                throw new BackendTokenExpiredException("Token expired!!");
-            arguments.put("token", backendToken);
+                throw new BackendTokenExpiredException(ConstantUtilities.MESSAGE_TOKEN_EXPIRED);
+            arguments.put(ConstantUtilities.ARG_TOKEN, backendToken);
         }
         JsonPostCallable jsonPostCallable = new JsonPostCallable(BACKEND_ADDRESS + remainUrl, arguments);
         jsonPostCallable.attachHandler(handler);

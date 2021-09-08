@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,9 +226,9 @@ public class ProblemActivity extends Activity {
                     }
                     JSONObject obj = JSON.parseObject(JSON.toJSONString(argument));
                     JSONObject obj1 = new JSONObject();
-                    obj1.put("problem", obj);
+                    obj1.put(ConstantUtilities.ARG_PROBLEM, obj);
                     if(mSubject != null)
-                        obj1.put("subject", mSubject);
+                        obj1.put(ConstantUtilities.ARG_SUBJECT, mSubject);
                     Log.v("wrong", argument.toString());
                     if(mSubject != null){
                         try {

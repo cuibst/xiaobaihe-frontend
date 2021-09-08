@@ -16,6 +16,7 @@ import com.java.cuiyikai.adapters.viewholders.FavouriteItemHolder;
 import com.java.cuiyikai.fragments.DirectoryFragment;
 
 import com.java.cuiyikai.R;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.Arrays;
 
@@ -81,45 +82,45 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         JSONObject object = favouriteArray.getJSONObject(position);
         favouriteItemHolder.getViewLine().setOnClickListener((View v) -> {
             Intent intent = new Intent(directoryFragment.getActivity(), EntityActivity.class);
-            intent.putExtra("name", object.getString("name"));
-            intent.putExtra("subject", object.getString("subject"));
+            intent.putExtra(ConstantUtilities.ARG_NAME, object.getString(ConstantUtilities.ARG_NAME));
+            intent.putExtra(ConstantUtilities.ARG_SUBJECT, object.getString(ConstantUtilities.ARG_SUBJECT));
             directoryFragment.getActivity().startActivity(intent);
         });
-        favouriteItemHolder.getItemName().setText(object.getString("name"));
-        switch(object.getString("subject")) {
-            case "chinese" :
+        favouriteItemHolder.getItemName().setText(object.getString(ConstantUtilities.ARG_NAME));
+        switch(object.getString(ConstantUtilities.ARG_SUBJECT)) {
+            case ConstantUtilities.SUBJECT_CHINESE :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.chinese_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.chinese);
                 break;
-            case "math" :
+            case ConstantUtilities.SUBJECT_MATH :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.maths_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.maths);
                 break;
-            case "english" :
+            case ConstantUtilities.SUBJECT_ENGLISH :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.english_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.english);
                 break;
-            case "physics" :
+            case ConstantUtilities.SUBJECT_PHYSICS :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.physics_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.physics);
                 break;
-            case "chemistry" :
+            case ConstantUtilities.SUBJECT_CHEMISTRY :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.chemistry_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.chemistry);
                 break;
-            case "biology" :
+            case ConstantUtilities.SUBJECT_BIOLOGY :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.biology_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.biology);
                 break;
-            case "history" :
+            case ConstantUtilities.SUBJECT_HISTORY :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.history_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.history);
                 break;
-            case "geo" :
+            case ConstantUtilities.SUBJECT_GEO :
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.geography_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.geography);
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
             default:
                 favouriteItemHolder.getViewLine().setBackgroundResource(R.drawable.politics_radius);
                 favouriteItemHolder.getSubjectImage().setImageResource(R.drawable.politics);

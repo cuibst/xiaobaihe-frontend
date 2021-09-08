@@ -4,9 +4,7 @@ import android.app.Application;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
-import com.sina.weibo.sdk.auth.AuthInfo;
-import com.sina.weibo.sdk.openapi.IWBAPI;
-import com.sina.weibo.sdk.openapi.WBAPIFactory;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -54,7 +51,7 @@ public class MainApplication extends Application {
     public void updateFavourite() {
         if(RequestBuilder.checkedLogin())
             try {
-                favourite = RequestBuilder.sendBackendGetRequest("/api/favourite/getFavourite", new HashMap<>(), true).getJSONObject("data");
+                favourite = RequestBuilder.sendBackendGetRequest("/api/favourite/getFavourite", new HashMap<>(), true).getJSONObject(ConstantUtilities.ARG_DATA);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
                 Thread.currentThread().interrupt();

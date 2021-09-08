@@ -38,6 +38,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -58,7 +59,7 @@ public class DialogFragment extends Fragment {
     private final SimpleDateFormat setTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final boolean[] jud=new boolean[100000];
     private TextView subjectText;
-    private String subject="chinese";
+    private String subject=ConstantUtilities.SUBJECT_CHINESE;
     private boolean flag=false;
     private List<Message> list;
     private MessagesList messagesList;
@@ -114,47 +115,47 @@ public class DialogFragment extends Fragment {
         Button history = contentView.findViewById(R.id.history);
         Button politics = contentView.findViewById(R.id.politics);
         chinese.setOnClickListener(v -> {
-            subject="chinese";
+            subject= ConstantUtilities.SUBJECT_CHINESE;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         math.setOnClickListener(v -> {
-            subject="math";
+            subject=ConstantUtilities.SUBJECT_MATH;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         english.setOnClickListener(v -> {
-            subject="english";
+            subject=ConstantUtilities.SUBJECT_ENGLISH;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         physics.setOnClickListener(v -> {
-            subject="physics";
+            subject=ConstantUtilities.SUBJECT_PHYSICS;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         chemistry.setOnClickListener(v -> {
-            subject="chemistry";
+            subject=ConstantUtilities.SUBJECT_CHEMISTRY;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         biology.setOnClickListener(v -> {
-            subject="biology";
+            subject=ConstantUtilities.SUBJECT_BIOLOGY;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         geo.setOnClickListener(v -> {
-            subject="geo";
+            subject=ConstantUtilities.SUBJECT_GEO;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         politics.setOnClickListener(v -> {
-            subject="politics";
+            subject=ConstantUtilities.SUBJECT_POLITICS;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
         history.setOnClickListener(v -> {
-            subject="history";
+            subject=ConstantUtilities.SUBJECT_HISTORY;
             subjectText.setText(reverseCheckSubject(subject));
             bottomDialog.dismiss();
         });
@@ -204,7 +205,7 @@ public class DialogFragment extends Fragment {
             {
                 JSONObject ansObject=(JSONObject) ((JSONArray) map.get(set.toArray()[cnt])).get(0);
                 ans.append("\t答案： ").append(ansObject.get("value")).append("\n");
-                SpannableString  span=new SpannableString("\t相关词条: "+ ansObject.get("subject") +"\n");
+                SpannableString  span=new SpannableString("\t相关词条: "+ ansObject.get(ConstantUtilities.ARG_SUBJECT) +"\n");
                 ans.append(span.toString());
             }
         }
@@ -320,7 +321,7 @@ public class DialogFragment extends Fragment {
             Map<String,Object> totalTree=new HashMap<>();
             try {
                 Map<String, String> map = new HashMap<>();
-                map.put("course", subject);
+                map.put(ConstantUtilities.ARG_COURSE, subject);
                 map.put("inputQuestion", input);
                 String getAnswerUrl = "typeOpen/open/inputQuestion";
                 JSONObject msg = RequestBuilder.sendPostRequest(getAnswerUrl, map);
@@ -328,8 +329,8 @@ public class DialogFragment extends Fragment {
                 {
                     handler.sendEmptyMessage(1);
                 }
-                else if(!((JSONArray)msg.get("data")).isEmpty()&&!((JSONObject)((JSONArray)msg.get("data")).get(0)).get("value").equals(""))
-                    totalTree.put(subject,msg.get("data"));
+                else if(!((JSONArray)msg.get(ConstantUtilities.ARG_DATA)).isEmpty()&&!((JSONObject)((JSONArray)msg.get(ConstantUtilities.ARG_DATA)).get(0)).get("value").equals(""))
+                    totalTree.put(subject,msg.get(ConstantUtilities.ARG_DATA));
             }
             catch (ExecutionException e)
             {
@@ -442,31 +443,31 @@ public class DialogFragment extends Fragment {
     {
         String chooseSubject;
         switch (title) {
-            case "chinese":
+            case ConstantUtilities.SUBJECT_CHINESE:
                 chooseSubject = "语文";
                 break;
-            case "math":
+            case ConstantUtilities.SUBJECT_MATH:
                 chooseSubject = "数学";
                 break;
-            case "english":
+            case ConstantUtilities.SUBJECT_ENGLISH:
                 chooseSubject = "英语";
                 break;
-            case "physics":
+            case ConstantUtilities.SUBJECT_PHYSICS:
                 chooseSubject = "物理";
                 break;
-            case "chemistry":
+            case ConstantUtilities.SUBJECT_CHEMISTRY:
                 chooseSubject = "化学";
                 break;
-            case "history":
+            case ConstantUtilities.SUBJECT_HISTORY:
                 chooseSubject = "历史";
                 break;
-            case "geo":
+            case ConstantUtilities.SUBJECT_GEO:
                 chooseSubject = "地理";
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
                 chooseSubject = "政治";
                 break;
-            case "biology":
+            case ConstantUtilities.SUBJECT_BIOLOGY:
             default:
                 chooseSubject = "生物";
                 break;

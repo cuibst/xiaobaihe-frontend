@@ -20,6 +20,7 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public void addSubject(JSONObject jsonObject) {
         Map<String, List<JSONObject>> actualArray = new TreeMap<>();
         for(String key : jsonObject.keySet()) {
-            JSONArray array = jsonObject.getJSONObject(key).getJSONArray("data");
+            JSONArray array = jsonObject.getJSONObject(key).getJSONArray(ConstantUtilities.ARG_DATA);
             List<JSONObject> objectList = new ArrayList<>();
             for(Object o : array) {
                 objectList.add(JSON.parseObject(o.toString()));
@@ -125,12 +126,12 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     {
         Map<String,Object> map=findActualItem(position);
         String name=((JSONObject)map.get("item")).getString("label");
-        String sub=map.get("name").toString();
+        String sub=map.get(ConstantUtilities.ARG_NAME).toString();
         holder.getSearchLine().setOnClickListener((View view) -> {
             if(visitHistory!=null) {
                 JSONObject m = new JSONObject();
-                m.put("subject", sub);
-                m.put("name", name);
+                m.put(ConstantUtilities.ARG_SUBJECT, sub);
+                m.put(ConstantUtilities.ARG_NAME, name);
                 visitHistory.add(m);
             }
             else
@@ -144,8 +145,8 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             if(RequestBuilder.checkedLogin())
                 holder.getLabelTextView().setTextColor(Color.GRAY);
             Intent f=new Intent(mContext,EntityActivity.class);
-            f.putExtra("name",holder.getLabelTextView().getText());
-            f.putExtra("subject",(String) map.get("name"));
+            f.putExtra(ConstantUtilities.ARG_NAME,holder.getLabelTextView().getText());
+            f.putExtra(ConstantUtilities.ARG_SUBJECT,(String) map.get(ConstantUtilities.ARG_NAME));
             mContext.startActivity(f);
         });
         holder.getLabelTextView().setText(((JSONObject)map.get("item")).getString("label"));
@@ -155,7 +156,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             if(RequestBuilder.checkedLogin()) {
                 for (int i = 0; i < visitHistory.size(); i++) {
                     JSONObject m = (JSONObject) visitHistory.get(i);
-                    if (m.getString("name").equals(((JSONObject)map.get("item")).getString("label")) && m.getString("subject").equals(map.get("name")))
+                    if (m.getString(ConstantUtilities.ARG_NAME).equals(((JSONObject)map.get("item")).getString("label")) && m.getString(ConstantUtilities.ARG_SUBJECT).equals(map.get(ConstantUtilities.ARG_NAME)))
                     {
                         holder.getLabelTextView().setTextColor(Color.GRAY);
                         break;
@@ -171,50 +172,50 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                 getHistoryThread.start();
             }
         }
-        switch ((String) map.get("name"))
+        switch ((String) map.get(ConstantUtilities.ARG_NAME))
         {
-            case "chinese" :
+            case ConstantUtilities.SUBJECT_CHINESE :
                 holder.getSearchLine().setBackgroundResource(R.drawable.chinese_radius);
                 holder.getImg().setImageResource(R.drawable.chinese);
                 break;
-            case "math" :
+            case ConstantUtilities.SUBJECT_MATH :
                 holder.getSearchLine().setBackgroundResource(R.drawable.maths_radius);
                 holder.getImg().setImageResource(R.drawable.maths);
                 break;
-            case "english" :
+            case ConstantUtilities.SUBJECT_ENGLISH :
                 holder.getSearchLine().setBackgroundResource(R.drawable.english_radius);
                 holder.getImg().setImageResource(R.drawable.english);
                 break;
-            case "physics" :
+            case ConstantUtilities.SUBJECT_PHYSICS :
                 holder.getSearchLine().setBackgroundResource(R.drawable.physics_radius);
                 holder.getImg().setImageResource(R.drawable.physics);
                 break;
-            case "chemistry" :
+            case ConstantUtilities.SUBJECT_CHEMISTRY :
                 holder.getSearchLine().setBackgroundResource(R.drawable.chemistry_radius);
                 holder.getImg().setImageResource(R.drawable.chemistry);
                 break;
-            case "biology" :
+            case ConstantUtilities.SUBJECT_BIOLOGY :
                 holder.getSearchLine().setBackgroundResource(R.drawable.biology_radius);
                 holder.getImg().setImageResource(R.drawable.biology);
                 break;
-            case "history" :
+            case ConstantUtilities.SUBJECT_HISTORY :
                 holder.getSearchLine().setBackgroundResource(R.drawable.history_radius);
                 holder.getImg().setImageResource(R.drawable.history);
                 break;
-            case "geo" :
+            case ConstantUtilities.SUBJECT_GEO :
                 holder.getSearchLine().setBackgroundResource(R.drawable.geography_radius);
                 holder.getImg().setImageResource(R.drawable.geography);
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
             default:
                 holder.getSearchLine().setBackgroundResource(R.drawable.politics_radius);
                 holder.getImg().setImageResource(R.drawable.politics);
                 break;
         }
-        if(((JSONObject)map.get("item")).getString("category").length()==0)
+        if(((JSONObject)map.get("item")).getString(ConstantUtilities.ARG_CATEGORY).length()==0)
             holder.getCategoryTextView().setText("无");
         else
-            holder.getCategoryTextView().setText(((JSONObject)map.get("item")).getString("category"));
+            holder.getCategoryTextView().setText(((JSONObject)map.get("item")).getString(ConstantUtilities.ARG_CATEGORY));
     }
     @Override
     public int getItemCount(){
@@ -228,7 +229,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         {
             if((subject.get(str).size())>position) {
                 map.put("item", subject.get(str).get(position));
-                map.put("name",str);
+                map.put(ConstantUtilities.ARG_NAME,str);
                 break;
             } else {
                 position = position - (subject.get(str).size());
@@ -261,7 +262,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public void sortCategoryAscend() {
         for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
             List<JSONObject> list = entry.getValue();
-            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString("category")));
+            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString(ConstantUtilities.ARG_CATEGORY)));
             subject.replace(entry.getKey(), list);
         }
         notifyDataSetChanged();
@@ -270,7 +271,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public void sortCategoryDescend() {
         for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
             List<JSONObject> list = entry.getValue();
-            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString("category")));
+            list.sort(Comparator.comparing(jsonObject -> jsonObject.getString(ConstantUtilities.ARG_CATEGORY)));
             Collections.reverse(list);
             subject.replace(entry.getKey(), list);
         }
@@ -283,7 +284,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             Map<String, String> map = new HashMap<>();
             try {
                 JSONObject object= RequestBuilder.sendBackendGetRequest(getVisitHistoryUrl, map, true);
-                JSONArray arr=object.getJSONArray("data");
+                JSONArray arr=object.getJSONArray(ConstantUtilities.ARG_DATA);
                 System.out.println("data: "+arr.toString());
                 Message msg=new Message();
                 msg.what=0;

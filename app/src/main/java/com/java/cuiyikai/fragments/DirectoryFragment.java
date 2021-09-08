@@ -33,6 +33,7 @@ import com.java.cuiyikai.adapters.BottomFavouriteAdapter;
 import com.java.cuiyikai.adapters.FavouriteAdapter;
 import com.java.cuiyikai.entities.BottomFavouriteEntity;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.java.cuiyikai.utilities.DensityUtilities;
 import com.java.cuiyikai.widgets.ListViewForScrollView;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
@@ -61,7 +62,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class DirectoryFragment extends Fragment {
 
-    private static final String ARG_DIRECTORY_NAME = "directoryName";
+    private static final String ARG_DIRECTORY_NAME = ConstantUtilities.ARG_DIRECTORY_NAME;
 
     private static final Logger logger = LoggerFactory.getLogger(DirectoryFragment.class);
 
@@ -96,7 +97,7 @@ public class DirectoryFragment extends Fragment {
 
     private void updateDirectoryBackend(JSONArray jsonArray) {
         JSONObject args = new JSONObject();
-        args.put("directory", directoryName);
+        args.put(ConstantUtilities.ARG_DIRECTORY, directoryName);
         args.put("json", jsonArray);
         try {
             RequestBuilder.asyncSendBackendPostRequest("/api/favourite/updateDirectory", args, true);
@@ -190,7 +191,7 @@ public class DirectoryFragment extends Fragment {
                     Set<String> checkedSet = adapter.getCheckedSet();
                     for(String targetName : checkedSet) {
                         JSONObject args = new JSONObject();
-                        args.put("directory", targetName);
+                        args.put(ConstantUtilities.ARG_DIRECTORY, targetName);
                         args.put("json", moveArray);
                         try {
                             RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
@@ -208,7 +209,7 @@ public class DirectoryFragment extends Fragment {
                     Set<String> checkedSet = adapter.getCheckedSet();
                     for(String targetName : checkedSet) {
                         JSONObject args = new JSONObject();
-                        args.put("directory", targetName);
+                        args.put(ConstantUtilities.ARG_DIRECTORY, targetName);
                         args.put("json", moveArray);
                         try {
                             RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
@@ -283,7 +284,7 @@ public class DirectoryFragment extends Fragment {
                 Set<String> checkedSet = adapter.getCheckedSet();
                 for(String targetName : checkedSet) {
                     JSONObject args = new JSONObject();
-                    args.put("directory", targetName);
+                    args.put(ConstantUtilities.ARG_DIRECTORY, targetName);
                     args.put("json", moveArray);
                     try {
                         RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
@@ -338,7 +339,7 @@ public class DirectoryFragment extends Fragment {
                         for(int j = 0; j < qBodyList.size(); j ++){
                             mIntent.putExtra("body" + " " + j, qBodyList.get(j));
                             mIntent.putExtra("answer" + " " + j, qAnswerList.get(j));
-                            mIntent.putExtra("subject" + " " + j, subjectList.get(j));
+                            mIntent.putExtra(ConstantUtilities.ARG_SUBJECT + " " + j, subjectList.get(j));
                         }
                         mIntent.putExtra("type", "list");
                         mIntent.putExtra("sum", qBodyList.size() + "");
@@ -366,7 +367,7 @@ public class DirectoryFragment extends Fragment {
                 Set<String> checkedSet = adapter.getCheckedSet();
                 for(String targetName : checkedSet) {
                     JSONObject args = new JSONObject();
-                    args.put("directory", targetName);
+                    args.put(ConstantUtilities.ARG_DIRECTORY, targetName);
                     args.put("json", moveArray);
                     try {
                         RequestBuilder.sendBackendPostRequest("/api/favourite/moveDirectory", args, true);
@@ -399,7 +400,7 @@ public class DirectoryFragment extends Fragment {
 
         view.findViewById(R.id.btnDeleteDirectory).setOnClickListener((View v) -> {
             JSONObject args = new JSONObject();
-            args.put("directory", directoryName);
+            args.put(ConstantUtilities.ARG_DIRECTORY, directoryName);
             try {
                 RequestBuilder.asyncSendBackendPostRequest("/api/favourite/removeDirectory", args, true);
                 ((MainApplication) getActivity().getApplication()).updateFavourite();
@@ -412,7 +413,7 @@ public class DirectoryFragment extends Fragment {
 
         view.findViewById(R.id.btnGenerateMap).setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MindMapActivity.class);
-            intent.putExtra("directoryName", directoryName);
+            intent.putExtra(ConstantUtilities.ARG_DIRECTORY_NAME, directoryName);
             startActivity(intent);
         });
 
@@ -453,7 +454,7 @@ public class DirectoryFragment extends Fragment {
             for(int i = 0; i < jsArray.size(); i ++){
                 JSONObject jsObject = (JSONObject) jsArray.get(i);
                 Log.v("lzgsm", jsObject.toJSONString());
-                String uriname = (String) jsObject.get("name");
+                String uriname = (String) jsObject.get(ConstantUtilities.ARG_NAME);
                 Map<String, String> request = new HashMap<>();
                 request.put("uriName", uriname);
                 JSONObject tmp = null;
@@ -475,7 +476,7 @@ public class DirectoryFragment extends Fragment {
                 Log.v("tmp", tmp.toJSONString());
 
                 JSONArray mJSONArray;
-                mJSONArray = (JSONArray) tmp.get("data");
+                mJSONArray = (JSONArray) tmp.get(ConstantUtilities.ARG_DATA);
                 if(mJSONArray != null)
                     for(Object obj : mJSONArray) {
                         JSONObject object = JSON.parseObject(obj.toString());
@@ -483,7 +484,7 @@ public class DirectoryFragment extends Fragment {
                         String answer = object.getString("qAnswer");
                         qAnswerList.add(answer);
                         qBodyList.add(qBody);
-                        subjectList.add((String) jsObject.get("subject"));
+                        subjectList.add((String) jsObject.get(ConstantUtilities.ARG_SUBJECT));
                     }
             }
             Message message = new Message();

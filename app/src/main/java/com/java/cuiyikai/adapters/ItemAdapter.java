@@ -19,6 +19,7 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.ItemViewHolder;
 import com.java.cuiyikai.network.RequestBuilder;
+import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,8 +96,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         holder.getCategoryTextView().setVisibility(View.GONE);
-        String name = subject.getJSONObject(position).getString("name");
-        String sub = subject.getJSONObject(position).getString("subject");
+        String name = subject.getJSONObject(position).getString(ConstantUtilities.ARG_NAME);
+        String sub = subject.getJSONObject(position).getString(ConstantUtilities.ARG_SUBJECT);
         holder.getLabelTextView().setText(name);
         holder.getLabelTextView().setTextColor(Color.WHITE);
         if(visitHistory!=null)
@@ -104,7 +105,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             if(RequestBuilder.checkedLogin()) {
                 for (int i = 0; i < visitHistory.size(); i++) {
                     JSONObject m = (JSONObject) visitHistory.get(i);
-                    if (m.getString("name").equals(name) && m.getString("subject").equals(sub)) {
+                    if (m.getString(ConstantUtilities.ARG_NAME).equals(name) && m.getString(ConstantUtilities.ARG_SUBJECT).equals(sub)) {
                         System.out.println(name+"------"+sub);
                         holder.getLabelTextView().setTextColor(Color.GRAY);
                         break;
@@ -123,8 +124,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         holder.getSearchLine().setOnClickListener((View view) -> {
             if(visitHistory!=null) {
                 JSONObject m = new JSONObject();
-                m.put("subject", sub);
-                m.put("name", name);
+                m.put(ConstantUtilities.ARG_SUBJECT, sub);
+                m.put(ConstantUtilities.ARG_NAME, name);
                 visitHistory.add(m);
             }
             else
@@ -138,44 +139,44 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             if(RequestBuilder.checkedLogin())
                 holder.getLabelTextView().setTextColor(Color.GRAY);
             Intent intent = new Intent(mContext, EntityActivity.class);
-            intent.putExtra("name", name);
-            intent.putExtra("subject", sub);
+            intent.putExtra(ConstantUtilities.ARG_NAME, name);
+            intent.putExtra(ConstantUtilities.ARG_SUBJECT, sub);
             mContext.startActivity(intent);
         });
         switch (sub) {
-            case "chinese" :
+            case ConstantUtilities.SUBJECT_CHINESE :
                 holder.getSearchLine().setBackgroundResource(R.drawable.chinese_radius);
                 holder.getImg().setImageResource(R.drawable.chinese);
                 break;
-            case "math" :
+            case ConstantUtilities.SUBJECT_MATH :
                 holder.getSearchLine().setBackgroundResource(R.drawable.maths_radius);
                 holder.getImg().setImageResource(R.drawable.maths);
                 break;
-            case "english" :
+            case ConstantUtilities.SUBJECT_ENGLISH :
                 holder.getSearchLine().setBackgroundResource(R.drawable.english_radius);
                 holder.getImg().setImageResource(R.drawable.english);
                 break;
-            case "physics" :
+            case ConstantUtilities.SUBJECT_PHYSICS :
                 holder.getSearchLine().setBackgroundResource(R.drawable.physics_radius);
                 holder.getImg().setImageResource(R.drawable.physics);
                 break;
-            case "chemistry" :
+            case ConstantUtilities.SUBJECT_CHEMISTRY :
                 holder.getSearchLine().setBackgroundResource(R.drawable.chemistry_radius);
                 holder.getImg().setImageResource(R.drawable.chemistry);
                 break;
-            case "biology" :
+            case ConstantUtilities.SUBJECT_BIOLOGY :
                 holder.getSearchLine().setBackgroundResource(R.drawable.biology_radius);
                 holder.getImg().setImageResource(R.drawable.biology);
                 break;
-            case "history" :
+            case ConstantUtilities.SUBJECT_HISTORY :
                 holder.getSearchLine().setBackgroundResource(R.drawable.history_radius);
                 holder.getImg().setImageResource(R.drawable.history);
                 break;
-            case "geo" :
+            case ConstantUtilities.SUBJECT_GEO :
                 holder.getSearchLine().setBackgroundResource(R.drawable.geography_radius);
                 holder.getImg().setImageResource(R.drawable.geography);
                 break;
-            case "politics":
+            case ConstantUtilities.SUBJECT_POLITICS:
             default:
                 holder.getSearchLine().setBackgroundResource(R.drawable.politics_radius);
                 holder.getImg().setImageResource(R.drawable.politics);
@@ -215,7 +216,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             Map<String, String> map = new HashMap<>();
             try {
                 JSONObject object=RequestBuilder.sendBackendGetRequest(getVisitHistoryUrl, map, true);
-                JSONArray arr=object.getJSONArray("data");
+                JSONArray arr=object.getJSONArray(ConstantUtilities.ARG_DATA);
                 System.out.println("data: "+arr.toString());
                 Message msg=new Message();
                 msg.what=0;
