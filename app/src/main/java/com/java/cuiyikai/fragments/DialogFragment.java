@@ -53,7 +53,11 @@ import com.stfalcon.chatkit.utils.DateFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * <p>This fragment is a subclass of {@link Fragment},and it is used for asking questions and answer them</p>
+ * <p>To make it different ,we make a dialog box.</p>
+ * <p>Notice that you must choose a subject before you ask a qusetion. The default subject is chinese</p>
+ */
 public class DialogFragment extends Fragment {
 
     private static final Logger logger = LoggerFactory.getLogger(DialogFragment.class);
@@ -149,7 +153,7 @@ public class DialogFragment extends Fragment {
         messagesList.setAdapter(dialogAdapter);
         return view;
     }
-
+    //used to build the dialog for subject changing.
     private void buildDialog(Context context,Dialog bottomDialog, View contentView)
     {
         bottomDialog.setContentView(contentView);
@@ -214,6 +218,11 @@ public class DialogFragment extends Fragment {
             bottomDialog.dismiss();
         });
     }
+
+    /**
+     * This method is used to handler the return map,we should change the map to the string to show it in the dialog box.
+     * @param map
+     */
     public void fixQuestion(Map<String,Object> map)
     {
         Set<String> set=map.keySet();
@@ -236,6 +245,12 @@ public class DialogFragment extends Fragment {
         jud[list.size()-1]=true;
         dialogAdapter.addToStart(pcMessage,true);
     }
+
+    /**
+     * This method is used to record the history dialog, the time will be added automaticly.
+     * @param s the dialog message
+     * @param id the id record the author of the message , decide the message will show on the left side or right side.
+     */
     public void storageInfo(String s,String id)
     {
         File loadFile = new File(getActivity().getFilesDir(), PATHNAME);
@@ -327,7 +342,11 @@ public class DialogFragment extends Fragment {
             dialogAdapter.addToEnd(msg,false);
         }
     }
-    public class AskQuestions implements  Runnable
+
+    /**
+     * This is a thread for ask question ,when you have asked a question ,you can swipe to other fragment instead of waiting the answer.
+     */
+    private  class AskQuestions implements  Runnable
     {
         AskQuestions(String s)
         {
@@ -381,8 +400,9 @@ public class DialogFragment extends Fragment {
         }
     }
 
-
-
+    /**
+     * This is a class the dialog box needed.
+     */
     public static class Author implements IUser{
         private final String name;
         private final String id;
@@ -406,6 +426,9 @@ public class DialogFragment extends Fragment {
             return null;
         }
     }
+    /**
+     * This is a class the dialog box needed.
+     */
     public static class Message implements IMessage
     {
         private final String id;
@@ -452,6 +475,10 @@ public class DialogFragment extends Fragment {
             return new Date(this.date);
         }
     }
+
+    /**
+     * This is used to set the time message format in dialogbox
+     */
     public class DateFormat implements DateFormatter.Formatter
     {
         @Override

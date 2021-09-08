@@ -8,12 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
-import com.java.cuiyikai.activities.SearchActivity;
 import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.adapters.viewholders.SelectViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.java.cuiyikai.fragments.SelectFragment;
+/**
+ * This adatper is used for the recyclerview in {@link SelectFragment} to show the category item.
+ * its viewholder is {@link SelectViewHolder}
+ */
 
 public class SelectAdapter extends RecyclerView.Adapter<SelectViewHolder>
 {

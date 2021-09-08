@@ -18,6 +18,9 @@ import com.java.cuiyikai.R;
 
 import java.util.List;
 
+/**
+ * This fragment is used for select the results of searching.
+ */
 public class SelectFragment extends Fragment {
 
     private final SelectAdapter selectAdapter;
@@ -33,6 +36,7 @@ public class SelectFragment extends Fragment {
     {
         View view = View.inflate(getActivity(), R.layout.fragment_select, null);
         RecyclerView recyclerViewForSelect = view.findViewById(R.id.recyclerviewForSelect);
+        //To set the flowlayoutmanager.
         ChipsLayoutManager chipsLayoutManager = ChipsLayoutManager.newBuilder(getActivity())
                 .setChildGravity(Gravity.TOP)
                 .setScrollingEnabled(true)
