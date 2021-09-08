@@ -58,6 +58,8 @@ import java.util.Map;
  * A simple {@link Fragment} subclass.
  * Use the {@link PointExtractFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * Nearly same as {@link com.java.cuiyikai.activities.PointExtractActivity}
+ * See this class for more details.
  */
 public class PointExtractFragment extends Fragment {
 

@@ -22,13 +22,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * {@link android.app.Activity} for Category selection.
+ */
 public class CategoryActivity extends AppCompatActivity {
 
+    //List of the category selected
     private List<String> userList = new ArrayList<>();
+    //List of the category not selected
     private List<String> otherList = new ArrayList<>();
 
+    //Adapter for the compound recycler view in this activity.
     private GridViewAdapter adapter;
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +47,9 @@ public class CategoryActivity extends AppCompatActivity {
         initView();
     }
 
+    /**
+     * Init {@link #userList} and {@link #otherList} from the saved text file.
+     */
     private void initData(){
         userList = ((MainApplication) getApplication()).getSubjects();
         for(String subject : Arrays.asList("推荐", "语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治"))
@@ -48,8 +61,13 @@ public class CategoryActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Init the recycler view in the activity.
+     */
     private void initView() {
         RecyclerView userView = findViewById(R.id.user_gv);
+
+        //Phase 1: add the objects to the recycler view object list.
 
         List<CategoryObject> objectList = new ArrayList<>();
         CategoryTitle mTitle = new CategoryTitle("我的频道");
@@ -63,6 +81,8 @@ public class CategoryActivity extends AppCompatActivity {
 
         for(String title : otherList)
             objectList.add(new CategoryItem(title));
+
+        //Phase 2: set up the grid layout for recycler view.
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(CategoryActivity.this, 4);
         adapter = new GridViewAdapter(CategoryActivity.this, objectList, userList.size());
@@ -79,6 +99,10 @@ public class CategoryActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Change the recycler view when the editable status changed.
+     * @param editable whether the page become editable or not.
+     */
     public void onEditableChanged(boolean editable) {
         if(editable) {
             ((TextView) findViewById(R.id.edit_event)).setText("完成");

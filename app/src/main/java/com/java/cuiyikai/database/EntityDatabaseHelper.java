@@ -77,6 +77,10 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String dropTable = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
@@ -130,6 +134,11 @@ public class EntityDatabaseHelper extends SQLiteOpenHelper {
         return results;
     }
 
+    /**
+     * <p>Get all the entities in the database.</p>
+     * <p>Remember to <strong>open the read link</strong> before the operation.</p>
+     * @return a {@link List} of all entities
+     */
     public List<DatabaseEntity> queryAllEntity() {
         String query = String.format("SELECT name, subject, jsonContent, problemsJson FROM %s", TABLE_NAME);
         ArrayList<DatabaseEntity> results = new ArrayList<>();

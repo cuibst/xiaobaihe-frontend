@@ -2,6 +2,11 @@ package com.java.cuiyikai.adapters;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.java.cuiyikai.adapters.GridViewAdapter;
+
+/**
+ * Modified size look up to adjust the item size in {@link androidx.recyclerview.widget.RecyclerView} in {@link com.java.cuiyikai.activities.CategoryActivity}
+ */
 public class CategoryLayoutManagerSizeLookUp extends GridLayoutManager.SpanSizeLookup {
 
     private final GridViewAdapter adapter;
@@ -15,8 +20,8 @@ public class CategoryLayoutManagerSizeLookUp extends GridLayoutManager.SpanSizeL
 
     @Override
     public int getSpanSize(int position) {
-        if (position == 0 || position == adapter.getUserSectionSize() + 1)
+        if (position == 0 || position == adapter.getUserSectionSize() + 1) // title section
             return layoutManager.getSpanCount();
-        return 1;
+        return 1; //normal item
     }
 }

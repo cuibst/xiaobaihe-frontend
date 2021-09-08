@@ -76,7 +76,7 @@ public class DirectoryFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param directoryName Parameter 1.
+     * @param directoryName Parameter 1 the directory's name.
      * @return A new instance of fragment DirectoryFragment.
      */
     public static DirectoryFragment newInstance(String directoryName) {
@@ -87,6 +87,10 @@ public class DirectoryFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +99,7 @@ public class DirectoryFragment extends Fragment {
         }
     }
 
+    //call the backend to update this directory.
     private void updateDirectoryBackend(JSONArray jsonArray) {
         JSONObject args = new JSONObject();
         args.put(ConstantUtilities.ARG_DIRECTORY, directoryName);
@@ -109,6 +114,13 @@ public class DirectoryFragment extends Fragment {
     private View view;
     private FavouriteAdapter favouriteAdapter;
 
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -124,6 +136,7 @@ public class DirectoryFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         favouriteItemList.setLayoutManager(layoutManager);
 
+        //Create the swipe menu for each item
         SwipeMenuCreator swipeMenuCreator = (SwipeMenu leftMenu, SwipeMenu rightMenu, int position) -> {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             int width = DensityUtilities.dp2px(getActivity(), 70);
@@ -151,6 +164,7 @@ public class DirectoryFragment extends Fragment {
 
         favouriteItemList.setSwipeMenuCreator(swipeMenuCreator);
 
+        //bottom favourite dialog for move and copy
         Dialog bottomDialog = new Dialog(getActivity(), R.style.BottomDialog);
         View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_bottom_favourite, null);
         contentView.findViewById(R.id.bottomAddNewFavourite).setVisibility(View.GONE);
@@ -174,17 +188,18 @@ public class DirectoryFragment extends Fragment {
 
         bottomFavouriteView.setAdapter(adapter);
 
+        //Set the click event for every item's swipe menu.
         favouriteItemList.setOnItemMenuClickListener((SwipeMenuBridge menuBridge, int position) -> {
             menuBridge.closeMenu();
             logger.info("Menu {} clicked", menuBridge.getPosition());
             int menuPosition = menuBridge.getPosition();
             JSONArray moveArray = new JSONArray();
             moveArray.add(favouriteAdapter.getFavouriteArray().get(position));
-            if(menuPosition == 2) {
+            if(menuPosition == 2) { //delete
                 favouriteAdapter.getFavouriteArray().remove(position);
                 favouriteAdapter.notifyItemRemoved(position);
                 updateDirectoryBackend(favouriteAdapter.getFavouriteArray());
-            } else if(menuPosition == 1) {
+            } else if(menuPosition == 1) { //copy
                 bottomDialog.show();
                 Button btnBottomFinish = contentView.findViewById(R.id.buttonBottomFinish);
                 btnBottomFinish.setOnClickListener((View vi) -> {
@@ -202,7 +217,7 @@ public class DirectoryFragment extends Fragment {
                     ((MainApplication)getActivity().getApplication()).updateFavourite();
                     bottomDialog.dismiss();
                 });
-            } else if(menuPosition == 0) {
+            } else if(menuPosition == 0) { //move
                 bottomDialog.show();
                 Button btnBottomFinish = contentView.findViewById(R.id.buttonBottomFinish);
                 btnBottomFinish.setOnClickListener((View vi) -> {
@@ -227,6 +242,7 @@ public class DirectoryFragment extends Fragment {
 
         favouriteItemList.setLongPressDragEnabled(true);
 
+        //bind the listener for swapping elements
         favouriteItemList.setOnItemMoveListener(new OnItemMoveListener() {
             @Override
             public boolean onItemMove(RecyclerView.ViewHolder srcHolder, RecyclerView.ViewHolder targetHolder) {
@@ -251,6 +267,7 @@ public class DirectoryFragment extends Fragment {
             }
         });
 
+        //long press enable edit
         favouriteItemList.setOnItemLongClickListener((View v, int adapterPosition) -> {
             favouriteAdapter.setEditable(true);
             favouriteAdapter.getSelected()[adapterPosition] = true;
@@ -258,6 +275,7 @@ public class DirectoryFragment extends Fragment {
             view.findViewById(R.id.bottomBar).setVisibility(View.VISIBLE);
         });
 
+        //click to change check
         favouriteItemList.setOnItemClickListener((View v, int adapterPosition) -> {
             if(favouriteAdapter.isEditable()) {
                 favouriteAdapter.getSelected()[adapterPosition] = !favouriteAdapter.getSelected()[adapterPosition];
@@ -265,11 +283,13 @@ public class DirectoryFragment extends Fragment {
             }
         });
 
+        //select all
         view.findViewById(R.id.btnSelectAll).setOnClickListener((View v) -> {
             favouriteAdapter.selectAll();
             favouriteAdapter.notifyDataSetChanged();
         });
 
+        //move button
         view.findViewById(R.id.btnMoveFavourite).setOnClickListener((View v) -> {
             JSONArray newArray = new JSONArray();
             JSONArray moveArray = new JSONArray();
@@ -300,6 +320,8 @@ public class DirectoryFragment extends Fragment {
 
             bottomDialog.show();
         });
+
+        //entry for generate problems
         view.findViewById(R.id.btnGenerateProblems).setOnClickListener((View v) ->{
             JSONObject js = ((MainApplication) getActivity().getApplication()).getFavourite();
             int cnt = 0;
@@ -322,7 +344,7 @@ public class DirectoryFragment extends Fragment {
 
             loadingDialog.setDimissListener(() -> loadingFlag = false);
 
-            Handler handler = new Handler(Looper.getMainLooper()) {
+            Handler handler = new Handler(Looper.getMainLooper()) { //async to wait finish and not lock the main thread
                 @Override
                 public void handleMessage(@NonNull Message msg) {
                     if(!loadingFlag)
@@ -356,7 +378,7 @@ public class DirectoryFragment extends Fragment {
 
         });
 
-
+        //copy button
         view.findViewById(R.id.btnCopyFavourite).setOnClickListener((View v) -> {
             JSONArray moveArray = new JSONArray();
             for(int i=0;i<favouriteAdapter.getSelected().length;i++)
@@ -381,7 +403,7 @@ public class DirectoryFragment extends Fragment {
             bottomDialog.show();
         });
 
-
+        //delete button
         view.findViewById(R.id.btnDeleteItems).setOnClickListener((View v) -> {
             JSONArray newArray = new JSONArray();
             for(int i=0;i<favouriteAdapter.getSelected().length;i++)
@@ -392,12 +414,14 @@ public class DirectoryFragment extends Fragment {
             favouriteAdapter.notifyDataSetChanged();
         });
 
+        //finish edit button
         view.findViewById(R.id.btnFinish).setOnClickListener((View v) -> {
             favouriteAdapter.setEditable(false);
             favouriteAdapter.notifyDataSetChanged();
             view.findViewById(R.id.bottomBar).setVisibility(View.GONE);
         });
 
+        //delete directory button
         view.findViewById(R.id.btnDeleteDirectory).setOnClickListener((View v) -> {
             JSONObject args = new JSONObject();
             args.put(ConstantUtilities.ARG_DIRECTORY, directoryName);
@@ -411,6 +435,7 @@ public class DirectoryFragment extends Fragment {
 
         });
 
+        //generate mind map activity
         view.findViewById(R.id.btnGenerateMap).setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MindMapActivity.class);
             intent.putExtra(ConstantUtilities.ARG_DIRECTORY_NAME, directoryName);
@@ -422,6 +447,9 @@ public class DirectoryFragment extends Fragment {
         return view;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -432,6 +460,7 @@ public class DirectoryFragment extends Fragment {
 
     private boolean loadingFlag = false;
 
+    //async generating new problems.
     private class GenerateProblemThread implements Runnable {
 
         private final Handler handler;

@@ -16,6 +16,9 @@ import com.java.cuiyikai.network.RequestBuilder;
 
 import java.util.List;
 
+/**
+ * {@link android.app.Activity} for offline behaviours.
+ */
 public class OfflineActivity extends AppCompatActivity {
 
     @Override
@@ -23,6 +26,7 @@ public class OfflineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offline);
 
+        //get the data from the database and show them
         EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(OfflineActivity.this, 1);
         helper.openReadLink();
 
@@ -30,6 +34,7 @@ public class OfflineActivity extends AppCompatActivity {
 
         helper.closeLink();
 
+        //activate return to online mode.
         findViewById(R.id.btnReturnToOnlineMode).setOnClickListener((View v) -> {
             if(!RequestBuilder.isNetworkNormal(OfflineActivity.this))
                 Toast.makeText(OfflineActivity.this, "网络链接异常", Toast.LENGTH_LONG).show();

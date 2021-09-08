@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * {@link RecyclerView.ViewHolder} for the problems in {@link RecyclerView} in {@link com.java.cuiyikai.activities.EntityActivity}
+ */
 public class ProblemViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView problemText;

@@ -50,6 +50,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@link android.app.Activity} for point-extract behaviours.
+ */
 public class PointExtractActivity extends AppCompatActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(PointExtractActivity.class);
@@ -63,12 +66,19 @@ public class PointExtractActivity extends AppCompatActivity {
 
     private ImageView photoView;
 
+    /**
+     * Will call when image is captured or selected.
+     * {@inheritDoc}
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
             Bitmap bitmap = null;
-            switch(requestCode) {
+            switch(requestCode) { // get the photo and set up the image view.
                 case TAKE_PHOTO: {
                     try {
                         if(imageUri == null) {
@@ -97,9 +107,10 @@ public class PointExtractActivity extends AppCompatActivity {
             }
             if(bitmap == null)
                 return;
+            //call tesseract api to get the text
             TessBaseAPI baseAPI = new TessBaseAPI();
             File tessdata = new File(getFilesDir(), "tessdata");
-            if(!tessdata.exists()) {
+            if(!tessdata.exists()) { //initialize tesseract
                 tessdata.mkdirs();
                 InputStream inputStream = getResources().openRawResource(R.raw.chi_sim);
                 File file = new File(tessdata, "chi_sim.traineddata");
@@ -113,7 +124,7 @@ public class PointExtractActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            baseAPI.init(getFilesDir().getAbsolutePath(), "chi_sim");
+            baseAPI.init(getFilesDir().getAbsolutePath(), "chi_sim"); //get the result
             baseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO);
             baseAPI.setImage(bitmap);
             String result = baseAPI.getUTF8Text();
@@ -125,7 +136,12 @@ public class PointExtractActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * called after the text is received, print it in the view and set up the reference.
+     * @param text the text of the image (from {@link #onActivityResult(int, int, Intent)} or from the {@link EditText}
+     */
     private void onTextReceived(String text) {
+        //set up the request parameters.
         TextView result = findViewById(R.id.extract_result);
         Map<String,String> args = new HashMap<>();
         args.put("context", text);
@@ -142,6 +158,7 @@ public class PointExtractActivity extends AppCompatActivity {
         SpannableStringBuilder ssBuilder = new SpannableStringBuilder(text);
         JSONArray data = res.getJSONObject(ConstantUtilities.ARG_DATA).getJSONArray("results");
         logger.info(data.toString());
+        //retrieve data and set up links.
         for(Object keyword: data) {
             JSONObject obj = JSON.parseObject(keyword.toString());
             int startIndex = obj.getInteger("start_index");
@@ -165,6 +182,7 @@ public class PointExtractActivity extends AppCompatActivity {
             };
             ssBuilder.setSpan(clickableSpan, startIndex, endIndex+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+        //set up views.
         result.setMovementMethod(LinkMovementMethod.getInstance());
         result.setText(ssBuilder);
         result.setVisibility(View.VISIBLE);
@@ -180,10 +198,11 @@ public class PointExtractActivity extends AppCompatActivity {
         setContentView(R.layout.activity_point_extract);
         Button uploadButton = findViewById(R.id.btn_upload);
         photoView = findViewById(R.id.submit_photo);
-        uploadButton.setOnClickListener((View view) -> {
+        uploadButton.setOnClickListener((View view) -> { //default submit links to EditText's text.
             EditText editText = findViewById(R.id.extract_text_input);
             PointExtractActivity.this.onTextReceived(editText.getText().toString());
         });
+        //set up the camera bottom dialog
         Dialog bottomDialog = new Dialog(PointExtractActivity.this, R.style.BottomDialog);
         View contentView = LayoutInflater.from(this).inflate(R.layout.layout_camera, null);
         bottomDialog.setContentView(contentView);
@@ -197,7 +216,7 @@ public class PointExtractActivity extends AppCompatActivity {
         Button fromAlbum = contentView.findViewById(R.id.from_album);
         Button camera = findViewById(R.id.camera);
         camera.setOnClickListener((View view) -> bottomDialog.show());
-        takePhoto.setOnClickListener((View view) -> {
+        takePhoto.setOnClickListener((View view) -> { //take a new picture.
             if(PermissionUtilities.verifyPermissions(PointExtractActivity.this, Manifest.permission.CAMERA) == 0) {
                 ActivityCompat.requestPermissions(PointExtractActivity.this, PERMISSIONS, 3);
                 return;
@@ -216,7 +235,7 @@ public class PointExtractActivity extends AppCompatActivity {
             startActivityForResult(photoIntent, TAKE_PHOTO);
             bottomDialog.dismiss();
         });
-        fromAlbum.setOnClickListener((View view) -> {
+        fromAlbum.setOnClickListener((View view) -> { //from album pick the picture.
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, TAKE_CAMERA);

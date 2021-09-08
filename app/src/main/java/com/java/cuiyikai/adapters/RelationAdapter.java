@@ -18,6 +18,9 @@ import com.java.cuiyikai.utilities.ConstantUtilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link RecyclerView.Adapter} for relation {@link RecyclerView} in {@link com.java.cuiyikai.activities.EntityActivity}
+ */
 public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
 
     private final List<RelationEntity> fullList;
@@ -25,6 +28,9 @@ public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
     private final Context mContext;
     private final String subject;
 
+    /**
+     * Switch the view between full list and partial list.
+     */
     public void switchList() {
         if(curList.size() == fullList.size()) {
             if (curList.size() > 5) {
@@ -39,6 +45,13 @@ public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
         }
     }
 
+    /**
+     * Constructor for {@link PropertyAdapter}
+     * @param context The context that the view will inflate in
+     * @param fullList Full property list
+     * @param prevList partial property list. if don't want change, set cur list same as full list.
+     * @param subject the subject of the entity that this view in.
+     */
     public RelationAdapter(Context context, List<RelationEntity> fullList, List<RelationEntity> prevList, String subject) {
         this.fullList = fullList;
         this.curList = new ArrayList<>();
@@ -47,12 +60,23 @@ public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
         this.subject = subject;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public RelationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new RelationViewHolder(LayoutInflater.from(mContext).inflate(R.layout.relation_item, parent, false));
     }
 
+    /**
+     * {@inheritDoc}
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull RelationViewHolder holder, int position) {
         holder.getRelationName().setText(curList.get(position).getRelationName());
@@ -69,6 +93,10 @@ public class RelationAdapter extends RecyclerView.Adapter<RelationViewHolder> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public int getItemCount() {
         return curList.size();

@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 S
 #.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
 v
@@ -9,38 +10,21 @@ Gapp/src/main/java/com/java/cuiyikai/network/callables/PostCallable.java,b\4\b4
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
 o
 ?app/src/main/java/com/java/cuiyikai/network/RequestBuilder.java,b\f\bfc0a803bdf8e1d1b45f47a96678ce44fc015207
+=======
+>>>>>>> document-cyk
 s
 Capp/src/main/java/com/java/cuiyikai/widgets/ColorTrackTextView.java,e\2\e276707e785c266fb9af25f9454df216d289a1c8
-v
-Fapp/src/main/java/com/java/cuiyikai/widgets/ListViewForScrollView.java,2\3\23421b4819dc389306582ddb25142dc8ec0f5591
-
-Oapp/src/main/java/com/java/cuiyikai/widgets/RoundCornerBackgroundColorSpan.java,5\3\53c2aecdd6e9e7f35e7fe2389d77990870dbdaf7
-|
-Lapp/src/main/java/com/java/cuiyikai/adapters/viewholders/ItemViewHolder.java,8\e\8ea4e214ef93a0092acaf01f5d57864dd77f1ef6
 ~
 Napp/src/main/java/com/java/cuiyikai/adapters/viewholders/SelectViewHolder.java,b\2\b26822b384ef846a4be465822d747783068e75cd
-
-Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/ProblemViewHolder.java,c\e\cee46133ab1504a7b0b91a2cb9eb7626757729b3
-Ä
-Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/CategoryViewHolder.java,e\0\e06b0f2038d1780dd1095053f1b3e2bec86f362c
-Ä
-Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/PropertyViewHolder.java,a\0\a0955e838fcb8cc28cb94e037388d1273e46e1ed
 Ä
 Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/QuestionViewHolder.java,8\4\841e537eb5b3181073f5a13098b275ef04dd5fa9
-Ä
-Papp/src/main/java/com/java/cuiyikai/adapters/viewholders/RelationViewHolder.java,5\c\5c3f4c1bd788a80ead3d0ec5f647e1f0248ae560
-Å
-Qapp/src/main/java/com/java/cuiyikai/adapters/viewholders/CategoryTitleHolder.java,7\d\7d0524b18a3803feabbb19f0868dfae122c68cbe
-Å
-Qapp/src/main/java/com/java/cuiyikai/adapters/viewholders/FavouriteItemHolder.java,1\5\15abe61872d8fd184decdb97aa4e3d35cc55a2f5
 Ñ
 Tapp/src/main/java/com/java/cuiyikai/adapters/viewholders/VisitHistoryViewHolder.java,6\c\6c9c404188cc1a4f5ff8236071bf6f9804309907
 à
 Xapp/src/main/java/com/java/cuiyikai/adapters/viewholders/VisitHistoryTimeViewHolder.java,d\9\d9c50116339c0224c6350e528c647d111c8c5eca
-m
-=app/src/main/java/com/java/cuiyikai/adapters/ItemAdapter.java,a\4\a4e2ca850f6337ed1bfced9052b6e6d81b94301d
 o
 ?app/src/main/java/com/java/cuiyikai/adapters/SearchAdapter.java,b\d\bdced547b1c843fbe1b38f7325f80db5b5b9c56f
+<<<<<<< HEAD
 o
 ?app/src/main/java/com/java/cuiyikai/adapters/SelectAdapter.java,4\b\4b1bf7ea838fdd5bfb2669f6cfdc24809db4463a
 p
@@ -73,14 +57,17 @@ k
 ;app/src/main/java/com/java/cuiyikai/entities/GraphNode.java,6\e\6ecf965bf5416fddcd791bba142f9c6738f0b748
 n
 >app/src/main/java/com/java/cuiyikai/entities/CategoryItem.java,3\8\3821cc116a436ece391dff3fced742ea98b087f2
+=======
+u
+Eapp/src/main/java/com/java/cuiyikai/adapters/VisitHistoryAdapter.java,4\2\4244332085d1e0cc8bff9a52afa23d801cce136e
+>>>>>>> document-cyk
 o
 ?app/src/main/java/com/java/cuiyikai/entities/CategoryTitle.java,8\9\8914a01efb4611b4f772fc26300287895ff439d9
-p
-@app/src/main/java/com/java/cuiyikai/entities/CategoryObject.java,e\1\e1aa24c8e4353693e1995c9a2cca4c53ea5aa833
 p
 @app/src/main/java/com/java/cuiyikai/entities/PropertyEntity.java,7\f\7f5723bbb8058cbac89f4fcbe30e5c22371141d7
 p
 @app/src/main/java/com/java/cuiyikai/entities/RelationEntity.java,1\9\1923b44d9a25ffcc836db52b0005811847c390fd
+<<<<<<< HEAD
 w
 Gapp/src/main/java/com/java/cuiyikai/entities/BottomFavouriteEntity.java,8\8\88c2171b55e1f3557126121d8edc8cfa3de1f3c5
 o
@@ -131,6 +118,12 @@ Lapp/src/main/java/com/java/cuiyikai/exceptions/AuthorizeFaliedException.java,b
 Papp/src/main/java/com/java/cuiyikai/exceptions/BackendTokenExpiredException.java,b\b\bb9c200b836a325bcd341a8ca933d3595d55d891
 h
 8app/src/main/java/com/java/cuiyikai/MainApplication.java,6\8\6842d713d7ae3d55ef273f2d94956292a15508a3
+=======
+r
+Bapp/src/main/java/com/java/cuiyikai/fragments/HistoryFragment.java,b\0\b0e587c671a4fb5454ea6dbbf44e59e249f4ef8e
+p
+@app/src/main/java/com/java/cuiyikai/activities/MainActivity.java,e\d\ed6a39c1d1f855e13a1155ad9ab61ea26ce0c66e
+>>>>>>> document-cyk
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 h
@@ -147,8 +140,6 @@ P
 app/.classpath,2\5\25d9e99205fe4aa8c094dea29b587df749c316aa
 >
 app/.gitignore,5\1\51e1c5d383dfaa35e0e7e5873a0a99355a86880f
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 F
 app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 X
@@ -164,9 +155,9 @@ Z
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
 ;
 gradlew.bat,2\a\2a45a911a8f1836b0b6c5b758962572012d8f8c3
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+
+Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/HistoryViewHolder.java,b\3\b3b2f07fe352937eb9046ef62b3b1088f0537883

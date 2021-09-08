@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link RecyclerView.Adapter} for property {@link RecyclerView} in {@link com.java.cuiyikai.activities.EntityActivity}
+ */
 public class PropertyAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
 
     private final List<PropertyEntity> fullList;
@@ -31,6 +34,9 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
     private final Context mContext;
     private static final Logger logger = LoggerFactory.getLogger(PropertyAdapter.class);
 
+    /**
+     * Switch the view between full list and partial list.
+     */
     public void switchList() {
         if(curList.size() == fullList.size()) {
             if (curList.size() > 5) {
@@ -45,6 +51,12 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
         }
     }
 
+    /**
+     * Constructor for {@link PropertyAdapter}
+     * @param context The context that the view will inflate in
+     * @param fullList Full property list
+     * @param curList partial property list. if don't want change, set cur list same as full list.
+     */
     public PropertyAdapter(Context context, List<PropertyEntity> fullList, List<PropertyEntity> curList) {
         this.fullList = fullList;
         this.curList = new ArrayList<>();
@@ -52,24 +64,41 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyViewHolder> {
         this.mContext = context;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public PropertyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new PropertyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.property_item, parent, false));
     }
 
+    /**
+     * {@inheritDoc}
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull PropertyViewHolder holder, int position) {
         PropertyEntity propertyEntity = curList.get(position);
         String name = "   " + propertyEntity.getLabel() + "   ";
         String object = "   " + propertyEntity.getObject();
         SpannableStringBuilder builder = new SpannableStringBuilder(name + object);
-        builder.setSpan(new RoundCornerBackgroundColorSpan(DensityUtilities.dp2px(mContext, 5), Color.rgb(0x99, 0xaa, 0xff), Color.rgb(0xff, 0xff, 0xff)), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new RoundCornerBackgroundColorSpan(DensityUtilities.dp2px(mContext, 5),
+                Color.rgb(0x99, 0xaa, 0xff), Color.rgb(0xff, 0xff, 0xff)),
+                0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setSpan(new StyleSpan(Typeface.BOLD), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         logger.info("Spanned result: {}", builder);
         holder.getPropertyText().setText(builder);
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public int getItemCount() {
         return curList.size();

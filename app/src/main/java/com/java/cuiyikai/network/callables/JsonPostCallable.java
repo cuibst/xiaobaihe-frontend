@@ -20,25 +20,43 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * A {@link Callable} designed to make <strong>POST</strong> requests that send a {@link JSONObject}.
+ */
 public class JsonPostCallable implements Callable<JSONObject> {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonPostCallable.class);
 
-    Handler handler = null;
+    private Handler handler = null;
 
+    /**
+     * Attach a handler to receive callback.
+     * <p>will receive 1 for fail, 2 for success</p>
+     * @param handler the handler to be attached
+     */
     public void attachHandler(Handler handler) {
         this.handler = handler;
     }
 
-    String url;
+    private final String url;
 
-    JSONObject arguments;
+    private final JSONObject arguments;
 
+    /**
+     * Only constructor for {@link JsonPostCallable}
+     * @param u the full url of the target
+     * @param arg the args needed to pass.
+     */
     public JsonPostCallable(String u, JSONObject arg) {
         url = u;
         arguments = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return the reply in {@link JSONObject}
+     * @throws Exception when request failed to operate
+     */
     @Override
     public JSONObject call() throws Exception {
         URL loginUrl = new URL(url);
@@ -50,7 +68,7 @@ public class JsonPostCallable implements Callable<JSONObject> {
         writer.flush();
         if(connection.getResponseCode() == 200)
         {
-            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) {
+            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) { //gzip deflated
                 GZIPInputStream gzipInputStream = new GZIPInputStream(connection.getInputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream));
                 String line;

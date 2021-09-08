@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
+/**
+ * Extends {@link ListView} to solve scroll problems.
+ */
 public class ListViewForScrollView extends ListView {
     public ListViewForScrollView (Context context, AttributeSet attrs) {
         super(context, attrs);

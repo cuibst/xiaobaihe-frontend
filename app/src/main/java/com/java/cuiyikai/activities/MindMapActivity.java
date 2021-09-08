@@ -1,16 +1,9 @@
 package com.java.cuiyikai.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -26,7 +19,6 @@ import com.java.cuiyikai.utilities.ConstantUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,13 +31,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import me.jagar.mindmappingandroidlibrary.Helpers.SaveAs;
 import me.jagar.mindmappingandroidlibrary.Views.MindMappingView;
 
+/**
+ * {@link android.app.Activity} to demonstrate a mind map.
+ */
 public class MindMapActivity extends AppCompatActivity {
-    private MindMappingView mindMappingView;
+
     private static final Logger logger = LoggerFactory.getLogger(MindMapActivity.class);
 
+    //avoid and check same nodes in the graph
     private final Map<String, GraphNode> nameIdMap = new HashMap<>();
 
     private static class Edge {
@@ -55,8 +50,12 @@ public class MindMapActivity extends AppCompatActivity {
 
     private final Set<Edge> edges = new HashSet<>();
 
+    //executor to submit the get item task
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    /**
+     * {@link Callable} to retrieve the entity information.
+     */
     private class GetItemCallable implements Callable<JSONObject> {
 
         private final String subject;
@@ -95,6 +94,7 @@ public class MindMapActivity extends AppCompatActivity {
         }
     }
 
+    //Max recursion depth
     private static final int MAX_LEVEL = 2;
 
     @Override
@@ -102,7 +102,7 @@ public class MindMapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mind_map);
 
-        mindMappingView = findViewById(R.id.mind_mapping_view);
+        MindMappingView mindMappingView = findViewById(R.id.mind_mapping_view);
 
         Intent intent = getIntent();
         String directoryName = intent.getStringExtra(ConstantUtilities.ARG_DIRECTORY_NAME);
@@ -114,6 +114,7 @@ public class MindMapActivity extends AppCompatActivity {
         List<JSONObject> entityObjects = new ArrayList<>();
         List<Future<JSONObject>> futureList = new ArrayList<>();
 
+        //Get the level 1 info, and build the graph for level 1
         for(Object obj : favourite) {
             JSONObject object = JSON.parseObject(obj.toString());
             String name = object.getString(ConstantUtilities.ARG_NAME);
@@ -127,6 +128,7 @@ public class MindMapActivity extends AppCompatActivity {
         List<Future<JSONObject>> nextLevelFutureList = new ArrayList<>();
         List<JSONObject> nextLevelObjects = new ArrayList<>();
 
+        //recursive call each level and build the graph
         for(int level = 0; level <MAX_LEVEL; level++) {
             for (int i = 0; i < futureList.size(); i++) {
                 JSONObject jsonObject;
@@ -138,6 +140,7 @@ public class MindMapActivity extends AppCompatActivity {
                 }
                 if(jsonObject == null)
                     continue;
+                //construct sub properties.
                 JSONArray properties = jsonObject.getJSONArray("property");
                 Map<String, StringBuilder> propertyMap = new HashMap<>();
                 for (Object o : properties) {
@@ -155,16 +158,17 @@ public class MindMapActivity extends AppCompatActivity {
                     for (Map.Entry<String, StringBuilder> entry : propertyMap.entrySet()) {
                         parent.addNewProperty(MindMapActivity.this, mindMappingView, entry.getKey(), entry.getValue().toString());
                     }
+                //construct relations and add new item when it doesn't exist.
                 JSONArray relations = jsonObject.getJSONArray(ConstantUtilities.ARG_CONTENT);
                 for (Object o : relations) {
                     JSONObject relation = JSON.parseObject(o.toString());
-                    if(relation.containsKey(ConstantUtilities.ARG_OBJECT)) {
+                    if(relation.containsKey(ConstantUtilities.ARG_OBJECT)) { //object relation.
                         String target = relation.getString("object_label");
                         String subject = entityObjects.get(i).getString(ConstantUtilities.ARG_SUBJECT);
                         JSONObject targetObject = new JSONObject();
                         targetObject.put(ConstantUtilities.ARG_NAME, target);
                         targetObject.put(ConstantUtilities.ARG_SUBJECT, subject);
-                        if(nameIdMap.containsKey(targetObject.toString())) {
+                        if(nameIdMap.containsKey(targetObject.toString())) { //exist
                             GraphNode targetNode = nameIdMap.get(targetObject.toString());
                             Edge edge = new Edge();
                             edge.start = parent;
@@ -177,7 +181,7 @@ public class MindMapActivity extends AppCompatActivity {
                                 edges.add(edge);
                                 edges.add(edge2);
                             }
-                        } else {
+                        } else { //doesn't exist, create new one.
                             GraphNode targetNode = parent.addNewEntity(MindMapActivity.this, mindMappingView, target, subject, relation.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE));
                             if(level != MAX_LEVEL - 1) {
                                 nextLevelFutureList.add(executorService.submit(new GetItemCallable(target, subject)));
@@ -193,13 +197,13 @@ public class MindMapActivity extends AppCompatActivity {
                             edges.add(edge);
                             edges.add(edge2);
                         }
-                    } else {
+                    } else { // subject relation
                         String target = relation.getString("subject_label");
                         String subject = entityObjects.get(i).getString(ConstantUtilities.ARG_SUBJECT);
                         JSONObject targetObject = new JSONObject();
                         targetObject.put(ConstantUtilities.ARG_NAME, target);
                         targetObject.put(ConstantUtilities.ARG_SUBJECT, subject);
-                        if(nameIdMap.containsKey(targetObject.toString())) {
+                        if(nameIdMap.containsKey(targetObject.toString())) { //exist
                             GraphNode targetNode = nameIdMap.get(targetObject.toString());
                             Edge edge = new Edge();
                             edge.start = parent;
@@ -212,7 +216,7 @@ public class MindMapActivity extends AppCompatActivity {
                                 edges.add(edge);
                                 edges.add(edge2);
                             }
-                        } else {
+                        } else { //doesn't exist
                             GraphNode targetNode = parent.addNewEntity(MindMapActivity.this, mindMappingView, target, subject, relation.getString(ConstantUtilities.ARG_PREDICATE_LABEL_UNDERLINE));
                             if(level != MAX_LEVEL - 1) {
                                 nextLevelFutureList.add(executorService.submit(new GetItemCallable(target, subject)));
@@ -231,54 +235,11 @@ public class MindMapActivity extends AppCompatActivity {
                     }
                 }
             }
+            //update the level
             futureList = nextLevelFutureList;
             nextLevelFutureList = new ArrayList<>();
             entityObjects = nextLevelObjects;
             nextLevelObjects = new ArrayList<>();
-        }
-
-        findViewById(R.id.btnGeneratePhoto).setOnClickListener(view -> checkPermissions());
-    }
-    private static final int ALL_PERMISSIONS = 1;
-
-    private void checkPermissions() {
-        //Permissions we need
-        String[] permissions = {
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-        //Permissions that we will ask for
-        ArrayList<String> needed_permissions = new ArrayList<>();
-
-        //Check which is not granted yet
-        for (String permission : permissions){
-            if (ContextCompat.checkSelfPermission(MindMapActivity.this, permission) !=
-                    PackageManager.PERMISSION_GRANTED){
-                needed_permissions.add(permission);
-            }
-        }
-
-        //Ask for multiple not granted permissions
-        if(!needed_permissions.isEmpty())
-            ActivityCompat.requestPermissions(MindMapActivity.this, needed_permissions.toArray(new String[needed_permissions.size()]), ALL_PERMISSIONS);
-        else
-            SaveAs.saveAsImage(mindMappingView, Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator +
-                    "image.jpg");
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ALL_PERMISSIONS){
-            if ((grantResults.length > 0) &&
-                    (grantResults[0] == PackageManager.PERMISSION_GRANTED)){
-                SaveAs.saveAsImage(mindMappingView, Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator +
-                        "image.jpg");
-
-            }else {
-                Toast.makeText(MindMapActivity.this, "All permissions need to be granted", Toast.LENGTH_LONG)
-                        .show();
-            }
         }
     }
 

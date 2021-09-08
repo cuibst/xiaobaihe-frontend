@@ -20,28 +20,46 @@ import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.Arrays;
 
+/**
+ * {@link RecyclerView.Adapter} for {@link RecyclerView} in {@link DirectoryFragment}
+ */
 public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private final DirectoryFragment directoryFragment;
     private JSONArray favouriteArray;
 
     private boolean editable = false;
-    private boolean[] selected;
+    private boolean[] selected; //whether a item is chosen or not.
 
+    /**
+     * Set every item chosen.
+     */
     public void selectAll() {
         if(selected == null)
             return;
         Arrays.fill(selected, true);
     }
 
+    /**
+     * get the selected status
+     * @return the boolean array represent the status
+     */
     public boolean[] getSelected() {
         return selected;
     }
 
+    /**
+     * check whether the view is in edit mode.
+     * @return editable
+     */
     public boolean isEditable() {
         return editable;
     }
 
+    /**
+     * change edit mode.
+     * @param editable set the edit mode to "editable".
+     */
     public void setEditable(boolean editable) {
         if(editable != this.editable) {
             this.editable = editable;
@@ -50,10 +68,18 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    /**
+     * get the current status of this directory
+     * @return a {@link JSONArray} represent this favourite directory.
+     */
     public JSONArray getFavouriteArray() {
         return favouriteArray;
     }
 
+    /**
+     * Change the favourite array demonstrated.
+     * @param favouriteArray new favourite array.
+     */
     public void setFavouriteArray(JSONArray favouriteArray) {
         this.favouriteArray = favouriteArray;
         if(favouriteArray == null)
@@ -64,11 +90,22 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    /**
+     * Constructor for {@link FavouriteAdapter}
+     * @param directoryFragment Context where this view is inflated.
+     * @param favouriteArray Initial favourite array.
+     */
     public FavouriteAdapter(DirectoryFragment directoryFragment, JSONArray favouriteArray) {
         this.directoryFragment = directoryFragment;
         this.favouriteArray = favouriteArray;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -76,6 +113,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return new FavouriteItemHolder(favouriteItem);
     }
 
+    /**
+     * set up and bind each items.
+     * {@inheritDoc}
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         FavouriteItemHolder favouriteItemHolder = (FavouriteItemHolder) holder;
@@ -140,6 +183,10 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public int getItemCount() {
         return favouriteArray == null ? 0 : favouriteArray.size();

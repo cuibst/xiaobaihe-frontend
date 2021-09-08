@@ -21,25 +21,43 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * A {@link Callable} designed to make <strong>POST</strong> requests that send a normal form.
+ */
 public class PostCallable implements Callable<JSONObject> {
 
     private static final Logger logger = LoggerFactory.getLogger(PostCallable.class);
 
-    Handler handler = null;
+    private Handler handler = null;
 
+    /**
+     * Attach a handler to receive callback.
+     * <p>will receive 1 for fail, 2 for success</p>
+     * @param handler the handler to be attached
+     */
     public void attachHandler(Handler handler) {
         this.handler = handler;
     }
 
-    String url;
+    private final String url;
 
-    Map<String,String> arguments;
+    private final Map<String,String> arguments;
 
+    /**
+     * Only constructor for {@link PostCallable}
+     * @param u the full url of the target
+     * @param arg the args needed to pass.
+     */
     public PostCallable(String u, Map<String, String> arg) {
         url = u;
         arguments = arg;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return the reply in {@link JSONObject}
+     * @throws Exception when request failed to operate
+     */
     @Override
     public JSONObject call() throws Exception {
         URL loginUrl = new URL(url);
@@ -51,7 +69,7 @@ public class PostCallable implements Callable<JSONObject> {
         writer.flush();
         if(connection.getResponseCode() == 200)
         {
-            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) {
+            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) { //gzip deflated
                 GZIPInputStream gzipInputStream = new GZIPInputStream(connection.getInputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream));
                 String line;
