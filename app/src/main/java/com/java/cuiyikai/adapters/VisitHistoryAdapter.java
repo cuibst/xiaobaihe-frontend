@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+
 public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final Logger logger = LoggerFactory.getLogger(VisitHistoryAdapter.class);

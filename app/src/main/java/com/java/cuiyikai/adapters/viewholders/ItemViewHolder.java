@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.java.cuiyikai.R;
 
 /**
+<<<<<<< HEAD
  * <p>{@link RecyclerView.ViewHolder} for the items in {@link RecyclerView}</p>
  * <p>in {@link com.java.cuiyikai.fragments.ItemFragment} and {@link com.java.cuiyikai.activities.SearchActivity}</p>
  */

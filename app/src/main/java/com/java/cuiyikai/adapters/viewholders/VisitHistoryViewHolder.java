@@ -8,6 +8,10 @@ import com.java.cuiyikai.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * This viewholder is used in {@link com.java.cuiyikai.adapters.VisitHistoryAdapter} .
+ * it shows the visit history item.
+ */
 public class VisitHistoryViewHolder extends RecyclerView.ViewHolder  {
     public ImageView img;
     public TextView label;
