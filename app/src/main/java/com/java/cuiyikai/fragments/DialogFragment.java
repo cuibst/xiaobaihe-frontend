@@ -1,9 +1,11 @@
 package com.java.cuiyikai.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableString;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,7 +57,7 @@ import org.slf4j.LoggerFactory;
 public class DialogFragment extends Fragment {
 
     private static final Logger logger = LoggerFactory.getLogger(DialogFragment.class);
-
+    private MyHandler handler;
     private final SimpleDateFormat setTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final boolean[] jud=new boolean[100000];
     private TextView subjectText;
@@ -83,9 +85,14 @@ public class DialogFragment extends Fragment {
             Intent intent=new Intent(getActivity(),SearchViewActivity.class);
             startActivity(intent);
         });
+        handler =new MyHandler(Looper.getMainLooper());
         clearButton.setOnClickListener(view1 -> {
         File oldFile =new  File(getActivity().getFilesDir(), PATHNAME);
-        oldFile.delete();
+        boolean deleteFlag=oldFile.delete();
+        if(deleteFlag)
+            logger.info("delete successfully");
+        else
+            logger.info("failed to delete ");
         dialogAdapter.clear();
         list.clear();
         originMessage = new Message("1", "请输入查询内容:)", pc);
@@ -105,60 +112,7 @@ public class DialogFragment extends Fragment {
         params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(getActivity(), 16f);
         params.bottomMargin = DensityUtilities.dp2px(getActivity(), 8f);
         contentView.setLayoutParams(params);
-        Button chinese = contentView.findViewById(R.id.chinese);
-        Button math = contentView.findViewById(R.id.math);
-        Button english = contentView.findViewById(R.id.english);
-        Button physics = contentView.findViewById(R.id.physics);
-        Button chemistry = contentView.findViewById(R.id.chemistry);
-        Button biology = contentView.findViewById(R.id.biology);
-        Button geo = contentView.findViewById(R.id.geo);
-        Button history = contentView.findViewById(R.id.history);
-        Button politics = contentView.findViewById(R.id.politics);
-        chinese.setOnClickListener(v -> {
-            subject= ConstantUtilities.SUBJECT_CHINESE;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        math.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_MATH;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        english.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_ENGLISH;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        physics.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_PHYSICS;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        chemistry.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_CHEMISTRY;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        biology.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_BIOLOGY;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        geo.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_GEO;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        politics.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_POLITICS;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        history.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_HISTORY;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
+        buildDialog(getActivity(),bottomDialog,contentView);
 
 
 
@@ -194,6 +148,71 @@ public class DialogFragment extends Fragment {
         });
         messagesList.setAdapter(dialogAdapter);
         return view;
+    }
+
+    private void buildDialog(Context context,Dialog bottomDialog, View contentView)
+    {
+        bottomDialog.setContentView(contentView);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+        params.width = context.getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(context, 16f);
+        params.bottomMargin = DensityUtilities.dp2px(context, 8f);
+        contentView.setLayoutParams(params);
+        Button chinese = contentView.findViewById(R.id.chinese);
+        Button math = contentView.findViewById(R.id.math);
+        Button english = contentView.findViewById(R.id.english);
+        Button physics = contentView.findViewById(R.id.physics);
+        Button chemistry = contentView.findViewById(R.id.chemistry);
+        Button biology = contentView.findViewById(R.id.biology);
+        Button geo = contentView.findViewById(R.id.geo);
+        Button history = contentView.findViewById(R.id.history);
+        Button politics = contentView.findViewById(R.id.politics);
+        chinese.setOnClickListener(v -> {
+            subject= ConstantUtilities.SUBJECT_CHINESE;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        math.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_MATH;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        english.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_ENGLISH;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        physics.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_PHYSICS;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        chemistry.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_CHEMISTRY;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        biology.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_BIOLOGY;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        geo.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_GEO;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        politics.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_POLITICS;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        history.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_HISTORY;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
     }
     public void fixQuestion(Map<String,Object> map)
     {
@@ -308,7 +327,6 @@ public class DialogFragment extends Fragment {
             dialogAdapter.addToEnd(msg,false);
         }
     }
-    private final MyHandler handler =new MyHandler();
     public class AskQuestions implements  Runnable
     {
         AskQuestions(String s)
@@ -348,7 +366,10 @@ public class DialogFragment extends Fragment {
         }
     }
     private class MyHandler extends Handler {
-
+        MyHandler(Looper looper)
+        {
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull android.os.Message msg) {
             if (msg.what == 0) {

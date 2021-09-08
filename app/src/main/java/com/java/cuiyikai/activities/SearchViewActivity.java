@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,10 +40,11 @@ import java.util.Map;
 public class SearchViewActivity extends AppCompatActivity {
     private String subject=ConstantUtilities.SUBJECT_CHINESE;
     private HistoryFragment historyFragment;
-    private boolean exitflag;
+    private boolean exitFlag;
     private HistoryListAdapter historyListAdapter;
     private TextView subjectText;
     private SearchView searchView;
+    private Dialog bottomDialog;
     private final JSONObject receivedMessage=new JSONObject();
     private final FragmentManager fragmentManager=getSupportFragmentManager();
 
@@ -58,7 +61,7 @@ public class SearchViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
-        exitflag=false;
+        exitFlag=false;
         myHandler=new MyHandler(getMainLooper());
         searchView=findViewById(R.id.searchView);
         RecyclerView recommendXRecyclerView = findViewById(R.id.recommendXRecylcerView);
@@ -68,69 +71,9 @@ public class SearchViewActivity extends AppCompatActivity {
         TextView quitText = findViewById(R.id.quit);
         quitText.setOnClickListener(v -> onBackPressed());
         subjectText=findViewById(R.id.subject);
-        Dialog bottomDialog = new Dialog(SearchViewActivity.this, R.style.BottomDialog);
-        View contentView = LayoutInflater.from(SearchViewActivity.this).inflate(R.layout.layout_subject_select, null);
-        bottomDialog.setContentView(contentView);
-        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
-        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
-        params.width = getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(SearchViewActivity.this, 16f);
-        params.bottomMargin = DensityUtilities.dp2px(SearchViewActivity.this, 8f);
-        contentView.setLayoutParams(params);
-        Button chinese = contentView.findViewById(R.id.chinese);
-        Button math = contentView.findViewById(R.id.math);
-        Button english = contentView.findViewById(R.id.english);
-        Button physics = contentView.findViewById(R.id.physics);
-        Button chemistry = contentView.findViewById(R.id.chemistry);
-        Button biology = contentView.findViewById(R.id.biology);
-        Button geo = contentView.findViewById(R.id.geo);
-        Button history = contentView.findViewById(R.id.history);
-        Button politics = contentView.findViewById(R.id.politics);
-        chinese.setOnClickListener(v -> {
-            subject= ConstantUtilities.SUBJECT_CHINESE;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        math.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_MATH;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        english.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_ENGLISH;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        physics.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_PHYSICS;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        chemistry.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_CHEMISTRY;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        biology.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_BIOLOGY;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        geo.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_GEO;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        politics.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_POLITICS;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
-        history.setOnClickListener(v -> {
-            subject=ConstantUtilities.SUBJECT_HISTORY;
-            subjectText.setText(reverseCheckSubject(subject));
-            bottomDialog.dismiss();
-        });
+        bottomDialog = new Dialog(SearchViewActivity.this, R.style.BottomDialog);
+        @SuppressLint("InflateParams") View contentView = LayoutInflater.from(SearchViewActivity.this).inflate(R.layout.layout_subject_select, null);
+        buildDialog(SearchViewActivity.this,bottomDialog,contentView);
         subjectText.setOnClickListener((View v) -> bottomDialog.show());
         historyFragment=new HistoryFragment(searchView);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -156,10 +99,74 @@ public class SearchViewActivity extends AppCompatActivity {
 
 
     }
+    private void buildDialog(Context context,Dialog bottomDialog, View contentView)
+    {
+        bottomDialog.setContentView(contentView);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
+        params.width = context.getResources().getDisplayMetrics().widthPixels - DensityUtilities.dp2px(context, 16f);
+        params.bottomMargin = DensityUtilities.dp2px(context, 8f);
+        contentView.setLayoutParams(params);
+        Button chinese = contentView.findViewById(R.id.chinese);
+        Button math = contentView.findViewById(R.id.math);
+        Button english = contentView.findViewById(R.id.english);
+        Button physics = contentView.findViewById(R.id.physics);
+        Button chemistry = contentView.findViewById(R.id.chemistry);
+        Button biology = contentView.findViewById(R.id.biology);
+        Button geo = contentView.findViewById(R.id.geo);
+        Button history = contentView.findViewById(R.id.history);
+        Button politics = contentView.findViewById(R.id.politics);
+        chinese.setOnClickListener(v -> {
+            subject= ConstantUtilities.SUBJECT_CHINESE;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        math.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_MATH;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        english.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_ENGLISH;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        physics.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_PHYSICS;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        chemistry.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_CHEMISTRY;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        biology.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_BIOLOGY;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        geo.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_GEO;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        politics.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_POLITICS;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+        history.setOnClickListener(v -> {
+            subject=ConstantUtilities.SUBJECT_HISTORY;
+            subjectText.setText(SearchViewActivity.reverseCheckSubject(subject));
+            bottomDialog.dismiss();
+        });
+    }
     @Override
     public void onBackPressed()
     {
-        exitflag=true;
+        exitFlag=true;
         super.onBackPressed();
     }
     public void initSearchView()
@@ -190,7 +197,7 @@ public class SearchViewActivity extends AppCompatActivity {
 
 
 
-    public String reverseCheckSubject(String title)
+    public static String reverseCheckSubject(String title)
     {
         String chooseSubject;
         switch (title) {
@@ -235,7 +242,7 @@ public class SearchViewActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg)
         {
-            if(exitflag)
+            if(exitFlag)
                 return;
             switch(msg.what)
             {

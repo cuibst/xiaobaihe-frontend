@@ -16,7 +16,6 @@ import com.java.cuiyikai.adapters.SelectAdapter;
 
 import com.java.cuiyikai.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SelectFragment extends Fragment {
@@ -53,7 +52,7 @@ public class SelectFragment extends Fragment {
             selectAdapter.notifyItemRangeRemoved(0,selectAdapter.getItemCount());
         selectAdapter.setSubjectType(v);
     }
-    public void getType(ArrayList<String> v)
+    public void getType(List<String> v)
     {
         selectAdapter.getCheckMarked().clear();
         selectAdapter.setType(v);

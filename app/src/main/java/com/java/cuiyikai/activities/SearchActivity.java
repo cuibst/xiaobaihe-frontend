@@ -61,6 +61,7 @@ public class SearchActivity extends AppCompatActivity {
     private SearchAdapter searchAdapter;
     private SelectFragment selectFragment;
     private Button selectButton;
+    private final static String unexpectedValue="Unexpected value: ";
     SelectAdapter selectAdapter;
     String searchUrl ="typeOpen/open/instanceList";
 
@@ -234,42 +235,6 @@ public class SearchActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public String reverseCheckSubject(String title)
-    {
-        String chooseSubject;
-        switch (title) {
-            case ConstantUtilities.SUBJECT_CHINESE:
-                chooseSubject = "语文";
-                break;
-            case ConstantUtilities.SUBJECT_MATH:
-                chooseSubject = "数学";
-                break;
-            case ConstantUtilities.SUBJECT_ENGLISH:
-                chooseSubject = "英语";
-                break;
-            case ConstantUtilities.SUBJECT_PHYSICS:
-                chooseSubject = "物理";
-                break;
-            case ConstantUtilities.SUBJECT_CHEMISTRY:
-                chooseSubject = "化学";
-                break;
-            case ConstantUtilities.SUBJECT_HISTORY:
-                chooseSubject = "历史";
-                break;
-            case ConstantUtilities.SUBJECT_GEO:
-                chooseSubject = "地理";
-                break;
-            case ConstantUtilities.SUBJECT_POLITICS:
-                chooseSubject = "政治";
-                break;
-            case ConstantUtilities.SUBJECT_BIOLOGY:
-                chooseSubject = "生物";
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + title);
-        }
-        return chooseSubject;
-    }
     public String checkSubject(String title)
     {
         String chooseSubject;
@@ -302,7 +267,7 @@ public class SearchActivity extends AppCompatActivity {
                 chooseSubject = ConstantUtilities.SUBJECT_BIOLOGY;
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + title);
+                throw new IllegalStateException(unexpectedValue + title);
         }
         return chooseSubject;
     }
@@ -337,12 +302,16 @@ public class SearchActivity extends AppCompatActivity {
                 map.put(ConstantUtilities.ARG_COURSE,  subject);
                 map.put("searchKey",searchContent);
                 JSONObject msg = RequestBuilder.sendGetRequest(searchUrl, map);
-                if(msg.get("code").equals("-1"))
-                {
-                    handler.sendEmptyMessage(1);
+                try {
+                    if (msg != null && msg.get("code").equals("-1")) {
+                        handler.sendEmptyMessage(1);
+                    } else if (msg != null && msg.get(ConstantUtilities.ARG_DATA) != null && !msg.getJSONArray(ConstantUtilities.ARG_DATA).isEmpty()) {
+                        receivedMessage.put(subject, msg);
+                    }
                 }
-                else if(msg.get(ConstantUtilities.ARG_DATA)!=null&&!msg.getJSONArray(ConstantUtilities.ARG_DATA).isEmpty()) {
-                    receivedMessage.put(subject,msg);
+                catch (NullPointerException e)
+                {
+                    e.printStackTrace();
                 }
                 Message message=new Message();
                 message.what=0;
@@ -373,7 +342,7 @@ public class SearchActivity extends AppCompatActivity {
                     Toast.makeText(SearchActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
                     break;
                 default:
-                    throw new IllegalStateException("Unexpected value: " + msg.what);
+                    throw new IllegalStateException(unexpectedValue + msg.what);
             }
         }
     }

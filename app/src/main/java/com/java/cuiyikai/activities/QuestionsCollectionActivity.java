@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.QuestionAdapter;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class QuestionsCollectionActivity extends AppCompatActivity {
 
@@ -41,11 +43,13 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
     private JSONArray questionsArr;
     private JSONArray originArr;
     private TextView questionTxt;
+    private MyHandler myHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questions_collection);
+        myHandler=new MyHandler(Looper.getMainLooper());
         SwipeRecyclerView swipeRecyclerView = findViewById(R.id.swipeRecyclerView);
         questionAdapter=new QuestionAdapter(QuestionsCollectionActivity.this);
         GetQuestions getQuestions=new GetQuestions();
@@ -66,43 +70,13 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         searchQuestion.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(query.equals(""))
-                    questionAdapter.addQuestions(questionsArr);
-                else
-                {
-                    JSONArray arr=new JSONArray();
-                    for(int i=0;i<questionsArr.size();i++)
-                    {
-                        String s=questionsArr.get(i).toString();
-                        if(s.contains(query))
-                        {
-                            arr.add(questionsArr.get(i));
-                        }
-                    }
-                    questionAdapter.addQuestions(arr);
-                }
-                questionAdapter.notifyDataSetChanged();
+                changeSearchItem(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(newText.equals(""))
-                    questionAdapter.addQuestions(questionsArr);
-                else
-                {
-                    JSONArray arr=new JSONArray();
-                    for(int i=0;i<questionsArr.size();i++)
-                    {
-                        String s=questionsArr.get(i).toString();
-                        if(s.contains(newText))
-                        {
-                            arr.add(questionsArr.get(i));
-                        }
-                    }
-                    questionAdapter.addQuestions(arr);
-                }
-                questionAdapter.notifyDataSetChanged();
+                changeSearchItem(newText);
                 return true;
             }
         });
@@ -132,7 +106,26 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         swipeRecyclerView.setAdapter(questionAdapter);
     }
 
-    private final MyHandler myHandler=new MyHandler();
+
+    private void changeSearchItem(String newText)
+    {
+        if(newText.equals(""))
+            questionAdapter.addQuestions(questionsArr);
+        else
+        {
+            JSONArray arr=new JSONArray();
+            for(int i=0;i<questionsArr.size();i++)
+            {
+                String s=questionsArr.get(i).toString();
+                if(s.contains(newText))
+                {
+                    arr.add(questionsArr.get(i));
+                }
+            }
+            questionAdapter.addQuestions(arr);
+        }
+        questionAdapter.notifyDataSetChanged();
+    }
 
     private class GetQuestions implements Runnable
     {
@@ -148,14 +141,17 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                 message.obj=arr.toString();
                 myHandler.sendMessage(message);
             }
-            catch (Exception e)
+            catch (InterruptedException | ExecutionException | BackendTokenExpiredException e)
             {
                 e.printStackTrace();
             }
         }
     }
     private class MyHandler extends Handler {
-
+        MyHandler(Looper looper)
+        {
+            super(looper);
+        }
         @Override
         public void handleMessage(@NonNull android.os.Message msg) {
             if (msg.what == 0) {
@@ -203,7 +199,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         alp1.add("D．");
         alp1.add("E．");
         int head=0;
-        int tail=0;
+        int tail;
         int cnt=0;
         String question="";
         while(cnt != alp.size()) {
@@ -248,7 +244,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
                 RequestBuilder.sendBackendPostRequest(removeQuestionUrl,new JSONObject(map), true);
                 originArr.remove(num);
             }
-            catch (Exception e)
+            catch (InterruptedException |BackendTokenExpiredException|ExecutionException e)
             {
                 e.printStackTrace();
             }

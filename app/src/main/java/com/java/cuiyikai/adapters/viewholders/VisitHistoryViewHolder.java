@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class VisitHistoryViewHolder extends RecyclerView.ViewHolder  {
     public ImageView img;
-    public TextView label,category;
+    public TextView label;
+    public TextView category;
     public View view;
     public VisitHistoryViewHolder(@NonNull View itemView) {
         super(itemView);

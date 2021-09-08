@@ -23,10 +23,12 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -83,6 +85,10 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         {
             long time=Long.parseLong(historyArr.getJSONObject(i-cnt).get("time").toString());
             Date date=new Date(time);
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(date);
+            Calendar allDataCalendar=Calendar.getInstance();
+            allDataCalendar.setTime(mDate);
             if(i==0)
             {
                 allData.put(i,date);
@@ -90,7 +96,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 cnt++;
                 mDate=date;
             }
-            else if(mDate.getYear()!=date.getYear()||mDate.getMonth()!=date.getMonth()||date.getDate()!=mDate.getDate())
+            else  if(!((allDataCalendar.get(Calendar.YEAR)==calendar.get(Calendar.YEAR))&&(allDataCalendar.get(Calendar.MONTH)==calendar.get(Calendar.MONTH))&&(allDataCalendar.get(Calendar.DATE)==calendar.get(Calendar.DATE))))
             {
                 mDate=date;
                 allData.put(i,date);
@@ -124,8 +130,12 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             VisitHistoryTimeViewHolder holder=(VisitHistoryTimeViewHolder) holder1;
             Date date=new Date();
             Date allDataDate=(Date)allData.get(position);
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(date);
+            Calendar allDataCalendar=Calendar.getInstance();
+            allDataCalendar.setTime(allDataDate);
             String s;
-            if(((allDataDate.getYear()==date.getYear())&&(allDataDate.getMonth()==date.getMonth())&&(date.getDate()==allDataDate.getDate())))
+            if((allDataCalendar.get(Calendar.YEAR)==calendar.get(Calendar.YEAR))&&(allDataCalendar.get(Calendar.MONTH)==calendar.get(Calendar.MONTH))&&(allDataCalendar.get(Calendar.DATE)==calendar.get(Calendar.DATE)))
                 s="今天";
             else
                 s=setTimeFormatInAYear.format(allDataDate);

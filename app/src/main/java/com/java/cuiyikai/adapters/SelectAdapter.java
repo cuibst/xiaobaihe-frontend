@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.SearchActivity;
+import com.java.cuiyikai.activities.SearchViewActivity;
 import com.java.cuiyikai.adapters.viewholders.SelectViewHolder;
 
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectViewHolder>
     public void onBindViewHolder(@NonNull SelectViewHolder holder, int position) {
         if(position<subjectType.size()) {
             holder.getChooseBtn().setChecked(true);
-            holder.getChooseBtn().setText(((SearchActivity) mContext).reverseCheckSubject(subjectType.get(position)));
-            checkSubject.add(((SearchActivity) mContext).reverseCheckSubject(subjectType.get(position)));
+            holder.getChooseBtn().setText(SearchViewActivity.reverseCheckSubject(subjectType.get(position)));
+            checkSubject.add(SearchViewActivity.reverseCheckSubject(subjectType.get(position)));
         }
         else {
             holder.getChooseBtn().setChecked(true);

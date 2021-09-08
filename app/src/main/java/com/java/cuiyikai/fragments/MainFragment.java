@@ -4,7 +4,6 @@ import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CU
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -28,7 +24,6 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.CategoryActivity;
 import com.java.cuiyikai.activities.MainActivity;
 import com.java.cuiyikai.activities.SearchViewActivity;
-import com.java.cuiyikai.adapters.ItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
