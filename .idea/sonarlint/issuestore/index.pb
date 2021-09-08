@@ -116,8 +116,6 @@ Dapp/src/main/java/com/java/cuiyikai/activities/RegisterActivity.java,1\d\1d2f8
 v
 Fapp/src/main/java/com/java/cuiyikai/activities/SearchViewActivity.java,2\f\2f058307bd0bc6585df195abe81ca848fd14a5eb
 x
-Happ/src/main/java/com/java/cuiyikai/activities/PointExtractActivity.java,c\a\ca306bf15b13af3cb337efa6b0f57c169f1b1424
-x
 Happ/src/main/java/com/java/cuiyikai/activities/VisitHistoryActivity.java,4\d\4d0febaf7f9af06661fe7ea26b7df097959c382b
 
 Oapp/src/main/java/com/java/cuiyikai/activities/QuestionsCollectionActivity.java,2\e\2e79690afb16ce17b98ba12ee3858ecf7cb64111
