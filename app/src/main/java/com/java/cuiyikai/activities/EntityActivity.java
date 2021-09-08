@@ -78,7 +78,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
+/**
+ * {@link android.app.Activity} for Category selection.
+ */
 public class EntityActivity extends AppCompatActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityActivity.class);
@@ -87,28 +89,41 @@ public class EntityActivity extends AppCompatActivity {
 
     private static final String[] SUBJECTS = {ConstantUtilities.SUBJECT_CHINESE, ConstantUtilities.SUBJECT_ENGLISH, ConstantUtilities.SUBJECT_MATH, ConstantUtilities.SUBJECT_PHYSICS, ConstantUtilities.SUBJECT_CHEMISTRY, ConstantUtilities.SUBJECT_BIOLOGY, ConstantUtilities.SUBJECT_HISTORY, ConstantUtilities.SUBJECT_GEO, ConstantUtilities.SUBJECT_POLITICS};
 
+    //Adapter and lists for relation recycler view.
     private RelationAdapter relationAdapter;
-    private List<RelationEntity> relationFullList;
-    private List<RelationEntity> relationPrevList;
+    private List<RelationEntity> relationFullList; //Full relation lists
+    private List<RelationEntity> relationPrevList; //contain first 5 relations, same for the following ones.
 
+    //Adapter and lists for property recycler view.
     private PropertyAdapter propertyAdapter;
     private List<PropertyEntity> propertyFullList;
     private List<PropertyEntity> propertyPrevList;
 
+    //Adapter and lists for problem recycler view.
     private ProblemAdapter problemAdapter;
     private List<JSONObject> questionFullList;
     private List<JSONObject> questionPrevList;
 
+    //entity name, description and subject.
     private String entityName;
     private String description;
     private String subject;
 
+    //The speech for the Voice output.
     private String speech;
 
+    /**
+     * A {@link Callable} to request and load the data for the activity.
+     */
     private class EntityActivityLoadCallable implements Callable<String> {
 
+        //Callback handler
         private final Handler handler;
 
+        /**
+         * Only constructor for {@link EntityActivityLoadCallable}
+         * @param handler the callback handler for this callable.
+         */
         public EntityActivityLoadCallable(Handler handler) {
             this.handler = handler;
         }
@@ -116,8 +131,17 @@ public class EntityActivity extends AppCompatActivity {
         private JSONObject entityJson;
         private JSONObject problems;
 
+        /**
+         * initialize the {@link #entityJson} and {@link #problems} for the callable
+         * <p>Method will first check the database, and request from edukg if such entry doesn't exist</p>
+         * @param entityName the name of the entity requested.
+         * @param subject the subject of the entity.
+         * @throws InterruptedException when the request edukg thread is interrupted
+         * @throws ExecutionException when the request to edukg failed
+         */
         private void initJsonObjects(String entityName, String subject) throws InterruptedException, ExecutionException{
 
+            //Check the database for the entry.
             EntityDatabaseHelper helper = EntityDatabaseHelper.getInstance(EntityActivity.this, 1);
             helper.openReadLink();
             List<DatabaseEntity> entityList = helper.queryEntityByNameAndSubject(entityName, subject);
@@ -128,6 +152,7 @@ public class EntityActivity extends AppCompatActivity {
                 problems = JSON.parseObject(entityList.get(0).getProblemsJson());
             } else {
 
+                //No match, request from edukg.
                 logger.info("No matches in database!!");
 
                 Map<String, String> arguments = new HashMap<>();
@@ -159,6 +184,7 @@ public class EntityActivity extends AppCompatActivity {
 
                 entityJson = reply.getJSONObject(ConstantUtilities.ARG_DATA);
 
+                //get the related problems.
                 Map<String, String> args = new HashMap<>();
                 args.put("uriName", entityName);
 
@@ -169,6 +195,7 @@ public class EntityActivity extends AppCompatActivity {
                     Thread.currentThread().interrupt();
                 }
 
+                //save the entry to the database.
                 helper.openWriteLink();
                 DatabaseEntity databaseEntity = new DatabaseEntity();
                 databaseEntity.setName(entityName);
@@ -180,9 +207,15 @@ public class EntityActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * {@inheritDoc}
+         * @return the return message of the process.
+         */
         @Override
         public String call() {
             Date start = new Date();
+
+            //Get the parameters from the caller.
 
             logger.info("Loading start!!");
 
@@ -192,6 +225,7 @@ public class EntityActivity extends AppCompatActivity {
 
             subject = prevBundle.getString(ConstantUtilities.ARG_SUBJECT, ConstantUtilities.SUBJECT_CHINESE);
 
+            //Init the data.
             try {
                 initJsonObjects(entityName, subject);
             } catch (InterruptedException | ExecutionException e) {
@@ -206,6 +240,7 @@ public class EntityActivity extends AppCompatActivity {
 
             logger.info("Handling relations: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
+            //parse the relation data.
             List<JSONObject> objectList = entityJson.getJSONArray(ConstantUtilities.ARG_CONTENT).toJavaList(JSONObject.class);
 
             relationFullList = new ArrayList<>();
@@ -231,6 +266,7 @@ public class EntityActivity extends AppCompatActivity {
             Map<String, List<String>> objectRelationMap = new HashMap<>();
             Map<String, List<String>> subjectRelationMap = new HashMap<>();
 
+            //add the shorten message to the voice.
             for(RelationEntity relationEntity : relationFullList) {
                 if(relationEntity.isSubject()) {
                     if(subjectRelationMap.containsKey(relationEntity.getRelationName())) {
@@ -269,6 +305,7 @@ public class EntityActivity extends AppCompatActivity {
 
             logger.info("Handling properties: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
+            //parse the data of the properties.
             objectList = entityJson.getJSONArray("property").toJavaList(JSONObject.class);
 
             StringBuilder stringBuilder = null;
@@ -297,6 +334,7 @@ public class EntityActivity extends AppCompatActivity {
 
             Collections.sort(propertyFullList);
 
+            //Add the speech for property.
             speechBuilder.append("属性：");
 
             for(PropertyEntity propertyEntity : propertyFullList) {
@@ -305,6 +343,7 @@ public class EntityActivity extends AppCompatActivity {
 
             speech = speechBuilder.toString();
 
+            //Init entity description for weibo share.
             description = (stringBuilder == null ? "" : stringBuilder.toString());
 
             if(description.length() >= 60)
@@ -318,6 +357,7 @@ public class EntityActivity extends AppCompatActivity {
             message.what = 4;
             handler.sendMessage(message);
 
+            //parsing problems
             logger.info("Handling problems: {}", (new Date().getTime() - start.getTime()) / 1000.0);
 
             questionFullList = problems.getJSONArray(ConstantUtilities.ARG_DATA).toJavaList(JSONObject.class);
@@ -334,6 +374,7 @@ public class EntityActivity extends AppCompatActivity {
             message.what = 1;
             handler.sendMessage(message);
 
+            //add the visit history if the user has logged in.
             if(RequestBuilder.checkedLogin()) {
                 Map<String, String> args = new HashMap<>();
                 args.put(ConstantUtilities.ARG_NAME, entityName);
@@ -349,16 +390,21 @@ public class EntityActivity extends AppCompatActivity {
         }
     }
 
+    //Thread pool for executing the init callable.
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private boolean loadingFlag = false;
 
+    //weibo share keys.
     private static final String APP_KEY = "1760115939";
     private static final String REDIRECT_URL = "http://open.weibo.com/apps/1760115939/privilege/oauth";
     private static final String SCOPE = "";
 
     private IWBAPI mWeiboAPI = null;
 
+    /**
+     * initialize the weibo sdk for share function.
+     */
     private void initSdk() {
         if(PermissionUtilities.verifyPermissions(EntityActivity.this, Manifest.permission.CHANGE_WIFI_STATE) == 0) {
             ActivityCompat.requestPermissions(EntityActivity.this, PERMISSIONS, 3);
@@ -369,6 +415,13 @@ public class EntityActivity extends AppCompatActivity {
         mWeiboAPI.registerApp(this, authInfo);
     }
 
+    /**
+     * Grant the permission for weibo sdk, hide the button if the user denies these.
+     * {@inheritDoc}
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -381,7 +434,10 @@ public class EntityActivity extends AppCompatActivity {
         initSdk();
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -412,6 +468,7 @@ public class EntityActivity extends AppCompatActivity {
 
         long start = System.currentTimeMillis();
 
+        //Hide the floating menu when scrolling downward, show when scrolling upward.
         NestedScrollView scrollView = findViewById(R.id.entity_scroll_view);
         scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 
@@ -455,18 +512,19 @@ public class EntityActivity extends AppCompatActivity {
             }
         });
 
+        //Set up the handler for the callable.
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-                if (message.what == 1) {
+                if (message.what == 1) { // finished
                     if (System.currentTimeMillis() - start < 500)
                         loadingDialog.close();
                     else
                         loadingDialog.loadSuccess();
                     loadingFlag = true;
-                } else if (message.what == 2) {
+                } else if (message.what == 2) { // failed
                     loadingDialog.loadFailed();
-                } else if (message.what == 3) {
+                } else if (message.what == 3) { // relation data available
                     RecyclerView relationsView = findViewById(R.id.relationsView);
                     ImageButton relationButton = findViewById(R.id.relationButton);
                     if (relationFullList.size() > 5) {
@@ -486,7 +544,7 @@ public class EntityActivity extends AppCompatActivity {
                         relationAdapter = new RelationAdapter(EntityActivity.this, relationFullList, relationFullList, subject);
                     }
                     relationsView.setAdapter(relationAdapter);
-                } else if (message.what == 4) {
+                } else if (message.what == 4) { // property data available
                     RecyclerView propertiesView = findViewById(R.id.propertiesView);
                     ImageButton propertyButton = findViewById(R.id.propertyButton);
                     if (propertyFullList.size() > 5) {
@@ -506,7 +564,7 @@ public class EntityActivity extends AppCompatActivity {
                         propertyAdapter = new PropertyAdapter(EntityActivity.this, propertyFullList, propertyFullList);
                     }
                     propertiesView.setAdapter(propertyAdapter);
-                } else if (message.what == 5) {
+                } else if (message.what == 5) { // problems available
                     RecyclerView problemsView = findViewById(R.id.problemsView);
                     ImageButton problemButton = findViewById(R.id.problemButton);
                     if (questionFullList.size() > 5) {
@@ -530,6 +588,7 @@ public class EntityActivity extends AppCompatActivity {
             }
         };
 
+        //set up the adapters
         relationAdapter = new RelationAdapter(EntityActivity.this, new ArrayList<>(), new ArrayList<>(), subject);
         ((RecyclerView) findViewById(R.id.relationsView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
         ((RecyclerView) findViewById(R.id.relationsView)).setAdapter(relationAdapter);
@@ -542,6 +601,7 @@ public class EntityActivity extends AppCompatActivity {
         ((RecyclerView) findViewById(R.id.problemsView)).setLayoutManager(new LinearLayoutManager(EntityActivity.this, LinearLayoutManager.VERTICAL, false));
         ((RecyclerView) findViewById(R.id.problemsView)).setAdapter(problemAdapter);
 
+        //submit callable
         executorService.submit(new EntityActivityLoadCallable(handler));
 
         FloatingActionButton shareButton = findViewById(R.id.shareButton);
@@ -552,8 +612,12 @@ public class EntityActivity extends AppCompatActivity {
         findViewById(R.id.playButton).setOnClickListener((View v) -> onTextToSpeech(textToSpeech == null || !textToSpeech.isSpeaking()));
 
         if(((MainApplication)getApplication()).getFavourite() != null) {
+
+            //solving favorite
+
             logger.info("Into favourite!!");
 
+            //set up the dialog
             Dialog bottomDialog = new Dialog(EntityActivity.this, R.style.BottomDialog);
             View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_favourite, null);
             bottomDialog.setContentView(contentView);
@@ -575,6 +639,7 @@ public class EntityActivity extends AppCompatActivity {
 
             button.setOnClickListener((View view) -> bottomDialog.show());
 
+            //finish button, submit new favourite json
             Button finishButton = contentView.findViewById(R.id.buttonBottomFinish);
             finishButton.setOnClickListener((View view) -> {
                 Set<String> checked = bottomFavouriteAdapter.getCheckedSet();
@@ -595,6 +660,7 @@ public class EntityActivity extends AppCompatActivity {
                 bottomDialog.dismiss();
             });
 
+            //set up add new directory sub-dialog
             Dialog addNewDirectoryDialog = new Dialog(EntityActivity.this, R.style.BottomDialog);
             View directoryContentView = LayoutInflater.from(this).inflate(R.layout.layout_add_new_directory, null);
             addNewDirectoryDialog.setContentView(directoryContentView);
@@ -610,6 +676,7 @@ public class EntityActivity extends AppCompatActivity {
 
             cancel.setOnClickListener((View view) -> addNewDirectoryDialog.dismiss());
 
+            //set up the submit new directory button.
             confirm.setOnClickListener((View view) -> {
                 EditText editText = directoryContentView.findViewById(R.id.newDirectoryName);
                 if(editText.getText().toString().equals(""))
@@ -637,13 +704,19 @@ public class EntityActivity extends AppCompatActivity {
     private ListViewForScrollView bottomFavouriteView;
     private BottomFavouriteAdapter bottomFavouriteAdapter;
 
+    /**
+     * Update the views when the favourite is changed.
+     * @param favourite
+     */
     public void updateFavourite(JSONObject favourite) {
 
+        //update the favourite in main application
         ((MainApplication) getApplication()).updateFavourite();
 
         JSONObject favouriteJson = ((MainApplication)getApplication()).getFavourite();
         List<BottomFavouriteEntity> favouriteEntities = new ArrayList<>();
 
+        //re-setup the bottom favourite dialog.
         for (Map.Entry<String, Object> entry : favouriteJson.entrySet()) {
             JSONArray array = JSON.parseArray(entry.getValue().toString());
             boolean flag = false;
@@ -660,6 +733,7 @@ public class EntityActivity extends AppCompatActivity {
         bottomFavouriteAdapter = new BottomFavouriteAdapter(EntityActivity.this, R.layout.bottom_dialog_favourite_item, favouriteEntities);
         bottomFavouriteView.setAdapter(bottomFavouriteAdapter);
 
+        //re-setup the favourite button icon, i.e, check whether it is in the favourite.
         FloatingActionButton button = findViewById(R.id.favouriteButton);
         for(Map.Entry<String, Object> entry : favourite.entrySet()) {
             JSONArray array = JSON.parseArray(entry.getValue().toString());
@@ -675,6 +749,9 @@ public class EntityActivity extends AppCompatActivity {
         button.setIcon(R.drawable.star_gray_16);
     }
 
+    /**
+     * share the entity by weibo when called.
+     */
     private void doWeiboShare() {
 
         logger.info("Doing weibo share!!!");
@@ -688,6 +765,13 @@ public class EntityActivity extends AppCompatActivity {
         mWeiboAPI.shareMessage(message, true);
     }
 
+    /**
+     * rewrite to fit weibo activity callback
+     * {@inheritDoc}
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -697,6 +781,10 @@ public class EntityActivity extends AppCompatActivity {
 
     private TextToSpeech textToSpeech = null;
 
+    /**
+     * do the speech or pause the speech
+     * @param flag whether to activate the speech.
+     */
     private void onTextToSpeech(boolean flag) {
         if(!flag && textToSpeech != null) {
             textToSpeech.stop();
@@ -715,12 +803,20 @@ public class EntityActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * rewrite to stop the speech.
+     * {@inheritDoc}
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         onTextToSpeech(false);
     }
 
+    /**
+     * rewrite to stop the speech.
+     * {@inheritDoc}
+     */
     @Override
     protected void onPause() {
         super.onPause();
