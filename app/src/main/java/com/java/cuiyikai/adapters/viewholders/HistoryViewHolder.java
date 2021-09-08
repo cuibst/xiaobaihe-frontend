@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This viewholder is designed for {@link com.java.cuiyikai.adapters.HistoryListAdapter}
+ */
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
     private static final Logger logger = LoggerFactory.getLogger(HistoryViewHolder.class);
@@ -59,12 +62,16 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         historyRecord=view.findViewById(R.id.historyrecord);
         historyRecord.setLongClickable(true);
         editImg.setVisibility(View.INVISIBLE);
+        //if the item is clicked , you need to change the query text and subject.
         historyRecord.setOnClickListener(v -> {
             ((SearchViewActivity)mContext).setSubject(subject);
             ((SearchViewActivity)mContext).getSubjectText().setText(((SearchViewActivity)mContext).reverseCheckSubject(subject));
             searchView.setQuery(historyRecord.getText(),true);
         });
+
+        //When you click the item and keep a longer time , it means that you want to delete the history.
         historyRecord.setOnLongClickListener(v -> {
+            //recommend item cannot be deleted.
             if(recommendFlag)
                 return false;
             editImg.setVisibility(View.VISIBLE);
@@ -80,7 +87,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         });
     }
 }
-
+//used for clear one history.
 class ClearOne implements Runnable
 {
     private final String s;

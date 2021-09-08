@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * <p>This viewholder is used in {@link com.java.cuiyikai.adapters.ItemAdapter},it shows the layout item.</p>
+ */
 public class ItemViewHolder extends RecyclerView.ViewHolder {
     private final TextView labelTextView;
     private final TextView categoryTextView;

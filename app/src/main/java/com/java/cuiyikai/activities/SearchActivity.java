@@ -45,7 +45,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ * <p>This class is used to show the search results </p>
+ * <p>You can select the category of the results to choose the most relevant answer.This function is implemented in {@link SelectFragment}</p>
+ * <p>The layout is implemented by {@link XRecyclerView}</p>
+ * <p>The category selection fragment is implemented by {@link RecyclerView},its adapter is {@link SelectAdapter}</p>
+ */
 public class SearchActivity extends AppCompatActivity {
 
     private MyHandler handler;
@@ -82,6 +87,7 @@ public class SearchActivity extends AppCompatActivity {
         searchAdapter =new SearchAdapter(SearchActivity.this);
         receivedMessage = JSON.parseObject(prevBundle.getString("msg"));
         searchContent=prevBundle.getString(ConstantUtilities.ARG_NAME);
+        // Set the loadMore and refresh method.
         searchRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
@@ -107,6 +113,9 @@ public class SearchActivity extends AppCompatActivity {
         fragmentTransaction.hide(selectFragment);
         fragmentTransaction.commit();
         initFragment();
+
+        //selectButton is used to check whether the selection is completed.
+
         selectButton.setOnClickListener((View view) -> {
             fragmentTransaction = fragmentManager.beginTransaction();
             if (selectFragment.isHidden()) {
@@ -154,6 +163,7 @@ public class SearchActivity extends AppCompatActivity {
         RadioGroup radioGroup = findViewById(R.id.sortingRadioGroup);
         ((RadioButton)findViewById(R.id.radioDefault)).setSelected(true);
 
+        //Choose the sequence of the results.
         radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
             LoggerFactory.getLogger(SearchActivity.class).info("Radio check changed, {}", i);
             if (i == R.id.radioNameDesc) {
@@ -170,6 +180,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // Change the way of layout
         findViewById(R.id.switch_layout_btn).setOnClickListener(v -> {
             if(searchAdapter.getItemViewType(0) == ItemAdapter.LAYOUT_TYPE_LINEAR) {
                 searchAdapter.setType(ItemAdapter.LAYOUT_TYPE_GRID);
@@ -235,6 +246,11 @@ public class SearchActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    /**
+     * <p>This method is designed to convert the chinese to english. </p>
+     * @param title chinese string
+     * @return english string
+     */
     public String checkSubject(String title)
     {
         String chooseSubject;
@@ -272,7 +288,7 @@ public class SearchActivity extends AppCompatActivity {
         return chooseSubject;
     }
 
-    public void initFragment()
+    private void initFragment()
     {
         Set<String> set=receivedMessage.keySet();
         ArrayList<String> type=new ArrayList<>();
@@ -292,6 +308,10 @@ public class SearchActivity extends AppCompatActivity {
         selectButton.setText("筛选");
     }
 
+    /**This class is a subclass of {@link Runnable},and it is used for constructing a new thread<
+     *Pulling down the layout means you want to refresh the results, in order to avoid lagging ,we construct a new thread to run it .
+     * When we get the refreshing results, we will send message to main thread to refresh the results.
+     */
     private class Refresh implements Runnable {
 
         @Override
@@ -322,6 +342,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
+
     private class MyHandler extends Handler {
         MyHandler(Looper looper)
         {

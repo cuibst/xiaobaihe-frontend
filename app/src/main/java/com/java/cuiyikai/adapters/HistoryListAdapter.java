@@ -15,6 +15,10 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.viewholders.HistoryViewHolder;
 import com.java.cuiyikai.utilities.ConstantUtilities;
 
+/**
+ * <p>This adapter is designed for search history record and recommend catelog.</p>
+ * <p>Its viewholder is {@link HistoryViewHolder}</p>
+ */
 public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     public  boolean recommendflag=false;
     public HistoryListAdapter historyListAdapter;
