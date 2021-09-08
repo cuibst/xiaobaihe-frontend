@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.adapters.viewholders.CategoryViewHolder;
 
+/**
+ * Touch Callback for {@link RecyclerView} in {@link com.java.cuiyikai.activities.CategoryActivity}
+ */
 public class GridViewItemTouchCallback extends ItemTouchHelper.Callback {
 
     private final GridViewAdapter adapter;

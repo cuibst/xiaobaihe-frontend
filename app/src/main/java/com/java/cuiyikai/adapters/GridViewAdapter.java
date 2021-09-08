@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link RecyclerView.Adapter} for {@link RecyclerView} in {@link CategoryActivity}
+ */
 public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private boolean isEditable = false;
@@ -34,6 +37,9 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private int userSectionSize;
 
+    /**
+     * @return the number of elements that user selects.
+     */
     public int getUserSectionSize() {
         return userSectionSize;
     }
@@ -45,32 +51,45 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    /**
+     * @return edit status
+     */
     public boolean isEditable() {
         return isEditable;
     }
 
+    /**
+     * @param context the view is inflated, normally {@link CategoryActivity}
+     * @param itemList objects being demonstrated in the view.
+     * @param userSectionSize origin number of objects in user section.
+     */
     public GridViewAdapter(CategoryActivity context, List<CategoryObject> itemList, int userSectionSize) {
         this.context = context;
         this.itemList = itemList;
         this.userSectionSize = userSectionSize;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param fromPosition
+     * @param toPosition
+     */
     public void onItemMove(int fromPosition, int toPosition) {
         if(toPosition == 0)
             return;
         logger.info("Move from {} to {}", fromPosition, toPosition);
-        if((inUserSection(fromPosition) && inUserSection(toPosition)) || (fromPosition > userSectionSize + 1 && toPosition > userSectionSize + 1)) {
+        if((inUserSection(fromPosition) && inUserSection(toPosition)) || (fromPosition > userSectionSize + 1 && toPosition > userSectionSize + 1)) { //user section not changed
             CategoryObject object = itemList.get(fromPosition);
             itemList.remove(fromPosition);
             itemList.add(toPosition, object);
             notifyItemMoved(fromPosition, toPosition);
-        } else if(inUserSection(fromPosition) && toPosition > userSectionSize) {
+        } else if(inUserSection(fromPosition) && toPosition > userSectionSize) { //move out from user section
             CategoryObject object = itemList.get(fromPosition);
             itemList.remove(fromPosition);
             itemList.add(toPosition, object);
             userSectionSize --;
             notifyItemMoved(fromPosition, toPosition);
-        } else if(fromPosition > userSectionSize + 1 && toPosition <= userSectionSize + 1) {
+        } else if(fromPosition > userSectionSize + 1 && toPosition <= userSectionSize + 1) { //move into user section.
             CategoryObject object = itemList.get(fromPosition);
             itemList.remove(fromPosition);
             itemList.add(toPosition, object);
@@ -79,12 +98,18 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         List<String> subjectList = new ArrayList<>();
-        for(CategoryObject object : itemList.subList(1, userSectionSize + 1))
+        for(CategoryObject object : itemList.subList(1, userSectionSize + 1)) //update the category list.
             subjectList.add(object.getName());
 
         ((MainApplication) context.getApplication()).setSubjects(subjectList);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -97,17 +122,22 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof CategoryTitleHolder) {
+        if(holder instanceof CategoryTitleHolder) { //title
             ((CategoryTitleHolder) holder).getTextView().setText(itemList.get(position).getName());
-        } else {
+        } else { //item
             ((CategoryViewHolder) holder).getTextView().setText(itemList.get(position).getName());
             if(!isEditable)
                 ((CategoryViewHolder) holder).getImageView().setVisibility(View.GONE);
             else
                 ((CategoryViewHolder) holder).getImageView().setVisibility(View.VISIBLE);
-            if(inUserSection(position)) {
+            if(inUserSection(position)) { // in user section, this will effect the click binding
                 ((CategoryViewHolder) holder).getImageView().setImageResource(R.drawable.x);
                 if(isEditable)
                     ((CategoryViewHolder) holder).getWholeView().setOnClickListener((View v) -> {
@@ -128,7 +158,7 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         context.onEditableChanged(true);
                         return true;
                     });
-            } else {
+            } else { // outside user section, the plus button is always shown.
                 ((CategoryViewHolder) holder).getImageView().setVisibility(View.VISIBLE);
                 ((CategoryViewHolder) holder).getImageView().setImageResource(R.drawable.add_channel);
                 ((CategoryViewHolder) holder).getWholeView().setOnClickListener((View v) -> {
@@ -153,16 +183,29 @@ public class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    /**
+     * Check whether a position in user section.
+     * @param position item's adapter position.
+     * @return the result.
+     */
     public boolean inUserSection(int position) {
         return position <= userSectionSize;
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public int getItemCount() {
         return itemList.size();
     }
 
+    /**
+     * {@inheritDoc}
+     * @param position
+     * @return {@link #TYPE_ITEM} for category item and {@link #TYPE_TITLE} for title item.
+     */
     @Override
     public int getItemViewType(int position) {
         if(itemList.get(position) instanceof CategoryItem)

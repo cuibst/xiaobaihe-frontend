@@ -19,6 +19,9 @@ import com.java.cuiyikai.utilities.ConstantUtilities;
 
 import java.util.List;
 
+/**
+ * {@link ArrayAdapter} for {@link android.widget.ListView} in {@link com.java.cuiyikai.activities.OfflineActivity}
+ */
 public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
 
     private final int resourceId;
@@ -35,7 +38,7 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         ImageView imageView = view.findViewById(R.id.itemSubjectPicture);
         View itemView = view.findViewById(R.id.directoryFavouriteItem);
-        switch(entity.getSubject()) {
+        switch(entity.getSubject()) { // bind the picture and background.
             case ConstantUtilities.SUBJECT_CHINESE :
                 itemView.setBackgroundResource(R.drawable.chinese_radius);
                 imageView.setImageResource(R.drawable.chinese);
@@ -76,7 +79,7 @@ public class OfflineAdapter extends ArrayAdapter<DatabaseEntity> {
         }
         TextView textView = view.findViewById(R.id.favouriteItemName);
         textView.setText(entity.getName());
-        view.setOnClickListener((View v) -> {
+        view.setOnClickListener((View v) -> { //bind the click event to visit the entity page.
             Intent intent = new Intent(getContext(), EntityActivity.class);
             intent.putExtra(ConstantUtilities.ARG_NAME,entity.getName());
             intent.putExtra(ConstantUtilities.ARG_SUBJECT,entity.getSubject());
