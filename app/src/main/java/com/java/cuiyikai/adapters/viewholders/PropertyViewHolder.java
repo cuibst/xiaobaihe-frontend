@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * {@link RecyclerView.ViewHolder} for the properties in {@link RecyclerView} in {@link com.java.cuiyikai.activities.EntityActivity}
+ */
 public class PropertyViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView propertyText;

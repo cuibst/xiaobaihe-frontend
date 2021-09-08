@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * {@link RecyclerView.ViewHolder} for the relations in {@link RecyclerView} in {@link com.java.cuiyikai.activities.EntityActivity}
+ */
 public class RelationViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView relationName;

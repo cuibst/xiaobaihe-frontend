@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * {@link RecyclerView.ViewHolder} for the title bar in {@link RecyclerView} in {@link com.java.cuiyikai.activities.CategoryActivity}
+ */
 public class CategoryTitleHolder extends RecyclerView.ViewHolder {
 
     private final TextView textView;

@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * {@link RecyclerView.ViewHolder} for the favourite items in {@link RecyclerView} in {@link com.java.cuiyikai.fragments.DirectoryFragment}
+ */
 public class FavouriteItemHolder extends RecyclerView.ViewHolder {
 
     private final CheckBox checkBox;

@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.java.cuiyikai.R;
 
+/**
+ * <p>{@link RecyclerView.ViewHolder} for the items in {@link RecyclerView}</p>
+ * <p>in {@link com.java.cuiyikai.fragments.ItemFragment} and {@link com.java.cuiyikai.activities.SearchActivity}</p>
+ */
 public class ItemViewHolder extends RecyclerView.ViewHolder {
     private final TextView labelTextView;
     private final TextView categoryTextView;
