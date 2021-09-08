@@ -110,8 +110,6 @@ Aapp/src/main/java/com/java/cuiyikai/activities/StartActivity.java,5\0\500d5460
 r
 Bapp/src/main/java/com/java/cuiyikai/activities/SearchActivity.java,6\a\6a45b42281b379b3f125ce227e00b2fd7af60b18
 s
-Capp/src/main/java/com/java/cuiyikai/activities/MindMapActivity.java,2\6\266b75af16dd6fb28dea258170e98d5cab901bd8
-s
 Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac66820c7b908cbfc48435a6e1d33457358f
 s
 Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
