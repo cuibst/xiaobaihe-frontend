@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This fragment is used to show the search history .
+ * Its item can be delete .
+ * Its layout is implemented by Recycerview.
+ */
 public class HistoryFragment extends Fragment {
 
     private static final Logger logger = LoggerFactory.getLogger(HistoryFragment.class);

@@ -27,6 +27,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This adapter is used for recyclerview in {@link com.java.cuiyikai.activities.SearchActivity} and {@link com.java.cuiyikai.fragments.MainFragment}
+ */
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
     public static final int LAYOUT_TYPE_LINEAR = 1;
@@ -74,6 +77,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     public void addSubject(JSONArray arr) {
         subject=arr;
     }
+    //used for LoadMore
     public void addMoreSubject(JSONArray arr) {
         JSONArray newSubject=new JSONArray();
         newSubject.addAll(subject);
@@ -121,6 +125,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
                 getHistoryThread.start();
             }
         }
+        // Once you click it, it will enter the EntityActivity
         holder.getSearchLine().setOnClickListener((View view) -> {
             if(visitHistory!=null) {
                 JSONObject m = new JSONObject();

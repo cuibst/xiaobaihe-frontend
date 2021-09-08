@@ -18,6 +18,7 @@ import com.java.cuiyikai.network.RequestBuilder;
 
 /**
  * {@link android.app.Activity} for login.
+ * It is able to save password
  */
 public class LoginActivity extends AppCompatActivity {
 

@@ -31,6 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>This activity is used to display problems.</p>
+ * <p>When the app needs to display problems, it will send information to {@link ProblemActivity}.
+ * {@link ProblemActivity} will display a problem page according to the information.</p>
+ */
 public class ProblemActivity extends Activity {
 
     private static final Logger logger = LoggerFactory.getLogger(ProblemActivity.class);

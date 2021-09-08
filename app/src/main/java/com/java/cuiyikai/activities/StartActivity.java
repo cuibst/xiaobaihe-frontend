@@ -10,6 +10,10 @@ import com.java.cuiyikai.R;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Class {@link StartActivity} is the loading page exhibited when entering the app.
+ * After the app finishes loading all the data, this page will jump to main page.
+ */
 public class StartActivity extends AppCompatActivity {
 
     @Override

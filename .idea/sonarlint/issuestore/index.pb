@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 r
 Bapp/src/main/java/com/java/cuiyikai/activities/EntityActivity.java,c\5\c586aa9436a495f4423ee110b037f36dc736c87b
 z
@@ -103,3 +104,7 @@ w
 Gapp/src/main/java/com/java/cuiyikai/network/callables/PostCallable.java,b\4\b4c2493714e09b6477b4cf872314e0a5174d9972
 {
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
+=======
+S
+#.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
+>>>>>>> 2a4a6baed41523fe6bed126fe2d4d000b23c2724

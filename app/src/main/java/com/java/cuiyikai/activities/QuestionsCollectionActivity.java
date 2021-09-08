@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.java.cuiyikai.adapters.VisitHistoryAdapter;
 import com.java.cuiyikai.R;
 import com.java.cuiyikai.adapters.QuestionAdapter;
 import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
@@ -15,6 +17,7 @@ import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+import com.java.cuiyikai.adapters.viewholders.VisitHistoryViewHolder;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,6 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * <p>This class is used to show the collection of the wrong questions.</p>
+ * <p>When you answer one question incorrectly, it will be added to this collection autonaticlly.
+ * You can delete it by swiping left. It supports the conducting of  searching the whole collection.
+ * Once the question contains the query text, it will be selected to show.
+ * The layout is implemented by {@link SwipeRecyclerView},
+ * its adapter also uses {@link VisitHistoryAdapter} and viewholder uses {@link VisitHistoryViewHolder}</p>
+ */
 public class QuestionsCollectionActivity extends AppCompatActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(QuestionsCollectionActivity.class);
@@ -106,7 +117,8 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         swipeRecyclerView.setAdapter(questionAdapter);
     }
 
-
+    //When the search query text changed or the searchButton is clicked , this method will be called ,
+    //and the contents of the layout will change.
     private void changeSearchItem(String newText)
     {
         if(newText.equals(""))
@@ -170,10 +182,12 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
             }
         }
     }
+    //Questions get from backend need pre-process, this method is used to do it.
     public JSONObject fixQuestions(JSONObject questions)
     {
         String ans="";
         String qAnswer = questions.getString("qAnswer");
+        //The questions' answer maybe multiple.
         if(qAnswer.contains("A"))
             ans+="A";
         if(qAnswer.contains("B"))
@@ -229,6 +243,7 @@ public class QuestionsCollectionActivity extends AppCompatActivity {
         map.put("ans",ans);
         return new JSONObject(map);
     }
+    //Used to tell the backend this question has been deleted.
     private class RemoveQuestion implements Runnable{
         int num;
         RemoveQuestion(int n)

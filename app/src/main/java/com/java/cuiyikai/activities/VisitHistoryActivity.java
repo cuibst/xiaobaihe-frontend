@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +23,19 @@ import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.ConstantUtilities;
 import com.yanzhenjie.recyclerview.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
-
+import com.java.cuiyikai.adapters.viewholders.VisitHistoryViewHolder;
+import com.java.cuiyikai.adapters.viewholders.VisitHistoryTimeViewHolder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>This class is used to record the entity you have entered.</p>
+ * <p>It shows the visit history record and when you visited it ,you can search the record , once the record contains query text,
+ * it will show in the layout.This layout is implemented by {@link SwipeRecyclerView},and its adapter is written in {@link VisitHistoryAdapter}
+ * ,its viewholder is written in {@link VisitHistoryViewHolder} which shows the visit items
+ * and {@link VisitHistoryTimeViewHolder} which shows the visit time.</p>
+ */
 public class VisitHistoryActivity extends AppCompatActivity {
     private SwipeRecyclerView swipeRecyclerView;
     private List<Integer> timeNumber;
@@ -122,6 +129,7 @@ public class VisitHistoryActivity extends AppCompatActivity {
             }
         });
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(VisitHistoryActivity.this);
+        //left swipe to delete.
         swipeRecyclerView.setLayoutManager(linearLayoutManager);
         swipeRecyclerView.setSwipeMenuCreator((leftMenu, rightMenu, position) -> {
             SwipeMenuItem deleteItem = new SwipeMenuItem(VisitHistoryActivity.this);

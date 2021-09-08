@@ -33,8 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-
+import com.java.cuiyikai.activities.SearchActivity;
+/**
+ * This Adatper is used for the recyclerview in {@link SearchActivity} to show the results item.
+ * its Viewholder is {@link ItemViewHolder}
+ */
 public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
     public static final int LAYOUT_TYPE_LINEAR = 1;
@@ -53,7 +56,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     static private JSONArray visitHistory;
     private static final Logger logger = LoggerFactory.getLogger(SearchAdapter.class);
     private MyHandler myHandler;
-    private final String getVisitHistoryUrl="/api/history/getVisitHistory";
+    private final static String getVisitHistoryUrl="/api/history/getVisitHistory";
     public SearchAdapter(Context context)
     {
         mContext=context;
@@ -70,11 +73,13 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
             visitHistory=null;
         }
     }
-
+    //handle the JasonObject ,get the real item
     public void addSubject(JSONObject jsonObject) {
         Map<String, List<JSONObject>> actualArray = new TreeMap<>();
         for(String key : jsonObject.keySet()) {
             JSONArray array = jsonObject.getJSONObject(key).getJSONArray(ConstantUtilities.ARG_DATA);
+            if(array==null)
+                return;
             List<JSONObject> objectList = new ArrayList<>();
             for(Object o : array) {
                 objectList.add(JSON.parseObject(o.toString()));
@@ -238,7 +243,7 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         logger.info("map: {}", map);
         return  map;
     }
-
+    // change the sequence of results
     public void sortNameAscend() {
         for(Map.Entry<String, List<JSONObject>> entry : subject.entrySet()) {
             List<JSONObject> list = entry.getValue();

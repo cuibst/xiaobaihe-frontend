@@ -37,6 +37,12 @@ import com.java.cuiyikai.utilities.DensityUtilities;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>This class is used to search, it contains the recommend catelog and history search records(only can be seen after logining in) </p>
+ * <p>When you want to search something, you need to choose one subject.However when you choose on item in recommend catelog or history search record,
+ * you do not need to change the subject on purpose .Item in recommend catelog has its most relevant subjects , and history record will remember the subject you choosed . </p>
+ * <p>The history record and recommend catelog is implemented by {@link RecyclerView},both of them use the same adapter:{@link HistoryListAdapter}</p>
+ */
 public class SearchViewActivity extends AppCompatActivity {
     private String subject=ConstantUtilities.SUBJECT_CHINESE;
     private HistoryFragment historyFragment;
@@ -69,6 +75,7 @@ public class SearchViewActivity extends AppCompatActivity {
         recommendXRecyclerView.setLayoutManager(gridLayoutManager);
         initSearchView();
         TextView quitText = findViewById(R.id.quit);
+        //Quit the SearchViewActivity and show the MainActivity.
         quitText.setOnClickListener(v -> onBackPressed());
         subjectText=findViewById(R.id.subject);
         bottomDialog = new Dialog(SearchViewActivity.this, R.style.BottomDialog);
@@ -87,6 +94,8 @@ public class SearchViewActivity extends AppCompatActivity {
         GetRecommend getRecommend=new GetRecommend();
         Thread recommendThread=new Thread(getRecommend);
         recommendThread.start();
+
+        //The history will show only when you have logined in.
         if(RequestBuilder.checkedLogin())
         {
             GetHistory getHistory=new GetHistory();
@@ -97,8 +106,8 @@ public class SearchViewActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
 
-
     }
+    //This method is used to build the BottomDialog which you can change the subject.
     private void buildDialog(Context context,Dialog bottomDialog, View contentView)
     {
         bottomDialog.setContentView(contentView);
@@ -242,10 +251,13 @@ public class SearchViewActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg)
         {
+            //When you click the search button and quit immdiately, it should be understood like that you do not want to search it.
+            //So this search should be given up , exitFlag is designed to implement it.
             if(exitFlag)
                 return;
             switch(msg.what)
             {
+                // The results have been received, so you should enter the SearchActivity which shows the results.
                 case 0:
                     Intent intent=new Intent(SearchViewActivity.this,SearchActivity.class);
                     intent.putExtra("msg",receivedMessage.toString());
@@ -256,12 +268,14 @@ public class SearchViewActivity extends AppCompatActivity {
                 case 1:
                     Toast.makeText(SearchViewActivity.this, "网络异常，请重试", Toast.LENGTH_SHORT).show();
                     break;
+                // To get the search history record.
                 case 2:
                     JSONObject data= JSON.parseObject(msg.obj.toString());
                     JSONArray arr=data.getJSONArray(ConstantUtilities.ARG_DATA);
                     historyFragment.getHistoryListAdapter().addData(arr);
                     historyFragment.getRecyclerViewForHistory().setAdapter(historyFragment.getHistoryListAdapter());
                     break;
+                //to get the recommend items, the number of items can be large ,we only need eight of them.
                 case 3:
                     JSONObject object=JSON.parseObject(msg.obj.toString());
                     int max=object.getJSONArray(ConstantUtilities.ARG_DATA).size();
@@ -298,6 +312,7 @@ public class SearchViewActivity extends AppCompatActivity {
             }
         }
     }
+    //When you click the searchButton , you will construct a new thread .It avoids lagging in the main thread.
     private class StartSearch implements Runnable{
         String s;
         StartSearch(String ss)
@@ -354,7 +369,8 @@ public class SearchViewActivity extends AppCompatActivity {
             }
         }
     }
-
+    //Once you click the searchButton. The query string will be send to the backend as a search history record.
+    //This is also need a new thread.
     private class AddHistory implements Runnable{
         private final String s;
         public AddHistory(String ss)
