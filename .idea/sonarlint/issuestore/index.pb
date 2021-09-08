@@ -108,18 +108,12 @@ s
 Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac66820c7b908cbfc48435a6e1d33457358f
 x
 Happ/src/main/java/com/java/cuiyikai/activities/PointExtractActivity.java,c\a\ca306bf15b13af3cb337efa6b0f57c169f1b1424
-r
-Bapp/src/main/java/com/java/cuiyikai/fragments/HistoryFragment.java,b\0\b0e587c671a4fb5454ea6dbbf44e59e249f4ef8e
 t
 Dapp/src/main/java/com/java/cuiyikai/activities/CategoryActivity.java,c\5\c576897c5745de9bcd25eec05a6549c2a509ca5c
 ~
 Napp/src/main/java/com/java/cuiyikai/adapters/viewholders/SelectViewHolder.java,b\2\b26822b384ef846a4be465822d747783068e75cd
 o
 ?app/src/main/java/com/java/cuiyikai/adapters/SelectAdapter.java,4\b\4b1bf7ea838fdd5bfb2669f6cfdc24809db4463a
-
-Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/HistoryViewHolder.java,b\3\b3b2f07fe352937eb9046ef62b3b1088f0537883
-
-Oapp/src/main/java/com/java/cuiyikai/activities/QuestionsCollectionActivity.java,2\e\2e79690afb16ce17b98ba12ee3858ecf7cb64111
 t
 Dapp/src/main/java/com/java/cuiyikai/activities/RegisterActivity.java,1\d\1d2f8eac66408b461b3828e1ef19e50bf80c3d88
 x
@@ -134,8 +128,6 @@ h
 Kapp/src/main/java/com/java/cuiyikai/network/callables/JsonPostCallable.java,4\6\469e938b2f80fe4a805d4d2077128c01ecf5a494
 q
 Aapp/src/main/java/com/java/cuiyikai/fragments/SelectFragment.java,8\f\8f46f5b8dcb1ef7e3fc472d5c3acc96a728cdcf3
-w
-Gapp/src/main/java/com/java/cuiyikai/fragments/PointExtractFragment.java,9\9\9924b8d3e86fb74cc6d349feda8cdd2d9be5372b
 w
 Gapp/src/main/java/com/java/cuiyikai/network/callables/PostCallable.java,b\4\b4c2493714e09b6477b4cf872314e0a5174d9972
 t
