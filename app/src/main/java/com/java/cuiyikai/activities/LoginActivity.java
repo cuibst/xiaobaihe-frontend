@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //Get the saved data from the Main application (save text)
         MainApplication mainApplication = (MainApplication) getApplication();
         usernameTextView.setText(mainApplication.getSaveUsername());
         passwordTextView.setText(mainApplication.getSavePassword());
@@ -54,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                     mainApplication.setSaveUsername(username);
                 }
                 mainApplication.setSaveChecked(checkBox.isChecked());
+                //dump the data when the user logins
                 mainApplication.dumpCacheData();
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);

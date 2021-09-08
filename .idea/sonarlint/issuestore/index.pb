@@ -106,8 +106,6 @@ Fapp/src/main/java/com/java/cuiyikai/utilities/PermissionUtilities.java,b\4\b4c
 p
 @app/src/main/java/com/java/cuiyikai/activities/MainActivity.java,e\d\ed6a39c1d1f855e13a1155ad9ab61ea26ce0c66e
 q
-Aapp/src/main/java/com/java/cuiyikai/activities/LoginActivity.java,3\9\392ade7419e44f9f6339a729bdf931c740a33b5d
-q
 Aapp/src/main/java/com/java/cuiyikai/activities/StartActivity.java,5\0\500d5460bf6d97bf87b551fe788496a44e3fc81b
 r
 Bapp/src/main/java/com/java/cuiyikai/activities/SearchActivity.java,6\a\6a45b42281b379b3f125ce227e00b2fd7af60b18
