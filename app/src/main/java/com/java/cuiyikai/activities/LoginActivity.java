@@ -16,6 +16,9 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.exceptions.AuthorizeFaliedException;
 import com.java.cuiyikai.network.RequestBuilder;
 
+/**
+ * {@link android.app.Activity} for login.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @Override
