@@ -15,6 +15,7 @@ import com.java.cuiyikai.R;
 import com.java.cuiyikai.activities.EntityActivity;
 import com.java.cuiyikai.adapters.viewholders.VisitHistoryTimeViewHolder;
 import com.java.cuiyikai.adapters.viewholders.VisitHistoryViewHolder;
+import com.java.cuiyikai.exceptions.BackendTokenExpiredException;
 import com.java.cuiyikai.network.RequestBuilder;
 import com.java.cuiyikai.utilities.ConstantUtilities;
 
@@ -28,6 +29,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import com.java.cuiyikai.activities.VisitHistoryActivity;
 
 /**
@@ -126,7 +129,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     /**
      *
-     * @param parent
+     * @param parent viewgroup
      * @param viewType to judge at this position it should be a time or an item.
      * @return one kind of visitviewholder
      */
@@ -150,7 +153,7 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      *
      * @param holder1 There are two kinds of holders, VisitHistoryViewHolder and VisitViewHistoryTimeViewholder
      *                we should handle them seperately.
-     * @param position
+     * @param position item's location
      */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder1, int position) {
@@ -178,52 +181,52 @@ public class VisitHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             String sub = m.getString(ConstantUtilities.ARG_SUBJECT);
             long time=Long.parseLong(m.getString("time"));
             Date date=new Date(time);
-            holder.category.setText(setTimeFormatInADay.format(date));
-            holder.view.setOnClickListener((View view) -> {
+            holder.getCategory().setText(setTimeFormatInADay.format(date));
+            holder.getView().setOnClickListener((View view) -> {
 
                 Intent intent = new Intent(mContext, EntityActivity.class);
                 intent.putExtra(ConstantUtilities.ARG_NAME, name);
                 intent.putExtra(ConstantUtilities.ARG_SUBJECT, sub);
                 mContext.startActivity(intent);
             });
-            holder.label.setText(name);
+            holder.getLabel().setText(name);
             switch (sub) {
                 case ConstantUtilities.SUBJECT_CHINESE :
-                    holder.view.setBackgroundResource(R.drawable.chinese_radius);
-                    holder.img.setImageResource(R.drawable.chinese);
+                    holder.getView().setBackgroundResource(R.drawable.chinese_radius);
+                    holder.getImg().setImageResource(R.drawable.chinese);
                     break;
                 case ConstantUtilities.SUBJECT_MATH :
-                    holder.view.setBackgroundResource(R.drawable.maths_radius);
-                    holder.img.setImageResource(R.drawable.maths);
+                    holder.getView().setBackgroundResource(R.drawable.maths_radius);
+                    holder.getImg().setImageResource(R.drawable.maths);
                     break;
                 case ConstantUtilities.SUBJECT_ENGLISH :
-                    holder.view.setBackgroundResource(R.drawable.english_radius);
-                    holder.img.setImageResource(R.drawable.english);
+                    holder.getView().setBackgroundResource(R.drawable.english_radius);
+                    holder.getImg().setImageResource(R.drawable.english);
                     break;
                 case ConstantUtilities.SUBJECT_PHYSICS :
-                    holder.view.setBackgroundResource(R.drawable.physics_radius);
-                    holder.img.setImageResource(R.drawable.physics);
+                    holder.getView().setBackgroundResource(R.drawable.physics_radius);
+                    holder.getImg().setImageResource(R.drawable.physics);
                     break;
                 case ConstantUtilities.SUBJECT_CHEMISTRY :
-                    holder.view.setBackgroundResource(R.drawable.chemistry_radius);
-                    holder.img.setImageResource(R.drawable.chemistry);
+                    holder.getView().setBackgroundResource(R.drawable.chemistry_radius);
+                    holder.getImg().setImageResource(R.drawable.chemistry);
                     break;
                 case ConstantUtilities.SUBJECT_BIOLOGY :
-                    holder.view.setBackgroundResource(R.drawable.biology_radius);
-                    holder.img.setImageResource(R.drawable.biology);
+                    holder.getView().setBackgroundResource(R.drawable.biology_radius);
+                    holder.getImg().setImageResource(R.drawable.biology);
                     break;
                 case ConstantUtilities.SUBJECT_HISTORY :
-                    holder.view.setBackgroundResource(R.drawable.history_radius);
-                    holder.img.setImageResource(R.drawable.history);
+                    holder.getView().setBackgroundResource(R.drawable.history_radius);
+                    holder.getImg().setImageResource(R.drawable.history);
                     break;
                 case ConstantUtilities.SUBJECT_GEO :
-                    holder.view.setBackgroundResource(R.drawable.geography_radius);
-                    holder.img.setImageResource(R.drawable.geography);
+                    holder.getView().setBackgroundResource(R.drawable.geography_radius);
+                    holder.getImg().setImageResource(R.drawable.geography);
                     break;
                 case ConstantUtilities.SUBJECT_POLITICS:
                 default:
-                    holder.view.setBackgroundResource(R.drawable.politics_radius);
-                    holder.img.setImageResource(R.drawable.politics);
+                    holder.getView().setBackgroundResource(R.drawable.politics_radius);
+                    holder.getImg().setImageResource(R.drawable.politics);
                     break;
             }
         }
@@ -270,7 +273,7 @@ class RemoveHistory implements Runnable
             String removeHistoryUrl = "/api/history/removeVisitHistory";
             RequestBuilder.sendBackendGetRequest(removeHistoryUrl, map, true);
         }
-        catch (Exception e)
+        catch (InterruptedException| ExecutionException| BackendTokenExpiredException e)
         {
             e.printStackTrace();
         }

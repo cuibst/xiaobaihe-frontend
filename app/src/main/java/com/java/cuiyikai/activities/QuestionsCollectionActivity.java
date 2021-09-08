@@ -43,7 +43,8 @@ import java.util.concurrent.ExecutionException;
  * <p>When you answer one question incorrectly, it will be added to this collection autonaticlly.
  * You can delete it by swiping left. It supports the conducting of  searching the whole collection.
  * Once the question contains the query text, it will be selected to show.
- * The layout is implemented by {@link SwipeRecyclerView},its adapter also uses {@link VisitHistoryAdapter} and viewholder uses {@link VisitHistoryViewHolder}</p>
+ * The layout is implemented by {@link SwipeRecyclerView},
+ * its adapter also uses {@link VisitHistoryAdapter} and viewholder uses {@link VisitHistoryViewHolder}</p>
  */
 public class QuestionsCollectionActivity extends AppCompatActivity {
 

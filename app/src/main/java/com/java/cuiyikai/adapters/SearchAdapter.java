@@ -78,6 +78,8 @@ public class SearchAdapter extends RecyclerView.Adapter<ItemViewHolder>{
         Map<String, List<JSONObject>> actualArray = new TreeMap<>();
         for(String key : jsonObject.keySet()) {
             JSONArray array = jsonObject.getJSONObject(key).getJSONArray(ConstantUtilities.ARG_DATA);
+            if(array==null)
+                return;
             List<JSONObject> objectList = new ArrayList<>();
             for(Object o : array) {
                 objectList.add(JSON.parseObject(o.toString()));

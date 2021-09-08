@@ -33,7 +33,8 @@ import java.util.Map;
  * <p>This class is used to record the entity you have entered.</p>
  * <p>It shows the visit history record and when you visited it ,you can search the record , once the record contains query text,
  * it will show in the layout.This layout is implemented by {@link SwipeRecyclerView},and its adapter is written in {@link VisitHistoryAdapter}
- * ,its viewholder is written in {@link VisitHistoryViewHolder} which shows the visit items and {@link VisitHistoryTimeViewHolder} which shows the visit time.</p>
+ * ,its viewholder is written in {@link VisitHistoryViewHolder} which shows the visit items
+ * and {@link VisitHistoryTimeViewHolder} which shows the visit time.</p>
  */
 public class VisitHistoryActivity extends AppCompatActivity {
     private SwipeRecyclerView swipeRecyclerView;
