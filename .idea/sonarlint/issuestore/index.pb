@@ -120,8 +120,6 @@ Capp/src/main/java/com/java/cuiyikai/activities/OfflineActivity.java,8\0\8088ac
 s
 Capp/src/main/java/com/java/cuiyikai/activities/ProblemActivity.java,f\f\ff728662dceb7126177b03a86656fc7f0a89ca67
 t
-Dapp/src/main/java/com/java/cuiyikai/activities/CategoryActivity.java,c\5\c576897c5745de9bcd25eec05a6549c2a509ca5c
-t
 Dapp/src/main/java/com/java/cuiyikai/activities/RegisterActivity.java,1\d\1d2f8eac66408b461b3828e1ef19e50bf80c3d88
 v
 Fapp/src/main/java/com/java/cuiyikai/activities/SearchViewActivity.java,2\f\2f058307bd0bc6585df195abe81ca848fd14a5eb
@@ -176,3 +174,9 @@ Z
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+
+Oapp/src/main/java/com/java/cuiyikai/adapters/viewholders/HistoryViewHolder.java,b\3\b3b2f07fe352937eb9046ef62b3b1088f0537883
+v
+Fapp/src/main/java/com/java/cuiyikai/database/EntityDatabaseHelper.java,f\5\f5d46441b64783d66246eb1f6f502a3272522ee6
+h
+8app/src/main/java/com/java/cuiyikai/MainApplication.java,6\8\6842d713d7ae3d55ef273f2d94956292a15508a3
