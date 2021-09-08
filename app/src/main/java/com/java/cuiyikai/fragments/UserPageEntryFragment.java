@@ -68,7 +68,6 @@ public class UserPageEntryFragment extends Fragment {
         }
     }
 
-    @SuppressLint("WrongConstant")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

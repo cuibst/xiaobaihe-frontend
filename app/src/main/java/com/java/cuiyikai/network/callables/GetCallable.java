@@ -15,29 +15,42 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * A {@link Callable} designed to make <strong>GET</strong> requests.
+ */
 public class GetCallable implements Callable<JSONObject> {
 
     private static final Logger logger = LoggerFactory.getLogger(GetCallable.class);
 
-    Handler handler = null;
+    private Handler handler = null;
 
+    /**
+     * Attach a handler to receive callback.
+     * <p>will receive 1 for fail, 2 for success</p>
+     * @param handler the handler to be attached
+     */
     public void attachHandler(Handler handler) {
         this.handler = handler;
     }
 
-    String sUrl;
+    private final String sUrl;
 
-    Map<String, String> arguments;
-
-    public GetCallable(String u, Map<String, String> args) {
+    /**
+     * Only constructor for {@link GetCallable}
+     * @param u the full url of the target, include the arguments(e.g. ?a=1&b=2)
+     */
+    public GetCallable(String u) {
         sUrl = u;
-        arguments = args;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return the reply in {@link JSONObject}
+     * @throws Exception when request failed to operate
+     */
     @Override
     public JSONObject call() throws Exception {
         URL url = new URL(sUrl);
@@ -48,7 +61,7 @@ public class GetCallable implements Callable<JSONObject> {
         connection.connect();
         if(connection.getResponseCode() == 200)
         {
-            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) {
+            if(connection.getContentEncoding() != null && connection.getContentEncoding().contains("gzip")) {//gzip deflated
                 GZIPInputStream gzipInputStream = new GZIPInputStream(connection.getInputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream));
                 String line;

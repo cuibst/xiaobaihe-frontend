@@ -8,6 +8,9 @@ import android.text.style.ReplacementSpan;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * A span with round corner and colored background at the same time.
+ */
 public class RoundCornerBackgroundColorSpan extends ReplacementSpan {
 
     private final int cornerRadius;

@@ -76,7 +76,7 @@ public class MainApplication extends Application {
                 e.printStackTrace();
             }
         }
-        RequestBuilder.onTokenChangedListener = this::dumpCacheData;
+        RequestBuilder.setOnTokenChangedListener(this::dumpCacheData);
 
         loadFile = new File(getFilesDir(), "subjects.txt");
         if(loadFile.exists()) {

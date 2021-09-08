@@ -44,25 +44,34 @@ public class RequestBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestBuilder.class);
 
-//    private static final String PHONE = "18211517925";
-//    private static final String PASSWORD = "ldx0881110103";
     private static final String PHONE = "16688092093";
     private static final String PASSWORD = "0730llhh";
-//    private static final String PHONE = "15910826331";
-//    private static final String PASSWORD = "cbst20001117";
     private static String token = null;
     public static final String BASE_URL = "http://open.edukg.cn/opedukg/api/";
     private static final String POST_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8";
     private static final String POST_JSON_CONTENT_TYPE = "application/json;charset=UTF-8";
 
+    /**
+     * Check whether there is a network connection currently.
+     * @param context request activity.
+     * @return the status of network connection.
+     */
     public static boolean isNetworkNormal(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }
 
-    private RequestBuilder() {}
+    private RequestBuilder() {
+        throw new IllegalStateException("Utility class");
+    }
 
+    /**
+     * Set the connection header for the given connection.
+     * @param connection related connection
+     * @param method connection method, {@code "POST"} or {@code "GET"}
+     * @throws ProtocolException when the given method is not supported.
+     */
     public static void setConnectionHeader(HttpURLConnection connection, String method) throws ProtocolException {
         logger.info("Set connection method : {}", method);
         connection.setRequestMethod(method);
@@ -78,6 +87,13 @@ public class RequestBuilder {
         connection.setDoInput(true);
     }
 
+    /**
+     * Set the connection header for the given connection.
+     * @param connection related connection
+     * @param method connection method, {@code "POST"} or {@code "GET"}
+     * @param sendJson true when json is to be sent.
+     * @throws ProtocolException when the given method is not supported.
+     */
     public static void setConnectionHeader(HttpURLConnection connection, String method, boolean sendJson) throws ProtocolException {
         logger.info("Set connection method : {}, type : {}", method, sendJson);
         connection.setRequestMethod(method);
@@ -95,6 +111,11 @@ public class RequestBuilder {
         connection.setDoOutput(true);
     }
 
+    /**
+     * Build a form for the given form data
+     * @param form the {@link Map} of the form.
+     * @return the String of the form data.
+     */
     public static String buildForm(Map<String,String> form) {
         if(form.size() == 0)
             return "";
@@ -115,6 +136,7 @@ public class RequestBuilder {
 
     private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
+    //this method will try to get the edukg id.
     private static Future<String> getToken() {
         return executorService.submit(() -> {
             if(token == null) {
@@ -124,7 +146,7 @@ public class RequestBuilder {
                     setConnectionHeader(connection, "POST");
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
                     Map<String, String> form = new HashMap<>();
-                    form.put("password", PASSWORD);
+                    form.put("password", PASSWORD); //set up the parameters
                     form.put("phone", PHONE);
                     logger.info("POST : {} {}", loginUrl, buildForm(form));
                     writer.write(buildForm(form));
@@ -149,6 +171,14 @@ public class RequestBuilder {
         });
     }
 
+    /**
+     * Send a POST request to edukg asynchronously
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @return a future to get the return data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     public static Future<JSONObject> asyncSendPostRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
         String id;
         Future<String> token = getToken();
@@ -158,11 +188,29 @@ public class RequestBuilder {
         return executorService.submit(postCallable);
     }
 
+    /**
+     * Send a POST request to edukg synchronously
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @return reply data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     @Nullable
     public static JSONObject sendPostRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
         return asyncSendPostRequest(remainUrl, arguments).get();
     }
 
+    /**
+     * Send a POST request to edukg asynchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @return a future to get the return data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     public static Future<JSONObject> asyncSendPostRequest(String remainUrl, Map<String,String> arguments, Handler handler) throws InterruptedException, ExecutionException {
         String id;
         Future<String> token = getToken();
@@ -173,11 +221,29 @@ public class RequestBuilder {
         return executorService.submit(postCallable);
     }
 
+    /**
+     * Send a POST request to edukg synchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @return reply data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     @Nullable
     public static JSONObject sendPostRequest(String remainUrl, Map<String,String> arguments, Handler handler) throws InterruptedException, ExecutionException {
         return asyncSendPostRequest(remainUrl, arguments, handler).get();
     }
 
+    /**
+     * Send a GET request to edukg asynchronously
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @return a future to get the return data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     public static Future<JSONObject> asyncSendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
         String id;
         Future<String> token = getToken();
@@ -187,15 +253,33 @@ public class RequestBuilder {
                 remainUrl +
                 '?' +
                 buildForm(arguments);
-        GetCallable getCallable = new GetCallable(builder, arguments);
+        GetCallable getCallable = new GetCallable(builder);
         return executorService.submit(getCallable);
     }
 
+    /**
+     * Send a GET request to edukg synchronously
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @return reply data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     @Nullable
     public static JSONObject sendGetRequest(String remainUrl, Map<String,String> arguments) throws InterruptedException, ExecutionException {
         return asyncSendGetRequest(remainUrl, arguments).get();
     }
 
+    /**
+     * Send a GET request to edukg asynchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @return a future to get the return data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     public static Future<JSONObject> asyncSendGetRequest(String remainUrl, Map<String,String> arguments, Handler handler) throws InterruptedException, ExecutionException {
         String id;
         Future<String> token = getToken();
@@ -205,11 +289,21 @@ public class RequestBuilder {
                 remainUrl +
                 '?' +
                 buildForm(arguments);
-        GetCallable getCallable = new GetCallable(builder, arguments);
+        GetCallable getCallable = new GetCallable(builder);
         getCallable.attachHandler(handler);
         return executorService.submit(getCallable);
     }
 
+    /**
+     * Send a GET request to edukg synchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BASE_URL}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @return reply data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     @Nullable
     public static JSONObject sendGetRequest(String remainUrl, Map<String,String> arguments, Handler handler) throws InterruptedException, ExecutionException {
         return asyncSendGetRequest(remainUrl, arguments,handler).get();
@@ -233,8 +327,20 @@ public class RequestBuilder {
         void onTokenChanged();
     }
 
-    public static OnTokenChangedListener onTokenChangedListener = null;
+    //Called when request token changed. use to save tokens and maintain login
+    private static OnTokenChangedListener onTokenChangedListener = null;
 
+    /**
+     * Set the token change listener to maintain login and save data.
+     * @param onTokenChangedListener related {@link OnTokenChangedListener}
+     */
+    public static void setOnTokenChangedListener(OnTokenChangedListener onTokenChangedListener) {
+        RequestBuilder.onTokenChangedListener = onTokenChangedListener;
+    }
+
+    /**
+     * @return whether the user has logged in, i.e., token is valid.
+     */
     public static boolean checkedLogin() {
         if(backendToken == null)
             return false;
@@ -258,11 +364,20 @@ public class RequestBuilder {
         return true;
     }
 
+    /**
+     * logout interface, clear the token and save data.
+     */
     public static void logOut() {
         backendToken = null;
         onTokenChangedListener.onTokenChanged();
     }
 
+    /**
+     * Login to the backend and get token asynchronously
+     * @param username related username
+     * @param password related password
+     * @return the token if success, null if failed.
+     */
     public static Future<String> getBackendToken(String username, String password) {
         return executorService.submit(() -> {
             if(backendToken == null || new Date().getTime() > expireTime) {
@@ -300,6 +415,14 @@ public class RequestBuilder {
         });
     }
 
+    /**
+     * Send a GET request to backend asynchronously
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param needToken whether backend token is inserted.
+     * @return a future to get the return data.
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     */
     public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
@@ -310,14 +433,34 @@ public class RequestBuilder {
                 remainUrl +
                 '?' +
                 buildForm(arguments);
-        GetCallable getCallable = new GetCallable(builder, arguments);
+        GetCallable getCallable = new GetCallable(builder);
         return executorService.submit(getCallable);
     }
 
+    /**
+     * Send a GET request to backend synchronously
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param needToken whether backend token is inserted.
+     * @return reply data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     */
     public static JSONObject sendBackendGetRequest(String remainUrl, Map<String,String> arguments, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
         return asyncSendBackendGetRequest(remainUrl, arguments, needToken).get();
     }
 
+    /**
+     * Send a GET request to backend asynchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @param needToken whether backend token is inserted.
+     * @return a future to get the return data.
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     */
     public static Future<JSONObject> asyncSendBackendGetRequest(String remainUrl, Map<String,String> arguments, Handler handler, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
@@ -328,15 +471,35 @@ public class RequestBuilder {
                 remainUrl +
                 '?' +
                 buildForm(arguments);
-        GetCallable getCallable = new GetCallable(builder, arguments);
+        GetCallable getCallable = new GetCallable(builder);
         getCallable.attachHandler(handler);
         return executorService.submit(getCallable);
     }
 
+    /**
+     * Send a GET request to backend synchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @param needToken whether backend token is inserted.
+     * @return reply data.
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     public static JSONObject sendBackendGetRequest(String remainUrl, Map<String,String> arguments, Handler handler, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
         return asyncSendBackendGetRequest(remainUrl, arguments, handler, needToken).get();
     }
 
+    /**
+     * Send a GET request to backend asynchronously
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param needToken whether backend token is inserted.
+     * @return a future to get the return data.
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     */
     public static Future<JSONObject> asyncSendBackendPostRequest(String remainUrl, JSONObject arguments, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
@@ -347,11 +510,31 @@ public class RequestBuilder {
         return executorService.submit(jsonPostCallable);
     }
 
+    /**
+     * Send a POST request to backend synchronously
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param needToken whether backend token is inserted.
+     * @return reply data.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     */
     @Nullable
     public static JSONObject sendBackendPostRequest(String remainUrl, JSONObject arguments, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
         return asyncSendBackendPostRequest(remainUrl, arguments, needToken).get();
     }
 
+    /**
+     * Send a POST request to backend asynchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @param needToken whether backend token is inserted.
+     * @return a future to get the return data.
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     */
     public static Future<JSONObject> asyncSendBackendPostRequest(String remainUrl, JSONObject arguments, Handler handler, boolean needToken) throws BackendTokenExpiredException {
         if(needToken) {
             if(!checkedLogin())
@@ -363,6 +546,18 @@ public class RequestBuilder {
         return executorService.submit(jsonPostCallable);
     }
 
+    /**
+     * Send a GET request to backend synchronously with handler to receive callback
+     * <p>return 1 when fail, 2 when success</p>
+     * @param remainUrl url after {@link #BACKEND_ADDRESS}
+     * @param arguments parameters to be sent
+     * @param handler the handler to receive callback
+     * @param needToken whether backend token is inserted.
+     * @return reply data.
+     * @throws BackendTokenExpiredException when token is needed but hasn't logged in.
+     * @throws InterruptedException when thread is interrupted.
+     * @throws ExecutionException when socket time out
+     */
     @Nullable
     public static JSONObject sendBackendPostRequest(String remainUrl, JSONObject arguments, Handler handler, boolean needToken) throws InterruptedException, ExecutionException, BackendTokenExpiredException {
         return asyncSendBackendPostRequest(remainUrl, arguments, handler, needToken).get();
