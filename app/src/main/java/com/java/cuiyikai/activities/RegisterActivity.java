@@ -42,6 +42,10 @@ public class RegisterActivity extends AppCompatActivity {
         email=findViewById(R.id.register_email);
         Button registerButton = findViewById(R.id.btn_register);
         registerButton.setOnClickListener(v -> {
+            if(userName.getText().toString().equals("")) {
+                handler.sendEmptyMessage(5);
+                return;
+            }
             CheckName checkName=new CheckName();
             Thread checkThread=new Thread(checkName);
             checkThread.start();
@@ -82,20 +86,44 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (msg.what == 2) {
                 Toast.makeText(RegisterActivity.this, "邮件已发送，请激活后使用", Toast.LENGTH_LONG).show();
             }
+            else if (msg.what == 3) {
+                Toast.makeText(RegisterActivity.this, "密码不能为空！", Toast.LENGTH_LONG).show();
+            }
+            else if (msg.what == 4) {
+                Toast.makeText(RegisterActivity.this, "邮箱不能为空！", Toast.LENGTH_LONG).show();
+            }
+            else if (msg.what == 5) {
+                Toast.makeText(RegisterActivity.this, "用户名不能为空！", Toast.LENGTH_LONG).show();
+            }
+            else if (msg.what == 6) {
+                Toast.makeText(RegisterActivity.this, "注册失败，请重试！", Toast.LENGTH_LONG).show();
+            }
         }
     }
     private class Register implements Runnable{
 
         @Override
         public void run() {
+            if(passWord.getText().toString().equals("")) {
+                handler.sendEmptyMessage(3);
+                return;
+            }
+            else if(email.getText().toString().equals(""))
+            {
+                handler.sendEmptyMessage(4);
+                return;
+            }
             Map<String,Object > map=new HashMap<>();
             map.put("password",passWord.getText().toString());
             map.put("email",email.getText().toString());
             map.put("username",userName.getText().toString());
             try {
                 String registerUrl = "/api/register/";
-                RequestBuilder.asyncSendBackendPostRequest(registerUrl, new JSONObject(map), false);
-                handler.sendEmptyMessage(2);
+                JSONObject object=RequestBuilder.sendBackendPostRequest(registerUrl, new JSONObject(map), false);
+                if(object.get("status").toString().equals("ok"))
+                    handler.sendEmptyMessage(2);
+                else
+                    handler.sendEmptyMessage(6);
             }
             catch (Exception e)
             {
