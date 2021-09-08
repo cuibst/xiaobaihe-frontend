@@ -20,6 +20,11 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>{@link RegisterActivity} is used to register a new user account. It is able to examine whether the
+ * username is used. After printing the register button , it will send an email to user's mailbox. The registration operation
+ * is not valid unless the url in the email is clicked.</p>
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterActivity.class);

@@ -16,6 +16,9 @@ import com.java.cuiyikai.activities.ProblemActivity;
 import com.java.cuiyikai.adapters.viewholders.QuestionViewHolder;
 import com.java.cuiyikai.utilities.ConstantUtilities;
 
+/**
+ * {@link QuestionAdapter} is used to send information to {@link ProblemActivity}.
+ */
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
     public JSONArray questionsArr;

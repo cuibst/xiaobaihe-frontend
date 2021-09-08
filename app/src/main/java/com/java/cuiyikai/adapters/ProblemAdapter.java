@@ -17,6 +17,9 @@ import com.java.cuiyikai.adapters.viewholders.ProblemViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link ProblemAdapter} is used to send information to {@link ProblemActivity}.
+ */
 public class ProblemAdapter extends RecyclerView.Adapter<ProblemViewHolder> {
 
     private final List<JSONObject> fullList;
