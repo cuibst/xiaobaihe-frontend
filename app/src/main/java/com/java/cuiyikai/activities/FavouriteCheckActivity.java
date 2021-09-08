@@ -35,6 +35,9 @@ import com.java.cuiyikai.utilities.DensityUtilities;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * {@link android.app.Activity} for Favourite checking.
+ */
 public class FavouriteCheckActivity extends AppCompatActivity {
 
     private ViewPager directoryPager;
@@ -42,6 +45,9 @@ public class FavouriteCheckActivity extends AppCompatActivity {
     private ArrayList<DirectoryFragment> directoryFragments;
     private ArrayList<String> directoryNames;
 
+    /**
+     * Modified to remove the buffer of the pages.
+     */
     public class DirectoryStatePagerAdapter extends FragmentStatePagerAdapter {
 
         public DirectoryStatePagerAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -54,6 +60,12 @@ public class FavouriteCheckActivity extends AppCompatActivity {
             return directoryFragments.get(position);
         }
 
+        /**
+         * changed to reload when request
+         * {@inheritDoc}
+         * @param object
+         * @return
+         */
         @Override
         public int getItemPosition(@NonNull Object object) {
             return PagerAdapter.POSITION_NONE;
@@ -71,6 +83,10 @@ public class FavouriteCheckActivity extends AppCompatActivity {
             return directoryNames.get(position);
         }
 
+        /**
+         * clear all the pages in the buffer.
+         * To make sure the pages are rebuilt when the activity is reloaded.
+         */
         public void clear() {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             for (DirectoryFragment fragment : directoryFragments)
@@ -92,6 +108,7 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_check);
 
+        //set up the pager.
         directoryPager = findViewById(R.id.directoryPager);
         TabLayout directoryNameTab = findViewById(R.id.directoryTabLayout);
         directoryNameTab.setupWithViewPager(directoryPager);
@@ -100,6 +117,8 @@ public class FavouriteCheckActivity extends AppCompatActivity {
 
         adapter = new DirectoryStatePagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
+        //set up the add new directory dialog
+        //see EntityActivity for more information, these two are almost the same.
         findViewById(R.id.btnAddNewDirectory).setOnClickListener((View v) -> {
             Dialog addNewDirectoryDialog = new Dialog(FavouriteCheckActivity.this, R.style.BottomDialog);
             View directoryContentView = LayoutInflater.from(this).inflate(R.layout.layout_add_new_directory, null);
@@ -143,6 +162,9 @@ public class FavouriteCheckActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * initialize the pager's fragment.
+     */
     private void initPager() {
         JSONObject favourite = ((MainApplication)getApplication()).getFavourite();
 
@@ -155,6 +177,9 @@ public class FavouriteCheckActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * reset the pager when the directories are updated.
+     */
     public void updateDirectories() {
         directoryPager.setCurrentItem(0);
         directoryPager.removeAllViewsInLayout();

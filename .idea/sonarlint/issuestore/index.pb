@@ -125,8 +125,6 @@ x
 Happ/src/main/java/com/java/cuiyikai/activities/PointExtractActivity.java,c\a\ca306bf15b13af3cb337efa6b0f57c169f1b1424
 x
 Happ/src/main/java/com/java/cuiyikai/activities/VisitHistoryActivity.java,4\d\4d0febaf7f9af06661fe7ea26b7df097959c382b
-z
-Japp/src/main/java/com/java/cuiyikai/activities/FavouriteCheckActivity.java,7\6\7645f034a4c363e373aaedeb65ed209b40001637
 
 Oapp/src/main/java/com/java/cuiyikai/activities/QuestionsCollectionActivity.java,2\e\2e79690afb16ce17b98ba12ee3858ecf7cb64111
 |
